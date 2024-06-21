@@ -49,7 +49,7 @@ public class UserRepositoryCollection implements UserRepository {
         User user = new User(id, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(), registrationDTO.password());
         usersById.put(id, user);
         emailToIdMap.put(email, id);
-        return new UserDTO(id, user.getFirstName(), user.getLastName(), user.getEmail());
+        return new UserDTO(id, user.firstName(), user.lastName(), user.email());
     }
 
     /**
@@ -78,7 +78,7 @@ public class UserRepositoryCollection implements UserRepository {
         if (user == null) {
             throw new UserNotFoundException("Пользователь с ID " + id + " не найден");
         }
-        emailToIdMap.remove(user.getEmail());
+        emailToIdMap.remove(user.email());
     }
 
     /**
@@ -86,12 +86,12 @@ public class UserRepositoryCollection implements UserRepository {
      */
     @Override
     public void updateUser(User user) throws UserNotFoundException, UserAlreadyExistsException {
-        long id = user.getId();
+        long id = user.id();
         if (!usersById.containsKey(id)) {
             throw new UserNotFoundException("Пользователь с ID " + id + " не найден");
         }
-        String newEmail = user.getEmail();
-        String existingEmail = usersById.get(id).getEmail();
+        String newEmail = user.email();
+        String existingEmail = usersById.get(id).email();
         if (!newEmail.equals(existingEmail) && emailToIdMap.containsKey(newEmail)) {
             throw new UserAlreadyExistsException("Пользователь с email " + newEmail + " уже существует");
         }

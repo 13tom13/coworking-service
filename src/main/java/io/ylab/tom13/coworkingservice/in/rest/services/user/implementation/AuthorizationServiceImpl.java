@@ -7,6 +7,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.AuthorizationService;
+import io.ylab.tom13.coworkingservice.in.utils.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
@@ -36,8 +37,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (authenticateUser(passwordFromDTO, user.getPassword())) {
-                return new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
+            if (authenticateUser(passwordFromDTO, user.password())) {
+                return UserMapper.INSTANCE.toUserDTO(user);
             } else {
                 throw new UnauthorizedException();
             }

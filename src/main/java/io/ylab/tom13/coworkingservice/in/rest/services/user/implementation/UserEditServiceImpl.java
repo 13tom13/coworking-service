@@ -8,11 +8,14 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.UserEditService;
+import io.ylab.tom13.coworkingservice.in.utils.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserEditServiceImpl implements UserEditService {
 
     private final UserRepository userRepository;
+
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     public UserEditServiceImpl() {
         this.userRepository = UserRepositoryCollection.getInstance();
@@ -22,18 +25,18 @@ public class UserEditServiceImpl implements UserEditService {
     public UserDTO editUser(UserDTO userDTO) throws RepositoryException {
         long id = userDTO.id();
         String hashPassword = userRepository.findById(id).orElseThrow(() ->
-                new UserNotFoundException(userDTO.email())).getPassword();
-        User newUser = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), userDTO.email(), hashPassword);
+                new UserNotFoundException(userDTO.email())).password();
+        User newUser = userMapper.toUser(userDTO, hashPassword);
         userRepository.updateUser(newUser);
-        return new UserDTO(newUser.getId(), newUser.getFirstName(), newUser.getLastName(), newUser.getEmail());
+        return userMapper.toUserDTO(newUser);
     }
 
     @Override
     public void editPassword(String email, String oldPassword, String newPassword) throws UnauthorizedException, RepositoryException {
         User userFromRep = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException(email));
-        if (BCrypt.checkpw(oldPassword, userFromRep.getPassword())) {
-            User newUser = new User(userFromRep.getId(), userFromRep.getFirstName(), userFromRep.getLastName(), userFromRep.getEmail(), newPassword);
+        if (BCrypt.checkpw(oldPassword, userFromRep.password())) {
+            User newUser = userMapper.toUser(userFromRep, newPassword);
             userRepository.updateUser(newUser);
         } else {
             throw new UnauthorizedException();
