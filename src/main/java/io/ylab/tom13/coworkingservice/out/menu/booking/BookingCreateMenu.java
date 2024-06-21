@@ -12,6 +12,7 @@ import io.ylab.tom13.coworkingservice.out.utils.Session;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,34 +60,70 @@ public class BookingCreateMenu extends Menu {
     }
 
     private void viewAvailableSlots(Map<String, CoworkingDTO> coworkings) {
-        String coworkingName  = readString("Введите название коворкинга:");
+        String coworkingName = readString("Введите название коворкинга:");
         long coworkingId = coworkings.get(coworkingName).getId();
-        LocalDate date =correctDate();
+        LocalDate date = correctDate();
         List<TimeSlot> availableSlots = bookingClient.getAvailableSlots(coworkingId, date);
+        if (availableSlots.isEmpty())   {
+            System.out.println("Нет доступных слотов для бронирования.");
+        }
         System.out.printf("Доступные слоты на %s:%n", date);
-        availableSlots.forEach(System.out::println);
+        for (int i = 0; i < availableSlots.size(); i++) {
+            System.out.printf("%d: %s%n", i + 1, availableSlots.get(i));
+        }
         System.out.println();
     }
 
-    private void createBooking(Map<String, CoworkingDTO> coworkings, UserDTO user)  {
+    private void createBooking(Map<String, CoworkingDTO> coworkings, UserDTO user) {
         String coworkingName = readString("Введите название коворкинга:");
         long coworkingId = coworkings.get(coworkingName).getId();
-        LocalDate date = readLocalDate("Введите дату бронирования в формате ДД.ММ.ГГ:");
+        LocalDate date = correctDate();
 
         List<TimeSlot> availableSlots = bookingClient.getAvailableSlots(coworkingId, date);
-        System.out.printf("Доступные слоты на %s:%n", date);
-        availableSlots.forEach(System.out::println);
-        System.out.println();
+        List<TimeSlot> selectedSlots = new ArrayList<>();
 
-        LocalTime startTime = readLocalTime("Введите время начала бронирования в формате ЧЧ:ММ:");
-        LocalTime endTime = readLocalTime("Введите время окончания бронирования в формате ЧЧ:ММ:");
+        while (true) {
+            if (availableSlots.isEmpty())  {
+                System.out.println("Нет доступных слотов для бронирования.");
+                break;
+            }
+            System.out.printf("Доступные слоты на %s:%n", date);
+            for (int i = 0; i < availableSlots.size(); i++) {
+                System.out.printf("%d: %s%n", i + 1, availableSlots.get(i));
+            }
 
-        LocalDateTime startDateTime = LocalDateTime.of(date, startTime);
-        LocalDateTime endDateTime = LocalDateTime.of(date, endTime);
+            int slotNumber = readInt("Введите номер слота для бронирования (0 для завершения):");
+            if (slotNumber == 0) {
+                break;
+            }
+            if (slotNumber < 1 || slotNumber > availableSlots.size()) {
+                System.out.println("Неверный номер слота. Пожалуйста, попробуйте снова.");
+                continue;
+            }
+            TimeSlot selectedSlot = availableSlots.get(slotNumber - 1);
+            if (!selectedSlots.contains(selectedSlot)) {
+                availableSlots.remove(selectedSlot);
+                selectedSlots.add(selectedSlot);
+            } else {
+                System.out.println("Слот уже выбран. Пожалуйста, выберите другой слот.");
+            }
+        }
 
-        BookingDTO bookingDTO = new BookingDTO(0, user.id(), coworkingId, startDateTime, endDateTime); // здесь замените userId и id на корректные значения
+        if (selectedSlots.isEmpty()) {
+            System.out.println("Бронирование отменено.");
+            return;
+        }
+
+        BookingDTO bookingDTO = BookingDTO.builder()
+                .userId(user.id())
+                .coworkingId(coworkingId)
+                .date(date)
+                .timeSlots(selectedSlots)
+                .build();
+
         try {
             bookingClient.createBooking(bookingDTO);
+            System.out.println("Бронирование успешно создано.");
         } catch (BookingException e) {
             System.err.println(e.getMessage());
         }

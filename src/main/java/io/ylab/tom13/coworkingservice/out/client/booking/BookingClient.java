@@ -37,10 +37,8 @@ public class BookingClient extends Client {
 
     public void createBooking(BookingDTO bookingDTO) throws BookingException {
         ResponseDTO<BookingDTO> response = bookingController.createBooking(bookingDTO);
-        if (response.success()) {
-            System.out.println("Бронирование успешно создано");
-        } else {
-            throw new BookingException(response.message());
+        if (!response.success())  {
+            throw new BookingException("Не удалось создать бронирование: " + response.message());
         }
     }
 }

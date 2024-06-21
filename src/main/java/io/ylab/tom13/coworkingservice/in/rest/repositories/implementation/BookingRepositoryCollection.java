@@ -2,12 +2,13 @@ package io.ylab.tom13.coworkingservice.in.rest.repositories.implementation;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
+import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
+import io.ylab.tom13.coworkingservice.in.utils.BookingMapper;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -19,14 +20,11 @@ public class BookingRepositoryCollection implements BookingRepository {
     private BookingRepositoryCollection() {
     }
 
-    /**
-     * Получение единственного экземпляра класса репозитория.
-     *
-     * @return экземпляр BookingRepositoryCollection
-     */
     public static BookingRepositoryCollection getInstance() {
         return INSTANCE;
     }
+
+    private final BookingMapper bookingMapper  = BookingMapper.INSTANCE;
 
     private final Map<Long, Booking> bookingsById = new HashMap<>();
     private final Map<Long, List<Booking>> bookingsByUserId = new HashMap<>();
@@ -35,9 +33,10 @@ public class BookingRepositoryCollection implements BookingRepository {
 
     @Override
     public BookingDTO createBooking(BookingDTO bookingDTO) throws BookingConflictException {
-        Booking newBooking = toBooking(bookingDTO, idCounter.incrementAndGet());
+        long bookingId = idCounter.incrementAndGet();
+        Booking newBooking = bookingMapper.toBooking(bookingDTO, bookingId);
 
-        if(bookingDTO.endTime().isBefore(LocalDateTime.now())){
+        if(bookingDTO.date().isBefore(LocalDate.now())){
             throw new BookingConflictException("Время бронирования не может быть в прошлом");
         }
 
@@ -45,11 +44,11 @@ public class BookingRepositoryCollection implements BookingRepository {
             throw new BookingConflictException("Время бронирования совпадает с существующим бронированием");
         }
 
-        bookingsById.put(newBooking.getId(), newBooking);
-        bookingsByUserId.computeIfAbsent(newBooking.getUserId(), k -> new ArrayList<>()).add(newBooking);
-        bookingsByCoworkingId.computeIfAbsent(newBooking.getCoworkingId(), k -> new ArrayList<>()).add(newBooking);
+        bookingsById.put(newBooking.id(), newBooking);
+        bookingsByUserId.computeIfAbsent(newBooking.userId(), k -> new ArrayList<>()).add(newBooking);
+        bookingsByCoworkingId.computeIfAbsent(newBooking.coworkingId(), k -> new ArrayList<>()).add(newBooking);
 
-        return toBookingDTO(newBooking);
+        return bookingMapper.toBookingDTO(newBooking);
     }
 
     @Override
@@ -61,25 +60,25 @@ public class BookingRepositoryCollection implements BookingRepository {
 
         removeBookingFromCollections(existingBooking);
 
-        Booking updatedBooking = toBooking(bookingDTO, bookingDTO.id());
+        Booking updatedBooking = bookingMapper.toBooking(bookingDTO, bookingDTO.id());
 
         if (isBookingOverlapping(updatedBooking)) {
             addBookingToCollections(existingBooking);
             throw new BookingConflictException("Время бронирования совпадает с существующим бронированием");
         }
 
-        bookingsById.put(updatedBooking.getId(), updatedBooking);
+        bookingsById.put(updatedBooking.id(), updatedBooking);
         addBookingToCollections(updatedBooking);
 
-        return toBookingDTO(updatedBooking);
+        return bookingMapper.toBookingDTO(updatedBooking);
     }
 
     @Override
     public void deleteBooking(long bookingId) throws BookingNotFoundException {
         Booking booking = bookingsById.remove(bookingId);
         if (booking != null) {
-            bookingsByUserId.get(booking.getUserId()).remove(booking);
-            bookingsByCoworkingId.get(booking.getCoworkingId()).remove(booking);
+            bookingsByUserId.get(booking.userId()).remove(booking);
+            bookingsByCoworkingId.get(booking.coworkingId()).remove(booking);
         } else {
             throw new BookingNotFoundException("Бронирование не найдено");
         }
@@ -92,7 +91,7 @@ public class BookingRepositoryCollection implements BookingRepository {
             throw new BookingNotFoundException("Бронирования пользователя не найдено");
         }
         return userBookings.stream()
-                .map(this::toBookingDTO)
+                .map(bookingMapper::toBookingDTO)
                 .collect(Collectors.toList());
     }
 
@@ -103,7 +102,7 @@ public class BookingRepositoryCollection implements BookingRepository {
             throw new BookingNotFoundException("Бронирований коворкинга не найдено");
         }
         return coworkingBookings.stream()
-                .map(this::toBookingDTO)
+                .map(bookingMapper::toBookingDTO)
                 .collect(Collectors.toList());
     }
 
@@ -111,54 +110,33 @@ public class BookingRepositoryCollection implements BookingRepository {
     public List<BookingDTO> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date) {
         List<Booking> coworkingBookings = bookingsByCoworkingId.get(coworkingId);
         if (coworkingBookings == null || coworkingBookings.isEmpty()) {
-           return new ArrayList<>();
+            return new ArrayList<>();
         }
         return coworkingBookings.stream()
-                .filter(booking -> booking.getStartTime().toLocalDate().equals(date))
-                .map(this::toBookingDTO)
+                .filter(booking -> booking.date().equals(date))
+                .map(bookingMapper::toBookingDTO)
                 .toList();
     }
 
-    private BookingDTO toBookingDTO(Booking booking) {
-        return new BookingDTO(
-                booking.getId(),
-                booking.getUserId(),
-                booking.getCoworkingId(),
-                booking.getStartTime(),
-                booking.getEndTime()
-        );
-    }
-
-    private Booking toBooking(BookingDTO bookingDTO, long bookingId) {
-        return new Booking(
-                bookingId,
-                bookingDTO.userId(),
-                bookingDTO.coworkingId(),
-                bookingDTO.startTime(),
-                bookingDTO.endTime()
-        );
-    }
-
     private boolean isBookingOverlapping(Booking newBooking) {
-        List<Booking> existingBookings = bookingsByCoworkingId.getOrDefault(newBooking.getCoworkingId(), Collections.emptyList());
+        List<Booking> existingBookings = bookingsByCoworkingId.getOrDefault(newBooking.coworkingId(), Collections.emptyList());
         for (Booking existingBooking : existingBookings) {
-            if (newBooking.getStartTime().isBefore(existingBooking.getEndTime()) &&
-                newBooking.getEndTime().isAfter(existingBooking.getStartTime())) {
-                return true;
+            for (TimeSlot newSlot : newBooking.timeSlots()) {
+                if (existingBooking.timeSlots().contains(newSlot)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
     private void removeBookingFromCollections(Booking booking) {
-        bookingsByUserId.get(booking.getUserId()).remove(booking);
-        bookingsByCoworkingId.get(booking.getCoworkingId()).remove(booking);
+        bookingsByUserId.get(booking.userId()).remove(booking);
+        bookingsByCoworkingId.get(booking.coworkingId()).remove(booking);
     }
 
     private void addBookingToCollections(Booking booking) {
-        bookingsByUserId.computeIfAbsent(booking.getUserId(), k -> new ArrayList<>()).add(booking);
-        bookingsByCoworkingId.computeIfAbsent(booking.getCoworkingId(), k -> new ArrayList<>()).add(booking);
+        bookingsByUserId.computeIfAbsent(booking.userId(), k -> new ArrayList<>()).add(booking);
+        bookingsByCoworkingId.computeIfAbsent(booking.coworkingId(), k -> new ArrayList<>()).add(booking);
     }
 }
-
-

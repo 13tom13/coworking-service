@@ -1,14 +1,7 @@
 package io.ylab.tom13.coworkingservice.in.entity.model;
 
-import lombok.Data;
+import java.time.LocalDate;
+import java.util.List;
 
-import java.time.LocalDateTime;
-
-@Data
-public class Booking {
-    private final long id;
-    private final long userId;
-    private final long coworkingId;
-    private final LocalDateTime startTime;
-    private final LocalDateTime endTime;
-} 
+public record Booking(long id, long userId, long coworkingId, LocalDate date, List<TimeSlot> timeSlots) {
+}
