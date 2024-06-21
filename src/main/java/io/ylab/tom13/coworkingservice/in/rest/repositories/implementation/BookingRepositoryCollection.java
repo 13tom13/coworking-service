@@ -121,13 +121,22 @@ public class BookingRepositoryCollection implements BookingRepository {
     private boolean isBookingOverlapping(Booking newBooking) {
         List<Booking> existingBookings = bookingsByCoworkingId.getOrDefault(newBooking.coworkingId(), Collections.emptyList());
         for (Booking existingBooking : existingBookings) {
+            if (!existingBooking.date().equals(newBooking.date())) {
+                continue;
+            }
             for (TimeSlot newSlot : newBooking.timeSlots()) {
-                if (existingBooking.timeSlots().contains(newSlot)) {
-                    return true;
+                for (TimeSlot existingSlot : existingBooking.timeSlots()) {
+                    if (doTimeSlotsOverlap(newSlot, existingSlot)) {
+                        return true;
+                    }
                 }
             }
         }
         return false;
+    }
+
+    private boolean doTimeSlotsOverlap(TimeSlot slot1, TimeSlot slot2) {
+        return slot1.getEnd().isAfter(slot2.getStart()) && slot2.getEnd().isAfter(slot1.getStart());
     }
 
     private void removeBookingFromCollections(Booking booking) {

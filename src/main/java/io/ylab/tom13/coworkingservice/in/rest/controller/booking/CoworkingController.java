@@ -7,5 +7,5 @@ import java.util.Map;
 
 public interface CoworkingController {
 
-    ResponseDTO<Map<String, CoworkingDTO>> getAllSpaces();
+    ResponseDTO<Map<String, CoworkingDTO>> getAllCoworking();
 }

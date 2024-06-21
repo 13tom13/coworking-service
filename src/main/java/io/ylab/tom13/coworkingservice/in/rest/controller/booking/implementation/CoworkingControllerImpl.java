@@ -17,7 +17,7 @@ public class CoworkingControllerImpl implements CoworkingController {
     }
 
     @Override
-    public ResponseDTO<Map<String, CoworkingDTO>> getAllSpaces() {
+    public ResponseDTO<Map<String, CoworkingDTO>> getAllCoworking() {
         Map<String, CoworkingDTO> allSpaces = coworkingService.getAllCoworking();
         return ResponseDTO.success(allSpaces);
     }
