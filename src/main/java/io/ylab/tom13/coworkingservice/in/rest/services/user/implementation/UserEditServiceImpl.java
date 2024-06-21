@@ -25,7 +25,7 @@ public class UserEditServiceImpl implements UserEditService {
     public UserDTO editUser(UserDTO userDTO) throws RepositoryException {
         long id = userDTO.id();
         String hashPassword = userRepository.findById(id).orElseThrow(() ->
-                new UserNotFoundException(userDTO.email())).password();
+                new UserNotFoundException("с email " + userDTO.email())).password();
         User newUser = userMapper.toUser(userDTO, hashPassword);
         userRepository.updateUser(newUser);
         return userMapper.toUserDTO(newUser);
@@ -34,7 +34,7 @@ public class UserEditServiceImpl implements UserEditService {
     @Override
     public void editPassword(String email, String oldPassword, String newPassword) throws UnauthorizedException, RepositoryException {
         User userFromRep = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException(email));
+                new UserNotFoundException("с email " + email));
         if (BCrypt.checkpw(oldPassword, userFromRep.password())) {
             User newUser = userMapper.toUser(userFromRep, newPassword);
             userRepository.updateUser(newUser);

@@ -76,7 +76,7 @@ public class UserRepositoryCollection implements UserRepository {
     public void deleteUserById(long id) throws UserNotFoundException {
         User user = usersById.remove(id);
         if (user == null) {
-            throw new UserNotFoundException("Пользователь с ID " + id + " не найден");
+            throw new UserNotFoundException("с ID " + id);
         }
         emailToIdMap.remove(user.email());
     }
@@ -88,12 +88,12 @@ public class UserRepositoryCollection implements UserRepository {
     public void updateUser(User user) throws UserNotFoundException, UserAlreadyExistsException {
         long id = user.id();
         if (!usersById.containsKey(id)) {
-            throw new UserNotFoundException("Пользователь с ID " + id + " не найден");
+            throw new UserNotFoundException("с ID " + id);
         }
         String newEmail = user.email();
         String existingEmail = usersById.get(id).email();
         if (!newEmail.equals(existingEmail) && emailToIdMap.containsKey(newEmail)) {
-            throw new UserAlreadyExistsException("Пользователь с email " + newEmail + " уже существует");
+            throw new UserAlreadyExistsException(newEmail);
         }
 
         usersById.put(id, user);

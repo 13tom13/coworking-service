@@ -8,9 +8,9 @@ public class UserNotFoundException extends RepositoryException {
     /**
      * Конструктор исключения с указанием email пользователя.
      *
-     * @param email email пользователя, который не найден
+     * @param message сообщение об ошибке
      */
-    public UserNotFoundException(String email) {
-        super("Пользователь с email " + email + " не найден");
+    public UserNotFoundException(String message) {
+        super("Пользователь " + message + " не найден");
     }
 }
