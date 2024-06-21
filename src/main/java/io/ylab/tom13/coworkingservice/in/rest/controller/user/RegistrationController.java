@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.in.rest.controller;
+package io.ylab.tom13.coworkingservice.in.rest.controller.user;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;

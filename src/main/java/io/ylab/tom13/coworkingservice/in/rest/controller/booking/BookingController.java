@@ -1,11 +1,11 @@
-package io.ylab.tom13.coworkingservice.in.rest.controller;
+package io.ylab.tom13.coworkingservice.in.rest.controller.booking;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
+import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface BookingController {
 
@@ -15,7 +15,7 @@ public interface BookingController {
      * @param bookingDTO DTO с данными для бронирования.
      * @return ResponseDTO с информацией о созданном бронировании или сообщением об ошибке.
      */
-    ResponseDTO<Booking> createBooking(BookingDTO bookingDTO);
+    ResponseDTO<BookingDTO> createBooking(BookingDTO bookingDTO);
 
     /**
      * Отмена существующего бронирования.
@@ -25,12 +25,6 @@ public interface BookingController {
      */
     ResponseDTO<Void> cancelBooking(long bookingId);
 
-    /**
-     * Получение всех бронирований.
-     *
-     * @return ResponseDTO с коллекцией всех бронирований.
-     */
-    ResponseDTO<Collection<Booking>> getAllBookings();
 
     /**
      * Получение бронирований по пользователю.
@@ -38,22 +32,17 @@ public interface BookingController {
      * @param userId ID пользователя для фильтрации бронирований.
      * @return ResponseDTO с коллекцией бронирований пользователя.
      */
-    ResponseDTO<Collection<Booking>> getBookingsByUser(long userId);
+    ResponseDTO<List<BookingDTO>> getBookingsByUser(long userId);
 
     /**
      * Получение бронирований по ресурсу.
      *
-     * @param spaceId ID ресурса для фильтрации бронирований.
+     * @param coworkingId ID ресурса для фильтрации бронирований.
      * @return ResponseDTO с коллекцией бронирований ресурса.
      */
-    ResponseDTO<Collection<Booking>> getBookingsBySpace(long spaceId);
+    ResponseDTO<List<BookingDTO>> getBookingsByCoworking(long coworkingId);
 
-    /**
-     * Получение бронирований на определённую дату.
-     *
-     * @param date Дата для фильтрации бронирований.
-     * @return ResponseDTO с коллекцией бронирований на указанную дату.
-     */
-    ResponseDTO<Collection<Booking>> getBookingsByDate(LocalDateTime date);
+
+    ResponseDTO<List<TimeSlot>> getAvailableSlots(long coworkingId, LocalDate date);
 }
 

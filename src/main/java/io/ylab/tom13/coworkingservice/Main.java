@@ -1,17 +1,17 @@
 package io.ylab.tom13.coworkingservice;
 
-import io.ylab.tom13.coworkingservice.out.CoworkingService;
+import io.ylab.tom13.coworkingservice.out.CoworkingServiceApplication;
 
 /**
- * Главный класс приложения, запускающий CoworkingService.
+ * Главный класс приложения, запускающий CoworkingServiceApplication.
  */
 public class Main {
 
     /**
-     * Основной метод приложения, запускающий CoworkingService.
+     * Основной метод приложения, запускающий CoworkingServiceApplication.
      */
     public static void main(String[] args) {
-        new CoworkingService().start();
+        new CoworkingServiceApplication().start();
     }
 }
 

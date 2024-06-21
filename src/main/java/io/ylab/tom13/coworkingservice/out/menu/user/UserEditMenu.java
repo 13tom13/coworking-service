@@ -37,26 +37,10 @@ public class UserEditMenu extends Menu {
             System.out.println();
             int choice = readInt("Введите номер действия: ");
             switch (choice) {
-                case 1 -> {
-                    String newFirstName  = readString("Введите новое имя:");
-                    userEditClient.editUser(
-                            new UserDTO(user.id(), newFirstName, user.lastName(),user.email()));
-                }
-                case 2 -> {
-                    String newLastName = readString("Введите новую фамилию:");
-                    userEditClient.editUser(
-                            new UserDTO(user.id(), user.firstName(), newLastName,user.email()));
-                }
-                case 3 -> {
-                    String newEmail= readString("Введите новый email:");
-                    userEditClient.editUser(
-                            new UserDTO(user.id(), user.firstName(), user.lastName(),newEmail));
-                }
-                case 4 -> {
-                    String oldPassword = readString("Введите старый пароль:");
-                    String newHashPassword = BCrypt.hashpw(readString("Введите новый пароль:"), BCrypt.gensalt());
-                    userEditClient.editPassword(user.email(), oldPassword, newHashPassword);
-                }
+                case 1 -> editFirstName(user);
+                case 2 -> editLastName(user);
+                case 3 -> editEmail(user);
+                case 4 -> editPassword(user);
                 case 5 -> {
                     System.err.println("Выход из редактирования");
                     userManagementMenu = false;
@@ -64,6 +48,30 @@ public class UserEditMenu extends Menu {
                 default -> System.err.println("Неверный выбор. Попробуйте еще раз.");
             }
         }
+    }
+
+    private void editFirstName(UserDTO user) throws EditException {
+        String newFirstName  = readString("Введите новое имя:");
+        userEditClient.editUser(
+                new UserDTO(user.id(), newFirstName, user.lastName(),user.email()));
+    }
+
+    private void editLastName(UserDTO user) throws EditException {
+        String newLastName = readString("Введите новую фамилию:");
+        userEditClient.editUser(
+                new UserDTO(user.id(), user.firstName(), newLastName,user.email()));
+    }
+
+    private void editEmail(UserDTO user) throws EditException {
+        String newEmail= readString("Введите новый email:");
+        userEditClient.editUser(
+                new UserDTO(user.id(), user.firstName(), user.lastName(),newEmail));
+    }
+
+    private void editPassword(UserDTO user) throws EditException  {
+        String oldPassword = readString("Введите старый пароль:");
+        String newHashPassword = BCrypt.hashpw(readString("Введите новый пароль:"), BCrypt.gensalt());
+        userEditClient.editPassword(user.email(), oldPassword, newHashPassword);
     }
 
 }

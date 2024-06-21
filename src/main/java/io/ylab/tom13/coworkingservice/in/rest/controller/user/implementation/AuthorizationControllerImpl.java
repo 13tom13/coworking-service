@@ -1,12 +1,12 @@
-package io.ylab.tom13.coworkingservice.in.rest.controller.implementation;
+package io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
-import io.ylab.tom13.coworkingservice.in.rest.controller.AuthorizationController;
-import io.ylab.tom13.coworkingservice.in.rest.services.AuthorizationService;
-import io.ylab.tom13.coworkingservice.in.rest.services.implementation.AuthorizationServiceImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.user.AuthorizationController;
+import io.ylab.tom13.coworkingservice.in.rest.services.user.AuthorizationService;
+import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.AuthorizationServiceImpl;
 
 /**
  * Реализация интерфейса {@link AuthorizationController}.

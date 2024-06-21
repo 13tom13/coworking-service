@@ -3,8 +3,8 @@ package io.ylab.tom13.coworkingservice.out.client.registration;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.rest.controller.RegistrationController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.RegistrationControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.user.RegistrationController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.RegistrationControllerImpl;
 import io.ylab.tom13.coworkingservice.out.client.Client;
 import io.ylab.tom13.coworkingservice.out.exceptions.RegistrationException;
 

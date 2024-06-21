@@ -2,8 +2,8 @@ package io.ylab.tom13.coworkingservice.out.client.user;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.rest.controller.UserEditController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.UserEditControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.user.UserEditController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.UserEditControllerImpl;
 import io.ylab.tom13.coworkingservice.out.client.Client;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
 

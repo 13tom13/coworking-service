@@ -1,11 +1,11 @@
-package io.ylab.tom13.coworkingservice.in.rest.services.implementation;
+package io.ylab.tom13.coworkingservice.in.rest.services.user.implementation;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
-import io.ylab.tom13.coworkingservice.in.rest.services.RegistrationService;
+import io.ylab.tom13.coworkingservice.in.rest.services.user.RegistrationService;
 
 /**
  * Реализация сервиса регистрации пользователей.

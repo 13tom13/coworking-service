@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 
 @Data
 public class Booking {
-    private long id;
-    private long userId;
-    private long spaceId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private final long id;
+    private final long userId;
+    private final long coworkingId;
+    private final LocalDateTime startTime;
+    private final LocalDateTime endTime;
 } 

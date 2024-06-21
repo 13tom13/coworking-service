@@ -1,5 +1,9 @@
 package io.ylab.tom13.coworkingservice.out.menu;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 /**
@@ -50,5 +54,44 @@ public abstract class Menu {
             }
         }
     }
+
+    /**
+     * Считывает дату с консоли в формате "ДД.ММ.ГГ", предварительно выводя заданный приглашающий текст.
+     *
+     * @param prompt Поясняющий текст для пользователя.
+     * @return Введенная пользователем дата в формате LocalDate.
+     */
+    protected LocalDate readLocalDate(String prompt) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+        while (true) {
+            System.out.println(prompt);
+            String input = scanner.nextLine().trim();
+            try {
+                return LocalDate.parse(input, formatter);
+            } catch (DateTimeParseException e) {
+                System.err.println("Неверный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГ.");
+            }
+        }
+    }
+
+    /**
+     * Считывает время с консоли в формате "ЧЧ:ММ", предварительно выводя заданный приглашающий текст.
+     *
+     * @param prompt Поясняющий текст для пользователя.
+     * @return Введенное пользователем время в формате LocalTime.
+     */
+    protected LocalTime readLocalTime(String prompt) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        while (true) {
+            System.out.println(prompt);
+            String input = scanner.nextLine().trim();
+            try {
+                return LocalTime.parse(input, formatter);
+            } catch (DateTimeParseException e) {
+                System.err.println("Неверный формат времени. Пожалуйста, введите время в формате ЧЧ:ММ.");
+            }
+        }
+    }
+
 }
 
