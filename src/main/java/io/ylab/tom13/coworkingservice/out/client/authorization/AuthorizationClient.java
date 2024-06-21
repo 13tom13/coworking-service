@@ -6,6 +6,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.rest.controller.AuthorizationController;
 import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.AuthorizationControllerImpl;
 import io.ylab.tom13.coworkingservice.out.client.Client;
+import io.ylab.tom13.coworkingservice.out.exceptions.LoginException;
 
 /**
  * Клиентский компонент для авторизации пользователей.
@@ -27,15 +28,13 @@ public class AuthorizationClient extends Client {
      *
      * @param authorizationDTO данные для авторизации пользователя
      */
-    public void login(AuthorizationDTO authorizationDTO) {
+    public void login(AuthorizationDTO authorizationDTO) throws LoginException {
         ResponseDTO<UserDTO> response = controller.login(authorizationDTO);
         if (response.success()) {
             UserDTO user = response.data();
             localSession.setAttribute("user", user);
-            System.out.printf("Пользователь с именем: %s %s и email: %s найден%n",
-                    user.firstName(), user.lastName(), user.email());
         } else {
-            System.err.printf("Ошибка авторизации: %s%n", response.message());
+            throw new LoginException(response.message());
         }
     }
 

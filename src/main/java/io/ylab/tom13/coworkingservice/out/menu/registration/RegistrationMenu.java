@@ -3,6 +3,7 @@ package io.ylab.tom13.coworkingservice.out.menu.registration;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.out.client.registration.RegistrationClient;
+import io.ylab.tom13.coworkingservice.out.exceptions.RegistrationException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -27,14 +28,18 @@ public class RegistrationMenu extends Menu {
      */
     @Override
     public void display() {
-        registration();
+        try {
+            registration();
+        } catch (RegistrationException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
      * Метод для выполнения процесса регистрации пользователя.
      * Считывает данные пользователя с консоли и передает их клиенту для регистрации.
      */
-    private void registration() {
+    private void registration() throws RegistrationException {
         String firstName = readString("Введите имя пользователя:");
         String lastName = readString("Введите фамилию:");
         String email = readString("Введите email:");

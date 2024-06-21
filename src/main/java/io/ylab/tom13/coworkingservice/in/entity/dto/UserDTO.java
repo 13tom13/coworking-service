@@ -9,4 +9,8 @@ public record UserDTO(
         String lastName,
         String email
 ) {
+    @Override
+    public String toString() {
+        return String.format("%s %s (%s)", firstName, lastName, email);
+    }
 }
