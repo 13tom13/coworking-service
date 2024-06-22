@@ -24,7 +24,7 @@ public class BookingRepositoryCollection implements BookingRepository {
         return INSTANCE;
     }
 
-    private final BookingMapper bookingMapper  = BookingMapper.INSTANCE;
+    private final BookingMapper bookingMapper = BookingMapper.INSTANCE;
 
     private final Map<Long, Booking> bookingsById = new HashMap<>();
     private final Map<Long, List<Booking>> bookingsByUserId = new HashMap<>();
@@ -36,7 +36,7 @@ public class BookingRepositoryCollection implements BookingRepository {
         long bookingId = idCounter.incrementAndGet();
         Booking newBooking = bookingMapper.toBooking(bookingDTO, bookingId);
 
-        if(bookingDTO.date().isBefore(LocalDate.now())){
+        if (bookingDTO.date().isBefore(LocalDate.now())) {
             throw new BookingConflictException("Время бронирования не может быть в прошлом");
         }
 
@@ -96,12 +96,21 @@ public class BookingRepositoryCollection implements BookingRepository {
     }
 
     @Override
-    public List<BookingDTO> getBookingsByCoworking(long coworkingId) throws BookingNotFoundException {
-        List<Booking> coworkingBookings = bookingsByCoworkingId.get(coworkingId);
-        if (coworkingBookings == null || coworkingBookings.isEmpty()) {
-            throw new BookingNotFoundException("Бронирований коворкинга не найдено");
+    public List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException {
+        List<Booking> userBookings = bookingsByUserId.get(userId);
+        if (userBookings == null || userBookings.isEmpty()) {
+            throw new BookingNotFoundException("Бронирования пользователя не найдено");
         }
-        return coworkingBookings.stream()
+
+        List<Booking> bookingsOnDate = userBookings.stream()
+                .filter(booking -> booking.date().equals(date))
+                .toList();
+
+        if (bookingsOnDate.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return bookingsOnDate.stream()
                 .map(bookingMapper::toBookingDTO)
                 .collect(Collectors.toList());
     }
@@ -116,6 +125,13 @@ public class BookingRepositoryCollection implements BookingRepository {
                 .filter(booking -> booking.date().equals(date))
                 .map(bookingMapper::toBookingDTO)
                 .toList();
+    }
+
+    @Override
+    public BookingDTO getBookingById(long bookingId) throws BookingNotFoundException {
+        Booking booking = bookingsById.get(bookingId);
+        if (booking == null) throw new BookingNotFoundException("Бронирования пользователя не найдено");
+        return bookingMapper.toBookingDTO(booking);
     }
 
     private boolean isBookingOverlapping(Booking newBooking) {

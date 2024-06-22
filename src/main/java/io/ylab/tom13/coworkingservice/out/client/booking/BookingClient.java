@@ -40,8 +40,17 @@ public class BookingClient extends Client {
         }
     }
 
-    public List<TimeSlot> getAvailableSlots(long spaceId, LocalDate date) {
-        ResponseDTO<List<TimeSlot>> availableSlots = bookingController.getAvailableSlots(spaceId, date);
+    public List<BookingDTO> getUserBookingsByDate(UserDTO userDTO, LocalDate date) throws BookingException   {
+        ResponseDTO<List<BookingDTO>> bookingsByUserAndDate = bookingController.getBookingsByUserAndDate(userDTO.id(), date);
+        if (bookingsByUserAndDate.success()) {
+            return bookingsByUserAndDate.data();
+        } else  {
+            throw new BookingException(bookingsByUserAndDate.message());
+        }
+    }
+
+    public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) {
+        ResponseDTO<List<TimeSlot>> availableSlots = bookingController.getAvailableSlots(coworkingId, date);
         return availableSlots.data();
     }
 
@@ -49,6 +58,26 @@ public class BookingClient extends Client {
         ResponseDTO<BookingDTO> response = bookingController.createBooking(bookingDTO);
         if (!response.success())  {
             throw new BookingException("Не удалось создать бронирование - " + response.message());
+        }
+    }
+
+    public BookingDTO getBookingById(long bookingId) throws BookingException {
+        ResponseDTO<BookingDTO> bookingsById = bookingController.getBookingById(bookingId);
+        if (bookingsById.success()) {
+            return bookingsById.data();
+        } else  {
+            throw new BookingException(bookingsById.message());
+        }
+    }
+
+    public void updateBooking(BookingDTO booking) throws BookingException{
+        bookingController.updateBooking(booking);
+    }
+
+    public void deleteBooking(long id) throws BookingException {
+        ResponseDTO<Void> responseDTO = bookingController.cancelBooking(id);
+        if (!responseDTO.success())   {
+            throw new BookingException("Не удалось отменить бронирование - " + responseDTO.message());
         }
     }
 }

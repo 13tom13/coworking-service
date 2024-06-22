@@ -9,10 +9,8 @@ import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.Bookin
 import io.ylab.tom13.coworkingservice.in.rest.services.booking.BookingService;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 public class BookingServiceImpl implements BookingService {
@@ -40,31 +38,34 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDTO> getBookingsByCoworking(long coworkingId) throws BookingNotFoundException {
-        return bookingRepository.getBookingsByCoworking(coworkingId);
+    public List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException {
+        return bookingRepository.getBookingsByUserAndDate(userId, date);
     }
 
-    @Override
-    public List<BookingDTO> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date) {
-        return bookingRepository.getBookingsByCoworkingAndDate(coworkingId, date);
-    }
 
     @Override
     public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) {
         List<BookingDTO> bookings = new ArrayList<>(bookingRepository.getBookingsByCoworkingAndDate(coworkingId, date));
         List<TimeSlot> availableSlots = new ArrayList<>(Arrays.asList(TimeSlot.values()));
-
         if (bookings.isEmpty()) {
             return availableSlots;
         }
-
         for (BookingDTO booking : bookings) {
             for (TimeSlot bookedSlot : booking.timeSlots()) {
                 availableSlots.remove(bookedSlot);
             }
         }
-
         return availableSlots;
+    }
+
+    @Override
+    public BookingDTO getBookingById(long bookingId) throws BookingNotFoundException {
+        return bookingRepository.getBookingById(bookingId);
+    }
+
+    @Override
+    public BookingDTO updateBooking(BookingDTO booking) throws BookingNotFoundException, BookingConflictException {
+        return bookingRepository.updateBooking(booking);
     }
 
 }

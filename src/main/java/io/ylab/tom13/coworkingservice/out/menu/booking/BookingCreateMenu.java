@@ -10,9 +10,9 @@ import io.ylab.tom13.coworkingservice.out.menu.Menu;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 public class BookingCreateMenu extends Menu {
 
@@ -56,32 +56,35 @@ public class BookingCreateMenu extends Menu {
     }
 
     private void viewAvailableSlots(Map<String, CoworkingDTO> coworkings) {
-        String coworkingName = readString("Введите название коворкинга:");
-        long coworkingId = coworkings.get(coworkingName).getId();
+        long coworkingId;
+        try {
+            coworkingId = getCoworkingIdByName(coworkings);
+        } catch (BookingException e) {
+            System.err.println("Бронирование отменено.");
+            return;
+        }
         LocalDate date = correctDate();
-        
+
         List<TimeSlot> availableSlots = bookingClient.getAvailableSlots(coworkingId, date);
         if (availableSlots.isEmpty()) {
             System.out.println("Нет доступных слотов для бронирования.");
         }
-        viewAvailableSlots(date, availableSlots);
+        displayAvailableSlots(date, availableSlots);
         System.out.println();
     }
 
     private void createBooking(Map<String, CoworkingDTO> coworkings, UserDTO user) {
-        String coworkingName = readString("Введите название коворкинга:");
-        CoworkingDTO coworkingDTO = coworkings.get(coworkingName);
         long coworkingId;
-        if (coworkingDTO == null) {
-            System.err.println("Коворкинг с таким названием не найден.");
+        try {
+            coworkingId = getCoworkingIdByName(coworkings);
+        } catch (BookingException e) {
+            System.err.println("Бронирование отменено.");
             return;
-        } else {
-            coworkingId = coworkingDTO.getId();
         }
         LocalDate date = correctDate();
 
         List<TimeSlot> availableSlots = bookingClient.getAvailableSlots(coworkingId, date);
-        List<TimeSlot> selectedSlots =  selectSlotsForBooking(availableSlots, date);
+        List<TimeSlot> selectedSlots = selectSlotsForBooking(availableSlots, date);
 
         if (selectedSlots.isEmpty()) {
             System.out.println("Бронирование отменено.");
@@ -103,48 +106,4 @@ public class BookingCreateMenu extends Menu {
         }
     }
 
-    private void viewAvailableSlots(LocalDate date, List<TimeSlot> availableSlots) {
-        System.out.printf("Доступные слоты на %s:%n", date);
-        for (int i = 0; i < availableSlots.size(); i++) {
-            System.out.printf("%d: %s%n", i + 1, availableSlots.get(i));
-        }
-    }
-
-    private LocalDate correctDate() {
-        while (true) {
-            LocalDate localDate = readLocalDate("Введите дату в формате ДД.ММ.ГГ:");
-            if (localDate.isAfter(LocalDate.now())) {
-                return localDate;
-            } else {
-                System.err.println("Дата должна быть в будущем. Пожалуйста, введите корректную дату.");
-            }
-        }
-    }
-
-    private  List<TimeSlot> selectSlotsForBooking(List<TimeSlot> availableSlots, LocalDate date) {
-        List<TimeSlot> selectedSlots = new ArrayList<>();
-        while (true) {
-            if (availableSlots.isEmpty()) {
-                System.out.println("Нет доступных слотов для бронирования.");
-                break;
-            }
-            viewAvailableSlots(date, availableSlots);
-            int slotNumber = readInt("Введите номер слота для бронирования (0 для завершения):");
-            if (slotNumber == 0) {
-                break;
-            }
-            if (slotNumber < 1 || slotNumber > availableSlots.size()) {
-                System.out.println("Неверный номер слота. Пожалуйста, попробуйте снова.");
-                continue;
-            }
-            TimeSlot selectedSlot = availableSlots.get(slotNumber - 1);
-            if (!selectedSlots.contains(selectedSlot)) {
-                availableSlots.remove(selectedSlot);
-                selectedSlots.add(selectedSlot);
-            } else {
-                System.out.println("Слот уже выбран. Пожалуйста, выберите другой слот.");
-            }
-        }
-        return selectedSlots;
-    }
 }

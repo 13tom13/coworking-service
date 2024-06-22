@@ -29,20 +29,44 @@ public interface BookingController {
     /**
      * Получение бронирований по пользователю.
      *
-     * @param userId ID пользователя для фильтрации бронирований.
+     * @param userId ID пользователя для получения бронирований пользователя.
      * @return ResponseDTO с коллекцией бронирований пользователя.
      */
     ResponseDTO<List<BookingDTO>> getBookingsByUser(long userId);
 
     /**
-     * Получение бронирований по ресурсу.
+     * Получение бронирований по пользователю и дате.
      *
-     * @param coworkingId ID ресурса для фильтрации бронирований.
-     * @return ResponseDTO с коллекцией бронирований ресурса.
+     * @param userId ID пользователя для получения бронирований пользователя.
+     * @param date Дата для фильтрации бронирований по дате.
+     * @return ResponseDTO с коллекцией бронирований пользователя.
      */
-    ResponseDTO<List<BookingDTO>> getBookingsByCoworking(long coworkingId);
+    ResponseDTO<List<BookingDTO>> getBookingsByUserAndDate(long userId, LocalDate date);
 
 
+    /**
+     * Получение свободных слотов для бронирования по дате.
+     *
+     * @param coworkingId ID пользователя для фильтрации бронирований по коворкингу.
+     * @param date Дата для фильтрации бронирований по дате.
+     * @return ResponseDTO с коллекцией бронирований пользователя.
+     */
     ResponseDTO<List<TimeSlot>> getAvailableSlots(long coworkingId, LocalDate date);
+
+    /**
+     * Получение бронирования по ID.
+     *
+     * @param bookingId ID искомого бронирования.
+     * @return ResponseDTO с коллекцией бронирований пользователя.
+     */
+    ResponseDTO<BookingDTO> getBookingById(long bookingId);
+
+    /**
+     * Внесение изменений в бронирование.
+     *
+     * @param booking данные бронирования для внесения изменений.
+     * @return ResponseDTO с коллекцией бронирований пользователя.
+     */
+    ResponseDTO<BookingDTO> updateBooking(BookingDTO booking);
 }
 

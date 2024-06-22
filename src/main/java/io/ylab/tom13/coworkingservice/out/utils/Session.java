@@ -9,7 +9,7 @@ import java.util.Map;
  * Класс для управления атрибутами сеанса.
  * Реализует шаблон Singleton для обеспечения единственного экземпляра сеанса в приложении.
  */
-public class Session {
+public final class Session {
 
     private final Map<String, Object> attributes;
 

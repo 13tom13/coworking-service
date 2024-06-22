@@ -52,19 +52,41 @@ public class BookingControllerImpl implements BookingController {
     }
 
     @Override
-    public ResponseDTO<List<BookingDTO>> getBookingsByCoworking(long coworkingId) {
+    public ResponseDTO<List<BookingDTO>> getBookingsByUserAndDate(long userId, LocalDate date) {
         try {
-            List<BookingDTO> bookingsByCoworking = bookingService.getBookingsByCoworking(coworkingId);
-            return ResponseDTO.success(bookingsByCoworking);
+            List<BookingDTO> bookingsByUserAndDate = bookingService.getBookingsByUserAndDate(userId, date);
+            return ResponseDTO.success(bookingsByUserAndDate);
+        } catch (BookingNotFoundException e) {
+            return ResponseDTO.failure(e.getMessage());
+        }
+    }
+
+
+    @Override
+    public ResponseDTO<List<TimeSlot>> getAvailableSlots(long coworkingId, LocalDate date) {
+        List<TimeSlot> bookingsByCoworking = bookingService.getAvailableSlots(coworkingId, date);
+        return ResponseDTO.success(bookingsByCoworking);
+    }
+
+    @Override
+    public ResponseDTO<BookingDTO> getBookingById(long bookingId) {
+        try {
+            BookingDTO bookingsById = bookingService.getBookingById(bookingId);
+            return ResponseDTO.success(bookingsById);
         } catch (BookingNotFoundException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
 
     @Override
-    public ResponseDTO<List<TimeSlot>> getAvailableSlots(long coworkingId, LocalDate date) {
-        List<TimeSlot> bookingsByCoworking = bookingService.getAvailableSlots(coworkingId, date);
-        return ResponseDTO.success(bookingsByCoworking);
+    public ResponseDTO<BookingDTO> updateBooking(BookingDTO booking) {
+        try {
+            System.out.println(booking.id());
+            BookingDTO updatedBooking = bookingService.updateBooking(booking);
+            return ResponseDTO.success(updatedBooking);
+        } catch (BookingNotFoundException | BookingConflictException e) {
+            return ResponseDTO.failure(e.getMessage());
+        }
     }
 }
 

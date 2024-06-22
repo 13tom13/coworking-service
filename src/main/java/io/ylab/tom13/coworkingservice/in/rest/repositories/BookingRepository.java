@@ -41,12 +41,14 @@ public interface BookingRepository {
     List<BookingDTO> getBookingsByUser(long userId) throws BookingNotFoundException;
 
     /**
-     * Получает бронирования по идентификатору коворкинга.
+     * Получает бронирования по идентификатору пользователя и дате
      *
-     * @param coworkingId идентификатор коворкинга
-     * @return список бронирований, связанных с коворкингом
+     * @param userId идентификатор пользователя
+     * @param date   дата бронирования
+     * @return список бронирований, связанных с пользователем
      */
-    List<BookingDTO> getBookingsByCoworking(long coworkingId) throws BookingNotFoundException;
+    List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException;
+
 
     /**
      * Получает бронирования по идентификатору коворкинга и дате.
@@ -57,4 +59,11 @@ public interface BookingRepository {
      */
     List<BookingDTO> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date);
 
+    /**
+     * Получает бронирования по ID.
+     *
+     * @param bookingId ID бронирования
+     * @return список бронирований, связанных с коворкингом и датой
+     */
+    BookingDTO getBookingById(long bookingId) throws BookingNotFoundException;
 }
