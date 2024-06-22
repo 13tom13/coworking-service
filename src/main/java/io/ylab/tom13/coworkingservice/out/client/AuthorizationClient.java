@@ -1,11 +1,10 @@
-package io.ylab.tom13.coworkingservice.out.client.authorization;
+package io.ylab.tom13.coworkingservice.out.client;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.AuthorizationController;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.AuthorizationControllerImpl;
-import io.ylab.tom13.coworkingservice.out.client.Client;
 import io.ylab.tom13.coworkingservice.out.exceptions.LoginException;
 
 /**

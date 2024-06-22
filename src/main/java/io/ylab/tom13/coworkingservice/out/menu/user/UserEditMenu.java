@@ -1,7 +1,7 @@
 package io.ylab.tom13.coworkingservice.out.menu.user;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.out.client.user.UserEditClient;
+import io.ylab.tom13.coworkingservice.out.client.UserEditClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
 import io.ylab.tom13.coworkingservice.out.utils.Session;

@@ -4,12 +4,13 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.space.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
-import io.ylab.tom13.coworkingservice.out.client.booking.BookingClient;
+import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -84,10 +85,11 @@ public class BookingCreateMenu extends Menu {
         LocalDate date = correctDate();
 
         List<TimeSlot> availableSlots = bookingClient.getAvailableSlots(coworkingId, date);
-        List<TimeSlot> selectedSlots = selectSlotsForBooking(availableSlots, date);
+        List<TimeSlot> selectedSlots = selectSlotsForBooking(new ArrayList<>(availableSlots), new ArrayList<>(), date);
 
         if (selectedSlots.isEmpty()) {
-            System.out.println("Бронирование отменено.");
+            System.err.println("Слоты для бронирования не выбраны.");
+            System.err.println("Бронирование отменено.");
             return;
         }
 

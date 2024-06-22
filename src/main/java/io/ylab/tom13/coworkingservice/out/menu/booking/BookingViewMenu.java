@@ -3,7 +3,7 @@ package io.ylab.tom13.coworkingservice.out.menu.booking;
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.space.CoworkingDTO;
-import io.ylab.tom13.coworkingservice.out.client.booking.BookingClient;
+import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
@@ -96,7 +96,7 @@ public class BookingViewMenu extends Menu {
     private void viewBookingsList(Map<String, CoworkingDTO> coworkings, List<BookingDTO> allUserBookings) {
         for (BookingDTO booking : allUserBookings) {
             String coworkingName = getCoworkingNameById(coworkings, booking.coworkingId());
-            System.out.printf("(ID:%s) %s (%s):%n", booking.id(), coworkingName, booking.date().toString());
+            System.out.printf("(ID:%s)%n%s (%s):%n", booking.id(), coworkingName, booking.date().toString());
             booking.timeSlots().forEach(System.out::println);
             System.out.println();
         }

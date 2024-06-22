@@ -3,7 +3,7 @@ package io.ylab.tom13.coworkingservice.out.menu.authorization;
 import io.ylab.tom13.coworkingservice.in.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.out.exceptions.LoginException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.client.authorization.AuthorizationClient;
+import io.ylab.tom13.coworkingservice.out.client.AuthorizationClient;
 import io.ylab.tom13.coworkingservice.out.menu.user.UserMenu;
 
 /**

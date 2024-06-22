@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.client.booking;
+package io.ylab.tom13.coworkingservice.out.client;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
@@ -9,7 +9,6 @@ import io.ylab.tom13.coworkingservice.in.rest.controller.booking.BookingControll
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.CoworkingController;
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.implementation.BookingControllerImpl;
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.implementation.CoworkingControllerImpl;
-import io.ylab.tom13.coworkingservice.out.client.Client;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 
 import java.time.LocalDate;
@@ -70,8 +69,13 @@ public class BookingClient extends Client {
         }
     }
 
-    public void updateBooking(BookingDTO booking) throws BookingException{
-        bookingController.updateBooking(booking);
+    public BookingDTO updateBooking(BookingDTO booking) throws BookingException{
+        ResponseDTO<BookingDTO> responseDTO = bookingController.updateBooking(booking);
+        if(responseDTO.success()){
+            return responseDTO.data();
+        } else   {
+            throw new BookingException(responseDTO.message());
+        }
     }
 
     public void deleteBooking(long id) throws BookingException {

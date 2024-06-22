@@ -7,7 +7,6 @@ import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -140,15 +139,11 @@ public abstract class Menu {
         }
     }
 
-    protected List<TimeSlot> selectSlotsForBooking(List<TimeSlot> availableSlots, LocalDate date) {
-        List<TimeSlot> selectedSlots = new ArrayList<>();
+    protected List<TimeSlot> selectSlotsForBooking(List<TimeSlot> availableSlots, List<TimeSlot> bookingSlots, LocalDate date) {
         while (true) {
-            if (availableSlots.isEmpty() && selectedSlots.isEmpty()) {
-                System.out.println("Нет доступных слотов для бронирования на выбранную дату");
-                return selectedSlots;
-            }
             displayAvailableSlots(date, availableSlots);
-            if (!selectedSlots.isEmpty()) displaySelectedSlots(date, selectedSlots);
+            displaySelectedSlots(date, bookingSlots);
+            System.out.println();
             System.out.println("Выберите действие:");
             System.out.println("1. Добавить слот");
             System.out.println("2. Удалить слот");
@@ -158,11 +153,11 @@ public abstract class Menu {
 
             switch (action) {
                 case 0 -> {
-                    return selectedSlots;
+                    return bookingSlots;
                 }
                 case 1 -> {
                     if (availableSlots.isEmpty()) {
-                        System.out.println("Нет доступных слотов для добавления.");
+                        System.err.println("Нет доступных слотов для добавления.");
                         continue;
                     }
                     int slotNumber = readInt("Введите номер слота для бронирования (0 для отмены):");
@@ -174,29 +169,20 @@ public abstract class Menu {
                         continue;
                     }
                     TimeSlot selectedSlot = availableSlots.get(slotNumber - 1);
-                    if (!selectedSlots.contains(selectedSlot)) {
-                        availableSlots.remove(selectedSlot);
-                        selectedSlots.add(selectedSlot);
-                    } else {
-                        System.out.println("Слот уже выбран. Пожалуйста, выберите другой слот.");
-                    }
+                    availableSlots.remove(selectedSlot);
+                    bookingSlots.add(selectedSlot);
                 }
                 case 2 -> {
-                    if (selectedSlots.isEmpty()) {
-                        System.out.println("Нет выбранных слотов для удаления.");
-                        continue;
-                    }
-
                     int slotNumber = readInt("Введите номер слота для удаления (0 для отмены):");
                     if (slotNumber == 0) {
                         continue;
                     }
-                    if (slotNumber < 1 || slotNumber > selectedSlots.size()) {
+                    if (slotNumber < 1 || slotNumber > bookingSlots.size()) {
                         System.out.println("Неверный номер слота. Пожалуйста, попробуйте снова.");
                         continue;
                     }
-                    TimeSlot selectedSlot = selectedSlots.get(slotNumber - 1);
-                    selectedSlots.remove(selectedSlot);
+                    TimeSlot selectedSlot = bookingSlots.get(slotNumber - 1);
+                    bookingSlots.remove(selectedSlot);
                     availableSlots.add(selectedSlot);
                 }
                 default -> System.out.println("Неверное действие. Пожалуйста, попробуйте снова.");

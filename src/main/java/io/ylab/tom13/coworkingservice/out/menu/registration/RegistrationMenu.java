@@ -2,7 +2,7 @@ package io.ylab.tom13.coworkingservice.out.menu.registration;
 
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
-import io.ylab.tom13.coworkingservice.out.client.registration.RegistrationClient;
+import io.ylab.tom13.coworkingservice.out.client.RegistrationClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.RegistrationException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
 import org.mindrot.jbcrypt.BCrypt;
