@@ -1,5 +1,6 @@
 package io.ylab.tom13.coworkingservice.out.menu.user;
 
+import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.client.UserEditClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
@@ -71,7 +72,8 @@ public class UserEditMenu extends Menu {
     private void editPassword(UserDTO user) throws EditException  {
         String oldPassword = readString("Введите старый пароль:");
         String newHashPassword = BCrypt.hashpw(readString("Введите новый пароль:"), BCrypt.gensalt());
-        userEditClient.editPassword(user.email(), oldPassword, newHashPassword);
+        PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), oldPassword, newHashPassword);
+        userEditClient.editPassword(passwordChangeDTO);
     }
 
 }

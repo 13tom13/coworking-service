@@ -1,11 +1,14 @@
 package io.ylab.tom13.coworkingservice.in.rest.repositories.implementation;
 
+import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
+import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -85,23 +88,25 @@ public class UserRepositoryCollection implements UserRepository {
      * {@inheritDoc}
      */
     @Override
-    public void updateUser(User user) throws UserNotFoundException, UserAlreadyExistsException {
-        long id = user.id();
+    public UserDTO updateUser(UserDTO userDTO) throws UserNotFoundException, UserAlreadyExistsException {
+        long id = userDTO.id();
         if (!usersById.containsKey(id)) {
             throw new UserNotFoundException("с ID " + id);
         }
+        User user  = usersById.get(id);
         String newEmail = user.email();
         String existingEmail = usersById.get(id).email();
         if (!newEmail.equals(existingEmail) && emailToIdMap.containsKey(newEmail)) {
             throw new UserAlreadyExistsException(newEmail);
         }
-
-        usersById.put(id, user);
+        User updatedUser  = new User(id, userDTO.firstName(), userDTO.lastName(), userDTO.email(), user.password());
+        usersById.put(id, updatedUser);
 
         if (!newEmail.equals(existingEmail)) {
             emailToIdMap.remove(existingEmail);
             emailToIdMap.put(newEmail, id);
         }
+        return new UserDTO(id, updatedUser.firstName(), updatedUser.lastName(), updatedUser.email());
     }
 
     /**
@@ -110,6 +115,19 @@ public class UserRepositoryCollection implements UserRepository {
     @Override
     public Collection<User> getAllUsers() {
         return usersById.values();
+    }
+
+    @Override
+    public void updatePassword(PasswordChangeDTO passwordChangeDTO) throws UserNotFoundException, UnauthorizedException {
+        String email  = passwordChangeDTO.email();
+        User user = findByEmail(email).orElseThrow(() -> new UserNotFoundException("с email " + email));
+        if (BCrypt.checkpw(passwordChangeDTO.oldPassword(),user.password())){
+            String newPassword = passwordChangeDTO.newPassword();
+            User updatedUser = new User(user.id(), user.firstName(), user.lastName(), user.email(), newPassword);
+            usersById.put(user.id(), updatedUser);
+        } else {
+            throw new UnauthorizedException();
+        }
     }
 }
 

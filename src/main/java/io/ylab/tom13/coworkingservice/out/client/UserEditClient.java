@@ -1,5 +1,6 @@
 package io.ylab.tom13.coworkingservice.out.client;
 
+import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.UserEditController;
@@ -26,8 +27,8 @@ public class UserEditClient extends Client {
         }
     }
 
-    public void editPassword(String email, String oldPassword, String newHashPassword) throws EditException {
-        ResponseDTO<String> response = userEditController.editPassword(email, oldPassword, newHashPassword);
+    public void editPassword(PasswordChangeDTO passwordChangeDTO) throws EditException {
+        ResponseDTO<String> response = userEditController.editPassword(passwordChangeDTO);
         if (response.success()) {
             System.out.println(response.data());
         } else {

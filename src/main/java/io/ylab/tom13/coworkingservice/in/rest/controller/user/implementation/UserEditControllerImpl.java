@@ -1,5 +1,6 @@
 package io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation;
 
+import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
@@ -27,9 +28,9 @@ public class UserEditControllerImpl implements UserEditController {
     }
 
     @Override
-    public ResponseDTO<String> editPassword(String email, String oldPassword, String newPassword) {
+    public ResponseDTO<String> editPassword(PasswordChangeDTO passwordChangeDTO) {
         try {
-            userEditService.editPassword(email, oldPassword, newPassword);
+            userEditService.editPassword(passwordChangeDTO);
             return ResponseDTO.success("Пароль успешно изменен");
         } catch (UnauthorizedException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
