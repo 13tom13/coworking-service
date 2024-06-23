@@ -94,7 +94,7 @@ class UserRepositoryCollectionTest {
     @Test
     void testUpdateUser() throws UserNotFoundException, UserAlreadyExistsException {
         UserDTO userDTO = userRepository.createUser(testRegistrationDTO);
-        User updatedUser = new User(userDTO.id(), "UpdatedFirstName", "UpdatedLastName", "updated@example.com", "password");
+        UserDTO updatedUser = new UserDTO(userDTO.id(), "UpdatedFirstName" , "UpdatedLastName", "updated@example.com");
 
         userRepository.updateUser(updatedUser);
 
@@ -106,7 +106,7 @@ class UserRepositoryCollectionTest {
 
     @Test
     void testUpdateUserThrowsUserNotFoundException() {
-        User updatedUser = new User(999L, "UpdatedFirstName", "UpdatedLastName", "updated@example.com", "password");
+        UserDTO updatedUser = new UserDTO(999L, "UpdatedFirstName", "UpdatedLastName", "updated@example.com");
         assertThrows(UserNotFoundException.class, () -> userRepository.updateUser(updatedUser));
     }
 
@@ -116,7 +116,7 @@ class UserRepositoryCollectionTest {
         RegistrationDTO registrationDTO2 = new RegistrationDTO("Test", "User", "test2@example.com", "password");
         userRepository.createUser(registrationDTO1);
         UserDTO userDTO2 = userRepository.createUser(registrationDTO2);
-        User updatedUser = new User(userDTO2.id(), "Test", "User", "test@example.com", "password");
+        UserDTO updatedUser = new UserDTO(userDTO2.id(), "Test", "User", "test@example.com");
 
         assertThrows(UserAlreadyExistsException.class, () -> userRepository.updateUser(updatedUser));
     }

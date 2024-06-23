@@ -90,22 +90,28 @@ public class UserRepositoryCollection implements UserRepository {
     @Override
     public UserDTO updateUser(UserDTO userDTO) throws UserNotFoundException, UserAlreadyExistsException {
         long id = userDTO.id();
+
         if (!usersById.containsKey(id)) {
             throw new UserNotFoundException("с ID " + id);
         }
-        User user  = usersById.get(id);
-        String newEmail = user.email();
-        String existingEmail = usersById.get(id).email();
+
+        User existingUser = usersById.get(id);
+        String newEmail = userDTO.email();
+        String existingEmail = existingUser.email();
+
         if (!newEmail.equals(existingEmail) && emailToIdMap.containsKey(newEmail)) {
             throw new UserAlreadyExistsException(newEmail);
         }
-        User updatedUser  = new User(id, userDTO.firstName(), userDTO.lastName(), userDTO.email(), user.password());
+
+        User updatedUser = new User(id, userDTO.firstName(), userDTO.lastName(), newEmail, existingUser.password());
+
         usersById.put(id, updatedUser);
 
         if (!newEmail.equals(existingEmail)) {
             emailToIdMap.remove(existingEmail);
             emailToIdMap.put(newEmail, id);
         }
+
         return new UserDTO(id, updatedUser.firstName(), updatedUser.lastName(), updatedUser.email());
     }
 
