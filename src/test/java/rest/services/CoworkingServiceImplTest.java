@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.in.rest.services.coworking.implementation;
+package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
@@ -8,13 +8,12 @@ import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundE
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingUpdatingExceptions;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.CoworkingRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.AuthorizationServiceImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.coworking.implementation.CoworkingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
@@ -37,9 +36,13 @@ class CoworkingServiceImplTest {
 
     @BeforeEach
     void setUp() throws IllegalAccessException, NoSuchFieldException {
-        Field coworkingServiceField = CoworkingServiceImpl.class.getDeclaredField("coworkingRepository");
-        coworkingServiceField.setAccessible(true);
-        coworkingServiceField.set(coworkingRepository, coworkingService);
+        Field coworkingServiceField1 = CoworkingServiceImpl.class.getDeclaredField("coworkingRepository");
+        coworkingServiceField1.setAccessible(true);
+        coworkingServiceField1.set(coworkingService, coworkingRepository);
+
+        Field coworkingServiceField2 = CoworkingServiceImpl.class.getDeclaredField("bookingRepository");
+        coworkingServiceField2.setAccessible(true);
+        coworkingServiceField2.set(coworkingService, bookingRepository);
     }
 
     @Test
