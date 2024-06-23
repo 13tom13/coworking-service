@@ -42,6 +42,11 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.getBookingsByUserAndDate(userId, date);
     }
 
+    @Override
+    public List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException {
+        return bookingRepository.getBookingsByUserAndCoworking(userId, coworkingId);
+    }
+
 
     @Override
     public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) {

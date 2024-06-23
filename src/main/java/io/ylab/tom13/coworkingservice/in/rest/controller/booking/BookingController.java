@@ -43,6 +43,15 @@ public interface BookingController {
      */
     ResponseDTO<List<BookingDTO>> getBookingsByUserAndDate(long userId, LocalDate date);
 
+    /**
+     * Получение бронирований по пользователю и дате.
+     *
+     * @param userId ID пользователя для получения бронирований пользователя.
+     * @param coworkingId ID коворкинга для фильтрации.
+     * @return ResponseDTO с коллекцией бронирований пользователя.
+     */
+    ResponseDTO<List<BookingDTO>> getBookingsByUserAndCoworking(long userId, long coworkingId);
+
 
     /**
      * Получение свободных слотов для бронирования по дате.

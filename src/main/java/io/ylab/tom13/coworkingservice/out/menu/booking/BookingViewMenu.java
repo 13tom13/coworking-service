@@ -33,15 +33,17 @@ public class BookingViewMenu extends Menu {
             System.out.println("Выберите действие:");
             System.out.println("1. Просмотр всех бронирований");
             System.out.println("2. Просмотр бронирований по дате");
-            System.out.println("3. Редактирование бронирования");
-            System.out.println("4. Выход из просмотра бронирований");
+            System.out.println("3. Просмотр бронирований по коворкингу");
+            System.out.println("4. Редактирование бронирования");
+            System.out.println("0. Выход из просмотра бронирований");
             System.out.println();
             int choice = readInt("Введите номер действия: ");
             switch (choice) {
                 case 1 -> viewAllUserBookings(coworkings, user);
                 case 2 -> viewUserBookingsByDate(coworkings, user);
-                case 3 -> getBookingForEdit(coworkings, user);
-                case 4 -> {
+                case 3 -> viewUserBookingsByCoworking(coworkings, user);
+                case 4 -> getBookingForEdit(coworkings, user);
+                case 0 -> {
                     System.err.println("Выход из меню просмотра бронирований");
                     viewMenu = false;
                 }
@@ -66,12 +68,18 @@ public class BookingViewMenu extends Menu {
     private void viewUserBookingsByDate(Map<String, CoworkingDTO> coworkings, UserDTO user) {
         try {
             LocalDate date = readLocalDate();
-            List<BookingDTO> allUserBookings = bookingClient.getUserBookingsByDate(user, date);
-            if (allUserBookings.isEmpty()) {
-                System.err.println("У пользователя нет бронирований на выбранную дату.");
-                return;
-            }
-            viewBookingsList(coworkings, allUserBookings);
+            List<BookingDTO> userBookingsByDate = bookingClient.getUserBookingsByDate(user, date);
+            viewBookingsList(coworkings, userBookingsByDate);
+        } catch (BookingException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private void viewUserBookingsByCoworking(Map<String, CoworkingDTO> coworkings, UserDTO user) {
+        try {
+            long coworkingId = getCoworkingIdByName(coworkings);
+            List<BookingDTO> userBookingsByCoworking = bookingClient.getUserBookingsByCoworking(coworkingId, user);
+            viewBookingsList(coworkings, userBookingsByCoworking);
         } catch (BookingException e) {
             System.err.println(e.getMessage());
         }

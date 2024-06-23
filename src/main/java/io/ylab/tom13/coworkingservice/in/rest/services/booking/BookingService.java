@@ -18,10 +18,13 @@ public interface BookingService {
 
     List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException;
 
+    List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException;
+
     List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date);
 
     BookingDTO getBookingById(long bookingId) throws BookingNotFoundException;
 
     BookingDTO updateBooking(BookingDTO booking) throws BookingNotFoundException, BookingConflictException;
+
 }
 

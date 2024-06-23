@@ -107,10 +107,30 @@ public class BookingRepositoryCollection implements BookingRepository {
                 .toList();
 
         if (bookingsOnDate.isEmpty()) {
-            return Collections.emptyList();
+            throw new BookingNotFoundException("У пользователя нет бронирований на эту дату: " + date);
         }
 
         return bookingsOnDate.stream()
+                .map(bookingMapper::toBookingDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException {
+        List<Booking> userBookings = bookingsByUserId.get(userId);
+        if (userBookings == null || userBookings.isEmpty()) {
+            throw new BookingNotFoundException("Бронирования пользователя не найдено");
+        }
+
+        List<Booking> bookingsInCoworking = userBookings.stream()
+                .filter(booking -> booking.coworkingId()==coworkingId)
+                .toList();
+
+        if (bookingsInCoworking.isEmpty()) {
+            throw new BookingNotFoundException("У пользователя нет бронирований в этом коворкинге");
+        }
+
+        return bookingsInCoworking.stream()
                 .map(bookingMapper::toBookingDTO)
                 .collect(Collectors.toList());
     }

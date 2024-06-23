@@ -31,14 +31,14 @@ public class MainMenu extends Menu {
             System.out.println("Выберите действие:");
             System.out.println("1. Авторизация");
             System.out.println("2. Регистрация");
-            System.out.println("3. Выход");
+            System.out.println("0. Выход");
             System.out.println();
             int choice = readInt("Введите номер действия: ");
 
             switch (choice) {
                 case 1 -> authorizationMenu.display();
                 case 2 -> registrationMenu.display();
-                case 3 -> {
+                case 0 -> {
                     System.err.println("Завершение программы");
                     startMenu = false;
                 }

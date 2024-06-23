@@ -61,6 +61,16 @@ public class BookingControllerImpl implements BookingController {
         }
     }
 
+    @Override
+    public ResponseDTO<List<BookingDTO>> getBookingsByUserAndCoworking(long userId, long coworkingId) {
+        try {
+            List<BookingDTO> bookingsByUserAndCoworking = bookingService.getBookingsByUserAndCoworking(userId, coworkingId);
+            return ResponseDTO.success(bookingsByUserAndCoworking);
+        } catch (BookingNotFoundException e) {
+            return ResponseDTO.failure(e.getMessage());
+        }
+    }
+
 
     @Override
     public ResponseDTO<List<TimeSlot>> getAvailableSlots(long coworkingId, LocalDate date) {

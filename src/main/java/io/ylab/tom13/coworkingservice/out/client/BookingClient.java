@@ -48,6 +48,15 @@ public class BookingClient extends Client {
         }
     }
 
+    public List<BookingDTO> getUserBookingsByCoworking(long coworkingId, UserDTO user) throws BookingException {
+        ResponseDTO<List<BookingDTO>> bookingsByUserAndCoworking = bookingController.getBookingsByUserAndCoworking(user.id(), coworkingId);
+        if (bookingsByUserAndCoworking.success()) {
+            return bookingsByUserAndCoworking.data();
+        } else  {
+            throw new BookingException(bookingsByUserAndCoworking.message());
+        }
+    }
+
     public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) {
         ResponseDTO<List<TimeSlot>> availableSlots = bookingController.getAvailableSlots(coworkingId, date);
         return availableSlots.data();
