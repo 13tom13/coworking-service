@@ -1,7 +1,7 @@
 package io.ylab.tom13.coworkingservice.out.menu.booking;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.space.CoworkingDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
@@ -123,7 +123,7 @@ public class BookingEditMenu extends Menu {
 
 
     private void editingBookingCoworking(BookingDTO booking) {
-        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("coworkings");
+        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("availableCoworkings");
         String coworkingName  =  (String) Session.getInstance().getAttribute("CoworkingBookingName");
         System.out.println("Забронированный коворкинг: " + coworkingName);
         System.out.println("Доступные коворкинги:");

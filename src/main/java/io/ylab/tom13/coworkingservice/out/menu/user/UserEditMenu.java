@@ -33,7 +33,7 @@ public class UserEditMenu extends Menu {
             System.out.println("2. Изменить фамилию пользователя");
             System.out.println("3. Изменить email пользователя");
             System.out.println("4. Изменить пароль пользователя");
-            System.out.println("5. Выход из редактирования");
+            System.out.println("0. Выход из редактирования");
             System.out.println();
             int choice = readInt("Введите номер действия: ");
             switch (choice) {
@@ -41,7 +41,7 @@ public class UserEditMenu extends Menu {
                 case 2 -> editLastName(user);
                 case 3 -> editEmail(user);
                 case 4 -> editPassword(user);
-                case 5 -> {
+                case 0 -> {
                     System.err.println("Выход из редактирования");
                     userManagementMenu = false;
                 }

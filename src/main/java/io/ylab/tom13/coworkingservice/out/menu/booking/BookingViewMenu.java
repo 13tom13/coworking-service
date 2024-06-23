@@ -2,7 +2,7 @@ package io.ylab.tom13.coworkingservice.out.menu.booking;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.space.CoworkingDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
@@ -26,7 +26,7 @@ public class BookingViewMenu extends Menu {
     @Override
     public void display() {
         boolean viewMenu = true;
-        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("coworkings");
+        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("availableCoworkings");
         UserDTO user = (UserDTO) Session.getInstance().getAttribute("user");
         while (viewMenu) {
             System.out.println("Меню просмотра бронирований пользователя");

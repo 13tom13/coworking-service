@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.in.entity.dto.space;
+package io.ylab.tom13.coworkingservice.in.entity.dto.coworking;
 
 import lombok.Data;
 

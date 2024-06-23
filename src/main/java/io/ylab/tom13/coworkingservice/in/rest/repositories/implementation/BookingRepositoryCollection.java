@@ -2,11 +2,10 @@ package io.ylab.tom13.coworkingservice.in.rest.repositories.implementation;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
-import io.ylab.tom13.coworkingservice.in.utils.BookingMapper;
+import io.ylab.tom13.coworkingservice.in.utils.mapper.BookingMapper;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -154,25 +153,33 @@ public class BookingRepositoryCollection implements BookingRepository {
         return bookingMapper.toBookingDTO(booking);
     }
 
+    @Override
+    public void deleteAllCoworkingBookings(long coworkingId) {
+        List<Booking> bookingsToRemove = bookingsByCoworkingId.getOrDefault(coworkingId, Collections.emptyList());
+
+        for (Booking booking : bookingsToRemove) {
+            bookingsById.remove(booking.id());
+        }
+
+        for (long userId : bookingsByUserId.keySet()) {
+            bookingsByUserId.get(userId).removeIf(booking -> booking.coworkingId() == coworkingId);
+        }
+        bookingsByCoworkingId.remove(coworkingId);
+    }
+
     private boolean isBookingOverlapping(Booking newBooking) {
-        List<Booking> existingBookings = bookingsByCoworkingId.getOrDefault(newBooking.coworkingId(), Collections.emptyList());
-        for (Booking existingBooking : existingBookings) {
-            if (!existingBooking.date().equals(newBooking.date())) {
-                continue;
-            }
-            for (TimeSlot newSlot : newBooking.timeSlots()) {
-                for (TimeSlot existingSlot : existingBooking.timeSlots()) {
-                    if (doTimeSlotsOverlap(newSlot, existingSlot)) {
-                        return true;
-                    }
-                }
+        List<Booking> existingBookingsByCoworking = bookingsByCoworkingId.getOrDefault(newBooking.coworkingId(), Collections.emptyList());
+        List<Booking> existingBookingsByCoworkingAndDate = existingBookingsByCoworking.stream()
+                .filter(existingBooking -> existingBooking.date().equals(newBooking.date()))
+                .toList();
+        for (Booking existingBooking : existingBookingsByCoworkingAndDate) {
+            boolean hasOverlap = newBooking.timeSlots().stream()
+                    .anyMatch(newTimeSlot -> existingBooking.timeSlots().contains(newTimeSlot));
+            if (hasOverlap) {
+                return true;
             }
         }
         return false;
-    }
-
-    private boolean doTimeSlotsOverlap(TimeSlot slot1, TimeSlot slot2) {
-        return slot1.getEnd().isAfter(slot2.getStart()) && slot2.getEnd().isAfter(slot1.getStart());
     }
 
     private void removeBookingFromCollections(Booking booking) {

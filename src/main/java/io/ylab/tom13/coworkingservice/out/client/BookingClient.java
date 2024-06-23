@@ -3,12 +3,12 @@ package io.ylab.tom13.coworkingservice.out.client;
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.space.CoworkingDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.BookingController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.booking.CoworkingController;
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.implementation.BookingControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.controller.booking.implementation.CoworkingControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.CoworkingController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.implementation.CoworkingControllerImpl;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 
 import java.time.LocalDate;
@@ -17,17 +17,14 @@ import java.util.Map;
 
 public class BookingClient extends Client {
 
-    private final CoworkingController coworkingController;
+
     private final BookingController bookingController;
 
-    public BookingClient() {
-        coworkingController = new CoworkingControllerImpl();
-        bookingController = new BookingControllerImpl();
-    }
+    private final CoworkingController coworkingController;
 
-    public Map<String, CoworkingDTO> getAllCoworkings() {
-        ResponseDTO<Map<String, CoworkingDTO>> AllCoworkings = coworkingController.getAllCoworking();
-        return AllCoworkings.data();
+    public BookingClient() {
+        bookingController = new BookingControllerImpl();
+        coworkingController = new CoworkingControllerImpl();
     }
 
     public List<BookingDTO> getAllUserBookings(UserDTO userDTO) throws BookingException {
@@ -92,5 +89,10 @@ public class BookingClient extends Client {
         if (!responseDTO.success())   {
             throw new BookingException("Не удалось отменить бронирование - " + responseDTO.message());
         }
+    }
+
+    public Map<String, CoworkingDTO> getAllAvailableCoworkings() {
+        ResponseDTO<Map<String, CoworkingDTO>> allAvailableCoworking = coworkingController.getAllAvailableCoworkings();
+        return allAvailableCoworking.data();
     }
 }

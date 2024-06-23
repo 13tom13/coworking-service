@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.in.utils;
+package io.ylab.tom13.coworkingservice.in.utils.mapper;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.Booking;

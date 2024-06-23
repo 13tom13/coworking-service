@@ -2,12 +2,13 @@ package io.ylab.tom13.coworkingservice.out;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.space.ConferenceRoomDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.space.CoworkingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.space.WorkplaceDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
+import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryCollection;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryCollection;
@@ -53,22 +54,27 @@ public class CoworkingServiceApplication {
                     (new RegistrationDTO("Иван", "Иванов", testUserMail,
                             BCrypt.hashpw("pass", BCrypt.gensalt())));
         } catch (UserAlreadyExistsException e) {
-            throw new RuntimeException("Ошибка при создании тестового пользователя");
+            throw new RuntimeException("Ошибка при создании тестового пользователя: " + e.getMessage());
         }
         User user = userRepositoryCollection.findByEmail(testUserMail).get();
 
-        coworkingRepositoryCollection.addWorkplace(
-                new WorkplaceDTO(0, "Офис 1", "Атикафе с кофемашиной и пуфиками", true, "Антикафе"));
-        coworkingRepositoryCollection.addWorkplace(
-                new WorkplaceDTO(0, "Офис 2", "Рабочее пространство с 3 компьютерами", true, "Офис"));
-        coworkingRepositoryCollection.addWorkplace(
-                new WorkplaceDTO(0, "Офис 3", "Переговорная комната с большим столом", true, "Переговорная"));
-        coworkingRepositoryCollection.addConferenceRoom(
-                new ConferenceRoomDTO(0, "Зал 1", "Большой конференц-зал", true, 300));
-        coworkingRepositoryCollection.addConferenceRoom(
-                new ConferenceRoomDTO(0, "Зал 2", "Средний конференц-зал", true, 150));
-        coworkingRepositoryCollection.addConferenceRoom(
-                new ConferenceRoomDTO(0, "Зал 3", "Малый конференц-зал", true, 50));
+        try {
+            coworkingRepositoryCollection.createCoworking(
+                    new WorkplaceDTO(0, "Офис 1", "Атикафе с кофемашиной и пуфиками", true, "Антикафе"));
+            coworkingRepositoryCollection.createCoworking(
+                    new WorkplaceDTO(0, "Офис 2", "Рабочее пространство с 3 компьютерами", true, "Офис"));
+            coworkingRepositoryCollection.createCoworking(
+                    new WorkplaceDTO(0, "Офис 3", "Переговорная комната с большим столом", true, "Переговорная"));
+            coworkingRepositoryCollection.createCoworking(
+                    new ConferenceRoomDTO(0, "Зал 1", "Большой конференц-зал", true, 300));
+            coworkingRepositoryCollection.createCoworking(
+                    new ConferenceRoomDTO(0, "Зал 2", "Средний конференц-зал", true, 150));
+            coworkingRepositoryCollection.createCoworking(
+                    new ConferenceRoomDTO(0, "Зал 3", "Малый конференц-зал", true, 50));
+        } catch (CoworkingConflictException e) {
+            throw new RuntimeException("Ошибка при заполнении репозитория коворкингов: " + e.getMessage());
+        }
+
 
         long userId = user.id();
         Map<String, CoworkingDTO> allCoworking = coworkingRepositoryCollection.getAllCoworking();
@@ -84,7 +90,7 @@ public class CoworkingServiceApplication {
             bookingRepositoryCollection.createBooking(new BookingDTO(0, userId, coworkingIds.get(3), date, timeSlots));
             bookingRepositoryCollection.createBooking(new BookingDTO(0, userId, coworkingIds.get(2), date, timeSlots));
         } catch (BookingConflictException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Ошибка при создании тестовых бронирований: " + e.getMessage());
         }
     }
 }

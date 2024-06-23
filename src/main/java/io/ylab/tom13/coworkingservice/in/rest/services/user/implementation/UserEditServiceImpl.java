@@ -8,7 +8,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.UserEditService;
-import io.ylab.tom13.coworkingservice.in.utils.UserMapper;
+import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserEditServiceImpl implements UserEditService {

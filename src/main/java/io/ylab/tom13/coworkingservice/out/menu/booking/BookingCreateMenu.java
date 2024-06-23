@@ -2,7 +2,7 @@ package io.ylab.tom13.coworkingservice.out.menu.booking;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.space.CoworkingDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
@@ -26,7 +26,7 @@ public class BookingCreateMenu extends Menu {
     @Override
     public void display() {
         boolean createMenu = true;
-        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("coworkings");
+        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("availableCoworkings");
         UserDTO user = (UserDTO) Session.getInstance().getAttribute("user");
         while (createMenu) {
             System.out.println("Меню создания бронирования");
@@ -34,14 +34,14 @@ public class BookingCreateMenu extends Menu {
             System.out.println("1. Просмотр всех коворкингов");
             System.out.println("2. Просмотр доступных слотов для бронирования");
             System.out.println("3. Забронировать коворкинг");
-            System.out.println("4. Выход из меню");
+            System.out.println("0. Выход из меню");
             System.out.println();
             int choice = readInt("Введите номер действия: ");
             switch (choice) {
                 case 1 -> viewAvailableCoworkings(coworkings);
                 case 2 -> viewAvailableSlots(coworkings);
                 case 3 -> createBooking(coworkings, user);
-                case 4 -> {
+                case 0 -> {
                     System.err.println("Выход из меню создания бронирования");
                     createMenu = false;
                 }

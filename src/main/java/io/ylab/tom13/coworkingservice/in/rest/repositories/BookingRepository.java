@@ -74,4 +74,6 @@ public interface BookingRepository {
      * @return список бронирований, связанных с коворкингом и датой
      */
     BookingDTO getBookingById(long bookingId) throws BookingNotFoundException;
+
+    void deleteAllCoworkingBookings(long coworkingID);
 }
