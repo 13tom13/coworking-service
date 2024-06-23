@@ -16,10 +16,10 @@ import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.Regis
  */
 public class RegistrationControllerImpl implements RegistrationController {
 
-    private final RegistrationService service;
+    private final RegistrationService registrationService;
 
     public RegistrationControllerImpl() {
-        service = new RegistrationServiceImpl();
+        registrationService = new RegistrationServiceImpl();
     }
 
     /**
@@ -28,7 +28,7 @@ public class RegistrationControllerImpl implements RegistrationController {
     @Override
     public ResponseDTO<UserDTO> createUser(final RegistrationDTO registrationDTO) {
         try {
-            UserDTO user = service.createUser(registrationDTO);
+            UserDTO user = registrationService.createUser(registrationDTO);
             return ResponseDTO.success(user);
         } catch (UserAlreadyExistsException e) {
             return ResponseDTO.failure(e.getMessage());

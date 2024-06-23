@@ -8,8 +8,10 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundExcep
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -17,6 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(MockitoExtension.class)
 class UserRepositoryCollectionTest {
 
     @InjectMocks
@@ -27,7 +30,6 @@ class UserRepositoryCollectionTest {
     @BeforeEach
     void setUp() {
         testRegistrationDTO = new RegistrationDTO("Test", "User", "test@example.com", "password");
-        MockitoAnnotations.openMocks(this);
     }
 
     @Test

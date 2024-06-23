@@ -2,15 +2,12 @@ package io.ylab.tom13.coworkingservice.in.rest.services.user.implementation;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.UserEditService;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class UserEditServiceImpl implements UserEditService {
 
