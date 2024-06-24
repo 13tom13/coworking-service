@@ -7,5 +7,6 @@ public class BookingAdministrationMenu extends Menu {
     @Override
     public void display() {
 
+
     }
 }

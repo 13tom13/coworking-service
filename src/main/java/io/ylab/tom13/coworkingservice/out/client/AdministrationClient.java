@@ -3,14 +3,12 @@ package io.ylab.tom13.coworkingservice.out.client;
 import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.AdministrationController;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.AdministrationControllerImpl;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
 
 import java.util.List;
-import java.util.Map;
 
 public class AdministrationClient extends Client {
 
@@ -27,12 +25,13 @@ public class AdministrationClient extends Client {
     }
 
     public UserDTO getUserByEmail(AuthenticationDTO authentication, String email) throws UserNotFoundException {
+        //test
         return null;
     }
 
     public void editUserByAdministrator(AuthenticationDTO authentication, UserDTO userDTO) throws EditException {
     }
 
-    public void editPasswordByAdministrator(AuthenticationDTO authentication, long userId, String newHashPassword)throws EditException {
+    public void editPasswordByAdministrator(AuthenticationDTO authentication, long userId, String newHashPassword) throws EditException {
     }
 }
