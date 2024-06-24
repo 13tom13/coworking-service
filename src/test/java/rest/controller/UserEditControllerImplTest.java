@@ -3,6 +3,7 @@ package rest.controller;
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.UserEditControllerImpl;
@@ -28,16 +29,18 @@ public class UserEditControllerImplTest {
     @InjectMocks
     private UserEditControllerImpl userEditController;
 
+    private UserDTO userDTO;
+
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
         Field userEditControllerField = UserEditControllerImpl.class.getDeclaredField("userEditService");
         userEditControllerField.setAccessible(true);
         userEditControllerField.set(userEditController, userEditService);
+        userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com", Role.USER);
     }
 
     @Test
     void testEditUserSuccess() throws RepositoryException {
-        UserDTO userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com");
         when(userEditService.editUser(any(UserDTO.class))).thenReturn(userDTO);
 
         ResponseDTO<UserDTO> response = userEditController.editUser(userDTO);
@@ -48,12 +51,10 @@ public class UserEditControllerImplTest {
 
     @Test
     void testEditUserRepositoryException() throws RepositoryException {
-        UserDTO userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com");
 
         String errorMessage = "User not found";
         when(userEditService.editUser(userDTO)).thenThrow(new UserNotFoundException(errorMessage));
 
-        // Вызов метода контроллера
         ResponseDTO<UserDTO> response = userEditController.editUser(userDTO);
 
         assertTrue(response.message().contains("User not found"));

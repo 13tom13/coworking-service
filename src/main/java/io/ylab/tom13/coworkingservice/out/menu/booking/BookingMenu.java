@@ -4,7 +4,6 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.util.Map;
 
@@ -25,9 +24,9 @@ public class BookingMenu extends Menu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO user = (UserDTO) Session.getInstance().getAttribute("user");
+            UserDTO user = (UserDTO) localSession.getAttribute("user");
             Map<String, CoworkingDTO> coworkings = bookingClient.getAllAvailableCoworkings();
-            Session.getInstance().setAttribute("availableCoworkings", coworkings);
+            localSession.setAttribute("availableCoworkings", coworkings);
             System.out.printf("Пользователь: %s %n", user);
             System.out.println("Меню бронирования");
             System.out.println("Выберите действие:");

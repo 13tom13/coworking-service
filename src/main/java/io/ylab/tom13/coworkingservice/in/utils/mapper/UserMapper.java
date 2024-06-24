@@ -19,7 +19,8 @@ public interface UserMapper {
     @Mapping(source = "userDTO.firstName", target = "firstName")
     @Mapping(source = "userDTO.lastName", target = "lastName")
     @Mapping(source = "userDTO.email", target = "email")
-    @Mapping(target = "password", ignore = true) // Если нужно игнорировать пароль в этом методе
+    @Mapping(target = "password", ignore = true)
+    @Mapping(source  = "userDTO.role", target = "role")
     User toUser(UserDTO userDTO, long id);
 
     @Mapping(source = "password", target = "password")
@@ -27,6 +28,7 @@ public interface UserMapper {
     @Mapping(source = "userDTO.firstName", target = "firstName")
     @Mapping(source = "userDTO.lastName", target = "lastName")
     @Mapping(source = "userDTO.email", target = "email")
+    @Mapping(source  = "userDTO.role", target = "role")
     User toUser(UserDTO userDTO, String password);
 
     @Mapping(source = "password", target = "password")
@@ -34,6 +36,7 @@ public interface UserMapper {
     @Mapping(source = "user.firstName", target = "firstName")
     @Mapping(source = "user.lastName", target = "lastName")
     @Mapping(source = "user.email", target = "email")
+    @Mapping(source = "user.role", target = "role")
     User toUser(User user, String password);
 }
 

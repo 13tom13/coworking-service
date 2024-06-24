@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.in.entity.model;
+package io.ylab.tom13.coworkingservice.in.entity.enumeration;
 
 
 import java.time.LocalTime;

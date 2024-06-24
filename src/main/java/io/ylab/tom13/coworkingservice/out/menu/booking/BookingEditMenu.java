@@ -2,7 +2,7 @@ package io.ylab.tom13.coworkingservice.out.menu.booking;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;

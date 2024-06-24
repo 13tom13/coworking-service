@@ -1,8 +1,9 @@
 package io.ylab.tom13.coworkingservice.out.menu;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
+import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +19,8 @@ import java.util.Scanner;
 public abstract class Menu {
 
     protected static final Scanner scanner = new Scanner(System.in);
+
+    protected final Session localSession = Session.getInstance();
 
     /**
      * Абстрактный метод, который должен быть реализован в подклассах для отображения меню.

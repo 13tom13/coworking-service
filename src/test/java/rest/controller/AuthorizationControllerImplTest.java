@@ -3,6 +3,7 @@ package rest.controller;
 import io.ylab.tom13.coworkingservice.in.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.AuthorizationControllerImpl;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.RegistrationControllerImpl;
@@ -36,7 +37,7 @@ public class AuthorizationControllerImplTest {
     void setUp() throws NoSuchFieldException, IllegalAccessException {
         validAuthorizationDTO = new AuthorizationDTO("john.doe@example.com", "password");
         invalidAuthorizationDTO = new AuthorizationDTO("john.doe@example.com", "wrongPassword");
-        userDTO = new UserDTO(1L, "john.doe@example.com", "John", "Doe");
+        userDTO = new UserDTO(1L, "john.doe@example.com", "John", "Doe", Role.USER);
 
         Field authorizationControllerField = AuthorizationControllerImpl.class.getDeclaredField("authorizationService");
         authorizationControllerField.setAccessible(true);

@@ -4,7 +4,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.BookingController;
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.implementation.BookingControllerImpl;
 import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.CoworkingController;

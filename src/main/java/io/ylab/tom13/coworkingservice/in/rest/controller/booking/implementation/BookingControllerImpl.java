@@ -2,7 +2,7 @@ package io.ylab.tom13.coworkingservice.in.rest.controller.booking.implementation
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.BookingController;

@@ -2,6 +2,7 @@ package rest.repositories;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collection;
@@ -24,12 +24,12 @@ class UserRepositoryCollectionTest {
 
     @InjectMocks
     private UserRepositoryCollection userRepository;
-    
+
     private RegistrationDTO testRegistrationDTO;
 
     @BeforeEach
     void setUp() {
-        testRegistrationDTO = new RegistrationDTO("Test", "User", "test@example.com", "password");
+        testRegistrationDTO = new RegistrationDTO("Test", "User", "test@example.com", "password", Role.USER);
     }
 
     @Test
@@ -96,7 +96,7 @@ class UserRepositoryCollectionTest {
     @Test
     void testUpdateUser() throws UserNotFoundException, UserAlreadyExistsException {
         UserDTO userDTO = userRepository.createUser(testRegistrationDTO);
-        UserDTO updatedUser = new UserDTO(userDTO.id(), "UpdatedFirstName" , "UpdatedLastName", "updated@example.com");
+        UserDTO updatedUser = new UserDTO(userDTO.id(), "UpdatedFirstName", "UpdatedLastName", "updated@example.com", Role.USER);
 
         userRepository.updateUser(updatedUser);
 
@@ -108,25 +108,25 @@ class UserRepositoryCollectionTest {
 
     @Test
     void testUpdateUserThrowsUserNotFoundException() {
-        UserDTO updatedUser = new UserDTO(999L, "UpdatedFirstName", "UpdatedLastName", "updated@example.com");
+        UserDTO updatedUser = new UserDTO(999L, "UpdatedFirstName", "UpdatedLastName", "updated@example.com", Role.USER);
         assertThrows(UserNotFoundException.class, () -> userRepository.updateUser(updatedUser));
     }
 
     @Test
     void testUpdateUserThrowsUserAlreadyExistsException() throws UserAlreadyExistsException {
-        RegistrationDTO registrationDTO1 = new RegistrationDTO("Test", "User", "test@example.com", "password");
-        RegistrationDTO registrationDTO2 = new RegistrationDTO("Test", "User", "test2@example.com", "password");
+        RegistrationDTO registrationDTO1 = new RegistrationDTO("Test", "User", "test@example.com", "password", Role.USER);
+        RegistrationDTO registrationDTO2 = new RegistrationDTO("Test", "User", "test2@example.com", "password", Role.USER);
         userRepository.createUser(registrationDTO1);
         UserDTO userDTO2 = userRepository.createUser(registrationDTO2);
-        UserDTO updatedUser = new UserDTO(userDTO2.id(), "Test", "User", "test@example.com");
+        UserDTO updatedUser = new UserDTO(userDTO2.id(), "Test", "User", "test@example.com", Role.USER);
 
         assertThrows(UserAlreadyExistsException.class, () -> userRepository.updateUser(updatedUser));
     }
 
     @Test
     void testGetAllUsers() throws UserAlreadyExistsException {
-        RegistrationDTO registrationDTO1 = new RegistrationDTO("test1@example.com", "password", "Test1", "User1");
-        RegistrationDTO registrationDTO2 = new RegistrationDTO("test2@example.com", "password", "Test2", "User2");
+        RegistrationDTO registrationDTO1 = new RegistrationDTO("test1@example.com", "password", "Test1", "User1", Role.USER);
+        RegistrationDTO registrationDTO2 = new RegistrationDTO("test2@example.com", "password", "Test2", "User2", Role.USER);
         userRepository.createUser(registrationDTO1);
         userRepository.createUser(registrationDTO2);
 

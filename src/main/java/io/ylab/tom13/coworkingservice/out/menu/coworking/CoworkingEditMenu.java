@@ -20,7 +20,7 @@ public class CoworkingEditMenu extends Menu {
     public void display() {
         boolean editMenu = true;
         while (editMenu) {
-            CoworkingDTO coworkingDTO = (CoworkingDTO) Session.getInstance().getAttribute("editableCoworking");
+            CoworkingDTO coworkingDTO = (CoworkingDTO) localSession.getAttribute("editableCoworking");
             System.out.println("Меню редактирования коворкинга:");
             String available = coworkingDTO.isAvailable() ? "(Доступно)" : "(Недоступно)";
             System.out.println(available + " " + coworkingDTO);
@@ -52,12 +52,12 @@ public class CoworkingEditMenu extends Menu {
                 case 4 -> editingAvailability(coworkingDTO);
                 case 5 -> {
                     deleteCoworking(coworkingDTO);
-                    Session.getInstance().removeAttribute("editableCoworking");
+                    localSession.removeAttribute("editableCoworking");
                     editMenu = false;
                 }
                 case 0 -> {
                     System.err.println("Выход из меню редактирования бронирования");
-                    Session.getInstance().removeAttribute("editableCoworking");
+                    localSession.removeAttribute("editableCoworking");
                     editMenu = false;
                 }
                 default -> System.err.println("Неверный выбор. Попробуйте еще раз.");
@@ -121,7 +121,7 @@ public class CoworkingEditMenu extends Menu {
     private void updateCoworking(CoworkingDTO coworkingDTO) {
         try {
             CoworkingDTO updateCoworking = coworkingClient.updateCoworking(coworkingDTO);
-            Session.getInstance().setAttribute("editableCoworking", updateCoworking);
+            localSession.setAttribute("editableCoworking", updateCoworking);
             System.out.println("Коворкинг успешно изменен");
         } catch (CoworkingException e) {
             System.err.println(e.getMessage());

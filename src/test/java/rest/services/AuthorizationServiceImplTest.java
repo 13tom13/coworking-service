@@ -2,19 +2,17 @@ package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.user.AuthorizationService;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.AuthorizationServiceImpl;
-import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.UserEditServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
@@ -38,7 +36,7 @@ public class AuthorizationServiceImplTest {
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        existingUser = new User(1L, "John", "Doe", "john.doe@example.com", BCrypt.hashpw("password", BCrypt.gensalt()));
+        existingUser = new User(1L, "John", "Doe", "john.doe@example.com", BCrypt.hashpw("password", BCrypt.gensalt()), Role.USER);
 
         Field userRepositoryField = AuthorizationServiceImpl.class.getDeclaredField("userRepository");
         userRepositoryField.setAccessible(true);

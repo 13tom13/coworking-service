@@ -2,7 +2,7 @@ package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.User;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
@@ -37,7 +37,7 @@ class UserEditServiceImplTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        userDTO = new UserDTO(1L, "John", "Doe", "john.new@example.com");
+        userDTO = new UserDTO(1L, "John", "Doe", "john.new@example.com", Role.USER);
 
 
         Field UserEditServiceField = UserEditServiceImpl.class.getDeclaredField("userRepository");
@@ -49,7 +49,7 @@ class UserEditServiceImplTest {
     void testEditUserSuccess() throws RepositoryException {
         when(userRepository.updateUser(userDTO)).thenReturn(userDTO);
 
-        UserDTO updatedUserDTO = userEditService.editUser(userDTO);
+        userEditService.editUser(userDTO);
 
         ArgumentCaptor<UserDTO> captor = ArgumentCaptor.forClass(UserDTO.class);
         verify(userRepository, times(1)).updateUser(captor.capture());

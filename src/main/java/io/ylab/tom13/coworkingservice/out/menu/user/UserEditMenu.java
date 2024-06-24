@@ -5,7 +5,6 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.client.UserEditClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserEditMenu extends Menu {
@@ -28,7 +27,7 @@ public class UserEditMenu extends Menu {
     private void editUser() throws EditException {
         boolean userManagementMenu = true;
         while (userManagementMenu) {
-            UserDTO user = (UserDTO) Session.getInstance().getAttribute("user");
+            UserDTO user = (UserDTO) localSession.getAttribute("user");
             System.out.printf("Редактировать пользователя: %s %n", user);
             System.out.println("1. Изменить имя пользователя");
             System.out.println("2. Изменить фамилию пользователя");
@@ -52,24 +51,24 @@ public class UserEditMenu extends Menu {
     }
 
     private void editFirstName(UserDTO user) throws EditException {
-        String newFirstName  = readString("Введите новое имя:");
+        String newFirstName = readString("Введите новое имя:");
         userEditClient.editUser(
-                new UserDTO(user.id(), newFirstName, user.lastName(),user.email()));
+                new UserDTO(user.id(), newFirstName, user.lastName(), user.email(), user.role()));
     }
 
     private void editLastName(UserDTO user) throws EditException {
         String newLastName = readString("Введите новую фамилию:");
         userEditClient.editUser(
-                new UserDTO(user.id(), user.firstName(), newLastName,user.email()));
+                new UserDTO(user.id(), user.firstName(), newLastName, user.email(), user.role()));
     }
 
     private void editEmail(UserDTO user) throws EditException {
-        String newEmail= readString("Введите новый email:");
+        String newEmail = readString("Введите новый email:");
         userEditClient.editUser(
-                new UserDTO(user.id(), user.firstName(), user.lastName(),newEmail));
+                new UserDTO(user.id(), user.firstName(), user.lastName(), newEmail, user.role()));
     }
 
-    private void editPassword(UserDTO user) throws EditException  {
+    private void editPassword(UserDTO user) throws EditException {
         String oldPassword = readString("Введите старый пароль:");
         String newHashPassword = BCrypt.hashpw(readString("Введите новый пароль:"), BCrypt.gensalt());
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), oldPassword, newHashPassword);

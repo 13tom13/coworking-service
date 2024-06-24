@@ -3,11 +3,13 @@ package io.ylab.tom13.coworkingservice.in.rest.repositories.implementation;
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
+import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Collection;
@@ -39,6 +41,8 @@ public class UserRepositoryCollection implements UserRepository {
     private final Map<String, Long> emailToIdMap = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong(0);
 
+    private final UserMapper userMapper = UserMapper.INSTANCE;
+
     /**
      * {@inheritDoc}
      */
@@ -49,11 +53,12 @@ public class UserRepositoryCollection implements UserRepository {
             throw new UserAlreadyExistsException(email);
         }
         long id = idCounter.incrementAndGet();
-        User user = new User(id, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(), registrationDTO.password());
-        usersById.put(id, user);
+        User newUser = new User(id, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(), registrationDTO.password(), registrationDTO.role());
+        usersById.put(id, newUser);
         emailToIdMap.put(email, id);
-        return new UserDTO(id, user.firstName(), user.lastName(), user.email());
+        return userMapper.toUserDTO(newUser);
     }
+
 
     /**
      * {@inheritDoc}
@@ -103,7 +108,7 @@ public class UserRepositoryCollection implements UserRepository {
             throw new UserAlreadyExistsException(newEmail);
         }
 
-        User updatedUser = new User(id, userDTO.firstName(), userDTO.lastName(), newEmail, existingUser.password());
+        User updatedUser = userMapper.toUser(userDTO, id);
 
         usersById.put(id, updatedUser);
 
@@ -112,7 +117,7 @@ public class UserRepositoryCollection implements UserRepository {
             emailToIdMap.put(newEmail, id);
         }
 
-        return new UserDTO(id, updatedUser.firstName(), updatedUser.lastName(), updatedUser.email());
+        return userMapper.toUserDTO(updatedUser);
     }
 
     /**
@@ -129,7 +134,7 @@ public class UserRepositoryCollection implements UserRepository {
         User user = findByEmail(email).orElseThrow(() -> new UserNotFoundException("с email " + email));
         if (BCrypt.checkpw(passwordChangeDTO.oldPassword(),user.password())){
             String newPassword = passwordChangeDTO.newPassword();
-            User updatedUser = new User(user.id(), user.firstName(), user.lastName(), user.email(), newPassword);
+            User updatedUser = new User(user.id(), user.firstName(), user.lastName(), user.email(), newPassword, user.role());
             usersById.put(user.id(), updatedUser);
         } else {
             throw new UnauthorizedException();

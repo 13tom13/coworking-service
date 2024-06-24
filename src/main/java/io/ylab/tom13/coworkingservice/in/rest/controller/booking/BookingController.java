@@ -2,7 +2,7 @@ package io.ylab.tom13.coworkingservice.in.rest.controller.booking;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 
 import java.time.LocalDate;
 import java.util.List;

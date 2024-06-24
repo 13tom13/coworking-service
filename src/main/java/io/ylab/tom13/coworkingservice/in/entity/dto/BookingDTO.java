@@ -1,6 +1,6 @@
 package io.ylab.tom13.coworkingservice.in.entity.dto;
 
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import lombok.*;
 
 import java.time.LocalDate;

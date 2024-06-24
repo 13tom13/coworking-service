@@ -1,5 +1,7 @@
 package io.ylab.tom13.coworkingservice.in.entity.model;
 
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
+
 import java.time.LocalDate;
 import java.util.List;
 

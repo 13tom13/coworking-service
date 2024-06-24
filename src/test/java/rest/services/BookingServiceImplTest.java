@@ -1,7 +1,7 @@
 package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;

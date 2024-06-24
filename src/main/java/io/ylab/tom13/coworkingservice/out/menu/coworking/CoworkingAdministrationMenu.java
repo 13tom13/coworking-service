@@ -3,18 +3,17 @@ package io.ylab.tom13.coworkingservice.out.menu.coworking;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.out.client.CoworkingClient;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.util.Map;
 
-public class CoworkingMenu extends Menu {
+public class CoworkingAdministrationMenu extends Menu {
 
     private final CoworkingClient coworkingClient;
 
     private final CoworkingCreateMenu coworkingCreateMenu;
     private final CoworkingEditMenu coworkingEditMenu;
 
-    public CoworkingMenu() {
+    public CoworkingAdministrationMenu() {
         coworkingClient = new CoworkingClient();
         coworkingCreateMenu = new CoworkingCreateMenu();
         coworkingEditMenu = new CoworkingEditMenu();
@@ -25,7 +24,7 @@ public class CoworkingMenu extends Menu {
         boolean startMenu = true;
         while (startMenu) {
             Map<String, CoworkingDTO> coworkings = coworkingClient.getAllCoworkings();
-            Session.getInstance().setAttribute("allCoworkings", coworkings);
+            localSession.setAttribute("allCoworkings", coworkings);
             System.out.println("Меню работы с коворкингами");
             System.out.println("Выберите действие:");
             System.out.println("1. Просмотр всех коворкингов");
@@ -48,7 +47,7 @@ public class CoworkingMenu extends Menu {
     }
 
     private void viewAllCoworkings(Map<String, CoworkingDTO> coworkings) {
-        System.out.println("Все коворкинги:");
+        System.out.println("Список коворкингов:");
         coworkings.values().forEach(coworkingDTO -> {
             String available = coworkingDTO.isAvailable() ? "(Доступно)" : "(Недоступно)";
             System.out.println(available + " " + coworkingDTO);
@@ -66,7 +65,7 @@ public class CoworkingMenu extends Menu {
         }
 
         CoworkingDTO coworkingDTO = coworkings.get(coworkingName);
-        Session.getInstance().setAttribute("editableCoworking", coworkingDTO);
+        localSession.setAttribute("editableCoworking", coworkingDTO);
         coworkingEditMenu.display();
     }
 }

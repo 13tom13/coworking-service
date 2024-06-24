@@ -6,7 +6,6 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,8 +25,8 @@ public class BookingViewMenu extends Menu {
     @Override
     public void display() {
         boolean viewMenu = true;
-        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("availableCoworkings");
-        UserDTO user = (UserDTO) Session.getInstance().getAttribute("user");
+        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) localSession.getAttribute("availableCoworkings");
+        UserDTO user = (UserDTO) localSession.getAttribute("user");
         while (viewMenu) {
             System.out.println("Меню просмотра бронирований пользователя");
             System.out.println("Выберите действие:");
@@ -92,8 +91,8 @@ public class BookingViewMenu extends Menu {
         try {
             BookingDTO bookingForEdit = bookingClient.getBookingById(bookingId);
             String CoworkingName  = getCoworkingNameById(coworkings,bookingForEdit.coworkingId());
-            Session.getInstance().setAttribute("CoworkingBookingName", CoworkingName);
-            Session.getInstance().setAttribute("bookingForEdit", bookingForEdit);
+            localSession.setAttribute("CoworkingBookingName", CoworkingName);
+            localSession.setAttribute("bookingForEdit", bookingForEdit);
             bookingEditMenu.display();
         } catch (BookingException e) {
             System.err.println(e.getMessage());

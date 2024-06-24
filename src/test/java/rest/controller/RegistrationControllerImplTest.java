@@ -3,6 +3,7 @@ package rest.controller;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.RegistrationControllerImpl;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.UserEditControllerImpl;
@@ -33,9 +34,9 @@ class RegistrationControllerImplTest {
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        registrationDTO = new RegistrationDTO("John", "Doe", "john.doe@example.com", "password");
+        registrationDTO = new RegistrationDTO("John", "Doe", "john.doe@example.com", "password", Role.USER);
 
-        userDTO = new UserDTO(1L, "John" , "Doe", "john.doe@example.com");
+        userDTO = new UserDTO(1L, "John" , "Doe", "john.doe@example.com", Role.USER);
 
         Field registrationControllerField = RegistrationControllerImpl.class.getDeclaredField("registrationService");
         registrationControllerField.setAccessible(true);

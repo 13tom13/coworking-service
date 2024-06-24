@@ -5,7 +5,8 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
@@ -52,7 +53,13 @@ public class CoworkingServiceApplication {
         try {
             userRepositoryCollection.createUser
                     (new RegistrationDTO("Иван", "Иванов", testUserMail,
-                            BCrypt.hashpw("pass", BCrypt.gensalt())));
+                            BCrypt.hashpw("pass", BCrypt.gensalt()), Role.USER));
+            userRepositoryCollection.createUser
+                    (new RegistrationDTO("Admin", "Admin", "admin",
+                            BCrypt.hashpw("admin", BCrypt.gensalt()), Role.ADMINISTRATOR));
+            userRepositoryCollection.createUser
+                    (new RegistrationDTO("Moderator", "Moderator", "moderator",
+                            BCrypt.hashpw("moderator", BCrypt.gensalt()), Role.MODERATOR));
         } catch (UserAlreadyExistsException e) {
             throw new RuntimeException("Ошибка при создании тестового пользователя: " + e.getMessage());
         }
