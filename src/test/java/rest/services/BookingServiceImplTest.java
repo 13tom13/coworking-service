@@ -8,7 +8,9 @@ import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundExcep
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.BookingServiceImpl;
+import io.ylab.tom13.coworkingservice.in.utils.mapper.BookingMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,12 +23,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Тесты сервиса работы с бронированиями")
 class BookingServiceImplTest {
 
     @Mock
@@ -35,38 +40,52 @@ class BookingServiceImplTest {
     @InjectMocks
     private BookingServiceImpl bookingService;
 
+    BookingDTO bookingDTO;
+    Booking booking;
+
     @BeforeEach
     void setUp() throws IllegalAccessException, NoSuchFieldException {
         Field bookingRepositoryField = BookingServiceImpl.class.getDeclaredField("bookingRepository");
         bookingRepositoryField.setAccessible(true);
         bookingRepositoryField.set(bookingService, bookingRepository);
+        bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), Arrays.asList(TimeSlot.MORNING, TimeSlot.AFTERNOON));
+        booking = BookingMapper.INSTANCE.toBooking(bookingDTO);
     }
 
     @Test
+    @DisplayName("Тест успешного создания бронирования")
     void testCreateBooking() throws BookingConflictException, RepositoryException {
-        BookingDTO bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), Arrays.asList(TimeSlot.MORNING, TimeSlot.AFTERNOON));
-        doReturn(bookingDTO).when(bookingRepository).createBooking(any(Booking.class));
+        when(bookingRepository.createBooking(any(Booking.class))).thenReturn(Optional.ofNullable(booking));
 
         BookingDTO createdBooking = bookingService.createBooking(bookingDTO);
 
         assertThat(createdBooking).isNotNull();
-        assertThat(createdBooking.id()).isEqualTo(1L);
+        assertThat(bookingDTO.userId()).isEqualTo(createdBooking.userId());
     }
 
     @Test
+    @DisplayName("Тест отмены бронирования")
     void testCancelBooking() throws BookingNotFoundException {
-        long bookingId = 1L;
-        bookingService.cancelBooking(bookingId);
+        bookingService.cancelBooking(bookingDTO.id());
 
-        Mockito.verify(bookingRepository, Mockito.times(1)).deleteBooking(bookingId);
+        Mockito.verify(bookingRepository, Mockito.times(1)).deleteBooking(bookingDTO.id());
     }
 
     @Test
+    @DisplayName("Тест ошибки при отмене бронирования")
+    void testCancelBookingException() throws BookingNotFoundException {
+        doThrow(BookingNotFoundException.class).when(bookingRepository).deleteBooking(bookingDTO.id());
+
+        assertThrows(BookingNotFoundException.class, () -> bookingService.cancelBooking(bookingDTO.id()));
+    }
+
+    @Test
+    @DisplayName("Тест получения бронирований пользователя")
     void testGetBookingsByUser() throws BookingNotFoundException {
         long userId = 1L;
-        List<BookingDTO> bookings = new ArrayList<>();
-        bookings.add(new BookingDTO(1L, userId, 1L, LocalDate.now(), List.of(TimeSlot.MORNING)));
-        bookings.add(new BookingDTO(2L, userId, 2L, LocalDate.now(), List.of(TimeSlot.AFTERNOON)));
+        List<Booking> bookings = new ArrayList<>();
+        bookings.add(new Booking(1L, userId, 1L, LocalDate.now(), List.of(TimeSlot.MORNING)));
+        bookings.add(new Booking(2L, userId, 2L, LocalDate.now(), List.of(TimeSlot.AFTERNOON)));
 
         doReturn(bookings).when(bookingRepository).getBookingsByUser(userId);
 
@@ -77,41 +96,39 @@ class BookingServiceImplTest {
     }
 
     @Test
+    @DisplayName("Тест получения свободных слотов для бронирования")
     void testGetAvailableSlots() {
-        long coworkingId = 1L;
-        LocalDate date = LocalDate.now();
+        List<Booking> bookings = new ArrayList<>();
+        bookings.add(booking);
 
-        List<BookingDTO> bookings = new ArrayList<>();
-        bookings.add(new BookingDTO(1L, 1L, coworkingId, date, List.of(TimeSlot.MORNING)));
+        doReturn(bookings).when(bookingRepository).getBookingsByCoworkingAndDate(booking.id(), booking.date());
 
-        doReturn(bookings).when(bookingRepository).getBookingsByCoworkingAndDate(coworkingId, date);
-
-        List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
+        List<TimeSlot> availableSlots = bookingService.getAvailableSlots(booking.coworkingId(), booking.date());
 
         assertThat(availableSlots).isNotNull();
-        assertThat(availableSlots.size()).isEqualTo(2);
+        assertThat(availableSlots.size()).isEqualTo(1);
     }
 
     @Test
+    @DisplayName("Тест получения бронирования по id")
     void testGetBookingById() throws BookingNotFoundException {
-        long bookingId = 1L;
-        BookingDTO bookingDTO = new BookingDTO(bookingId, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
-        doReturn(bookingDTO).when(bookingRepository).getBookingById(bookingId);
+        doReturn(Optional.ofNullable(booking)).when(bookingRepository).getBookingById(booking.id());
 
-        BookingDTO foundBooking = bookingService.getBookingById(bookingId);
+        BookingDTO foundBooking = bookingService.getBookingById(booking.id());
 
         assertThat(foundBooking).isNotNull();
-        assertThat(foundBooking.id()).isEqualTo(bookingId);
+        assertThat(foundBooking.id()).isEqualTo(booking.id());
     }
 
     @Test
+    @DisplayName("Тест обновления бронирования")
     void testUpdateBooking() throws BookingNotFoundException, BookingConflictException, RepositoryException {
-        BookingDTO bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
-        doReturn(bookingDTO).when(bookingRepository).updateBooking(any(Booking.class));
+
+        doReturn(Optional.ofNullable(booking)).when(bookingRepository).updateBooking(any(Booking.class));
 
         BookingDTO updatedBooking = bookingService.updateBooking(bookingDTO);
 
         assertThat(updatedBooking).isNotNull();
-        assertThat(updatedBooking.id()).isEqualTo(1L);
+        assertThat(updatedBooking.id()).isEqualTo(booking.id());
     }
 }

@@ -39,12 +39,11 @@ class UserEditServiceImplTest {
     private User user;
     private UserDTO userDTO;
     private String password;
-    private String hashedPassword;
 
     @BeforeEach
     void setUp() throws Exception {
         password = "password";
-        hashedPassword = BCrypt.hashpw("password", BCrypt.gensalt());
+        String hashedPassword = BCrypt.hashpw("password", BCrypt.gensalt());
         user = new User(1L, "John", "Doe", "john.new@example.com", hashedPassword, Role.USER);
         userDTO = UserMapper.INSTANCE.toUserDTO(user);
         Field UserEditServiceField = UserEditServiceImpl.class.getDeclaredField("userRepository");

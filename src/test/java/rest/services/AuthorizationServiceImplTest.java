@@ -8,6 +8,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.AuthorizationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mindrot.jbcrypt.BCrypt;
@@ -24,6 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Тесты сервиса авторизации")
 public class AuthorizationServiceImplTest {
 
     @Mock
@@ -34,9 +36,11 @@ public class AuthorizationServiceImplTest {
 
     private User existingUser;
 
+    private final String password = "password";
+
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        existingUser = new User(1L, "John", "Doe", "john.doe@example.com", BCrypt.hashpw("password", BCrypt.gensalt()), Role.USER);
+        existingUser = new User(1L, "John", "Doe", "john.doe@example.com", BCrypt.hashpw(password, BCrypt.gensalt()), Role.USER);
 
         Field userRepositoryField = AuthorizationServiceImpl.class.getDeclaredField("userRepository");
         userRepositoryField.setAccessible(true);
@@ -44,17 +48,14 @@ public class AuthorizationServiceImplTest {
     }
 
     @Test
+    @DisplayName("Тест успешной авторизации")
     void testLoginSuccess() throws UnauthorizedException {
-        // Подготовка тестовых данных
-        AuthorizationDTO authorizationDTO = new AuthorizationDTO("john.doe@example.com", "password");
+        AuthorizationDTO authorizationDTO = new AuthorizationDTO(existingUser.email(), password);
 
-        // Настройка моков и их поведение
-        when(userRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByEmail(existingUser.email())).thenReturn(Optional.of(existingUser));
 
-        // Вызов метода на тестирование
         UserDTO userDTO = authorizationService.login(authorizationDTO);
 
-        // Проверка результата
         assertEquals(existingUser.id(), userDTO.id());
         assertEquals(existingUser.firstName(), userDTO.firstName());
         assertEquals(existingUser.lastName(), userDTO.lastName());
@@ -62,17 +63,19 @@ public class AuthorizationServiceImplTest {
     }
 
     @Test
+    @DisplayName("Тест ввода неверного пароля")
     void testLoginUnauthorized() {
-        AuthorizationDTO authorizationDTO = new AuthorizationDTO("john.doe@example.com", "wrongPassword");
+        AuthorizationDTO authorizationDTO = new AuthorizationDTO(existingUser.email(), "wrongPassword");
 
-        when(userRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(existingUser));
+        when(userRepository.findByEmail(existingUser.email())).thenReturn(Optional.of(existingUser));
 
         assertThrows(UnauthorizedException.class, () -> authorizationService.login(authorizationDTO));
     }
 
     @Test
+    @DisplayName("Тест ввода неверного адреса электронной почты")
     void testLoginUserNotFound() {
-        AuthorizationDTO authorizationDTO = new AuthorizationDTO("nonexistent.user@example.com", "password");
+        AuthorizationDTO authorizationDTO = new AuthorizationDTO("nonexistent.user@example.com", password);
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
