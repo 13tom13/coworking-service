@@ -1,5 +1,9 @@
 package io.ylab.tom13.coworkingservice.out.utils;
 
+import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +18,10 @@ public final class Session {
     private final Map<String, Object> attributes;
 
     private static Session instance;
+
+    @Setter
+    @Getter
+    private UserDTO user;
 
     /**
      * Приватный конструктор для инициализации атрибутов сеанса.
@@ -62,6 +70,10 @@ public final class Session {
      */
     public void removeAttribute(String key) {
         attributes.remove(key);
+    }
+
+    public void removeUser() {
+        this.user = null;
     }
 }
 

@@ -7,9 +7,10 @@ import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.UserEditControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.services.user.UserEditService;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.UserEditControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Тест контроллера для редактирования пользователя")
 public class UserEditControllerImplTest {
 
     @Mock
@@ -41,6 +43,7 @@ public class UserEditControllerImplTest {
     }
 
     @Test
+    @DisplayName("Тест успешно редактировать пользователя")
     void testEditUserSuccess() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
         when(userEditService.editUser(any(UserDTO.class))).thenReturn(userDTO);
 
@@ -51,6 +54,7 @@ public class UserEditControllerImplTest {
     }
 
     @Test
+    @DisplayName("Тест ошибки при редактировании пользователя")
     void testEditUserRepositoryException() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
 
         String errorMessage = "User not found";
@@ -63,6 +67,7 @@ public class UserEditControllerImplTest {
     }
 
     @Test
+    @DisplayName("Тест успешно изменения пароля")
     void testEditPasswordSuccess() {
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO("john.doe@example.com", "oldPassword", "newPassword");
 

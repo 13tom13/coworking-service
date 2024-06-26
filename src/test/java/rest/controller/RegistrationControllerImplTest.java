@@ -6,9 +6,8 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.RegistrationControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.UserEditControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.services.user.RegistrationService;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.RegistrationControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +34,7 @@ class RegistrationControllerImplTest {
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        registrationDTO = new RegistrationDTO("John", "Doe", "john.doe@example.com", "password", Role.USER);
+        registrationDTO = new RegistrationDTO("John", "Doe", "john.doe@example.com", "password");
 
         userDTO = new UserDTO(1L, "John" , "Doe", "john.doe@example.com", Role.USER);
 

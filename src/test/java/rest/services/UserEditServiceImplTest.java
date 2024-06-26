@@ -5,11 +5,10 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.UserEditServiceImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.implementation.UserEditServiceImpl;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,10 +54,9 @@ class UserEditServiceImplTest {
 
     @Test
     @DisplayName("Успешное редактирование пользователя")
-    void testEditUserSuccess() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
-        when(userRepository.updateUser(user)).thenReturn(user);
-        when(userRepository.existsById(user.id())).thenReturn(true);
-        when(userRepository.existsByEmail(user.email())).thenReturn(true);
+    void testEditUserSuccess() throws RepositoryException {
+        when(userRepository.updateUser(user)).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findByEmail(user.email())).thenReturn(Optional.ofNullable(user));
         when(userRepository.findById(user.id())).thenReturn(Optional.ofNullable(user));
 
         assertDoesNotThrow(() -> userEditService.editUser(userDTO));

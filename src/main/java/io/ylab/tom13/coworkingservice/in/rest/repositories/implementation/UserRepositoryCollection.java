@@ -38,7 +38,7 @@ public class UserRepositoryCollection implements UserRepository {
      * {@inheritDoc}
      */
     @Override
-    public User createUser(User user) throws RepositoryException {
+    public Optional<User> createUser(User user) throws RepositoryException {
         if (emailToIdMap.containsKey(user.email())){
             throw new RepositoryException("Пользователь с email уже существует");
         }
@@ -47,10 +47,10 @@ public class UserRepositoryCollection implements UserRepository {
         usersById.put(userForDB.id(), userForDB);
         emailToIdMap.put(userForDB.email(), userForDB.id());
 
-        if (!usersById.containsKey(userForDB.id()) || !emailToIdMap.containsKey(userForDB.email())) {
-            throw new RepositoryException("Не удалось добавить пользователя с email: " + userForDB.email());
+        if (!emailToIdMap.containsKey(userForDB.email())) {
+            return Optional.empty();
         }
-        return user;
+        return Optional.ofNullable(usersById.get(userForDB.id()));
     }
 
     /**

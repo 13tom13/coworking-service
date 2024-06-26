@@ -1,6 +1,5 @@
 package io.ylab.tom13.coworkingservice.out.menu.administration.user;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
@@ -14,8 +13,6 @@ public class UserEditingAdministratorMenu extends Menu {
 
     private final AdministrationClient administrationClient;
 
-    private AuthenticationDTO authentication;
-
 
     public UserEditingAdministratorMenu() {
         administrationClient = new AdministrationClient();
@@ -23,10 +20,9 @@ public class UserEditingAdministratorMenu extends Menu {
 
     @Override
     public void display() {
+        ;
         try {
-            UserDTO admin = (UserDTO) localSession.getAttribute("user");
-            authentication = new AuthenticationDTO(admin.id());
-            UserDTO user = getUserForEdit(authentication);
+            UserDTO user = getUserForEdit();
             localSession.setAttribute("userForEdit", user);
         } catch (UserNotFoundException e) {
             System.err.println(e.getMessage());
@@ -47,11 +43,11 @@ public class UserEditingAdministratorMenu extends Menu {
             int choice = readInt("Введите номер действия: ");
             try {
                 switch (choice) {
-                    case 1 -> editFirstName(authentication, user);
-                    case 2 -> editLastName(authentication, user);
-                    case 3 -> editEmail(authentication, user);
-                    case 4 -> editPassword(authentication, user);
-                    case 5 -> editRoles(authentication, user);
+                    case 1 -> editFirstName(user);
+                    case 2 -> editLastName(user);
+                    case 3 -> editEmail(user);
+                    case 4 -> editPassword(user);
+                    case 5 -> editRoles(user);
                     case 0 -> {
                         System.err.println("Выход из редактирования");
                         userManagementMenu = false;
@@ -64,38 +60,38 @@ public class UserEditingAdministratorMenu extends Menu {
         }
     }
 
-    private UserDTO getUserForEdit(AuthenticationDTO authentication) throws UserNotFoundException {
+    private UserDTO getUserForEdit() throws UserNotFoundException {
         String email = readString("Введите email пользователя:");
-        return administrationClient.getUserByEmail(authentication, email);
+        return administrationClient.getUserByEmail(email);
     }
 
-    private void editFirstName(AuthenticationDTO authentication, UserDTO user) throws EditException {
+    private void editFirstName(UserDTO user) throws EditException {
         String newFirstName = readString("Введите новое имя:");
-        UserDTO userDTO = administrationClient.editUserByAdministrator(authentication,
+        UserDTO userDTO = administrationClient.editUserByAdministrator(
                 new UserDTO(user.id(), newFirstName, user.lastName(), user.email(), user.role()));
-        editUser(authentication, userDTO);
+        editUser(userDTO);
     }
 
-    private void editLastName(AuthenticationDTO authentication, UserDTO user) throws EditException {
+    private void editLastName( UserDTO user) throws EditException {
         String newLastName = readString("Введите новую фамилию:");
         UserDTO userDTO = new UserDTO(user.id(), user.firstName(), newLastName, user.email(), user.role());
-        editUser(authentication, userDTO);
+        editUser(userDTO);
     }
 
-    private void editEmail(AuthenticationDTO authentication, UserDTO user) throws EditException {
+    private void editEmail(UserDTO user) throws EditException {
         String newEmail = readString("Введите новый email:");
         UserDTO userDTO = new UserDTO(user.id(), user.firstName(), user.lastName(), newEmail, user.role());
-        editUser(authentication, userDTO);
+        editUser(userDTO);
     }
 
-    private void editPassword(AuthenticationDTO authentication, UserDTO user) throws EditException {
-        String hashPassword = readPassword();
+    private void editPassword( UserDTO user) throws EditException {
+        String hashPassword = readPassword("Введите новый пароль:");
         long userId = user.id();
-        String response = administrationClient.editPasswordByAdministrator(authentication, userId, hashPassword);
+        String response = administrationClient.editPasswordByAdministrator(userId, hashPassword);
         System.out.println(response);
     }
 
-    private void editRoles(AuthenticationDTO authentication, UserDTO user) throws EditException {
+    private void editRoles( UserDTO user) throws EditException {
         Role[] roles = Role.values();
         System.out.println("Роль пользователя: " + user.role());
         System.out.println("Возможные роли:");
@@ -113,11 +109,11 @@ public class UserEditingAdministratorMenu extends Menu {
         }
         Role role = roles[choice - 1];
         UserDTO userDTO = new UserDTO(user.id(), user.firstName(), user.lastName(), user.email(), role);
-        editUser(authentication, userDTO);
+        editUser(userDTO);
     }
 
-    private void editUser(AuthenticationDTO authentication, UserDTO user) throws EditException {
-        UserDTO userDTO = administrationClient.editUserByAdministrator(authentication, user);
+    private void editUser( UserDTO user) throws EditException {
+        UserDTO userDTO = administrationClient.editUserByAdministrator(user);
         localSession.setAttribute("userForEdit", userDTO);
         System.out.println("Пользователь успешно изменен ");
     }

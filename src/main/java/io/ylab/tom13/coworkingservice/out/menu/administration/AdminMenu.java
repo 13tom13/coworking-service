@@ -23,7 +23,7 @@ public class AdminMenu extends Menu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO user = (UserDTO) localSession.getAttribute("user");
+            UserDTO user = localSession.getUser();
             String name = "Пользователь";
             if (user.role().equals(Role.ADMINISTRATOR)) {
                 name = "Администратор";
@@ -46,7 +46,7 @@ public class AdminMenu extends Menu {
                 case 3 -> userAdministrationMenu.display();
                 case 0 -> {
                     System.err.println("До свидания");
-                    localSession.removeAttribute("user");
+                    localSession.removeUser();
                     startMenu = false;
                 }
                 default -> System.err.println("Неверный выбор. Попробуйте еще раз.");

@@ -10,8 +10,14 @@ public class UnauthorizedException extends Exception {
      * Конструктор исключения.
      * Создает исключение с сообщением "Неверный email или пароль".
      */
-    public UnauthorizedException() {
-        super("Неверный email или пароль");
+    public UnauthorizedException(String message) {
+        super(message);
     }
+
+    public UnauthorizedException() {
+        super("Не авторизированный пользователь");
+    }
+
+
 }
 

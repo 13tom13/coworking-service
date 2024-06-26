@@ -3,8 +3,8 @@ package io.ylab.tom13.coworkingservice.out.client;
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.UserEditController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.UserEditControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.UserEditController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.UserEditControllerImpl;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
 
 public class UserEditClient extends Client {
@@ -16,12 +16,10 @@ public class UserEditClient extends Client {
     }
 
 
-    public void editUser(UserDTO userDTO) throws EditException {
+    public UserDTO editUser(UserDTO userDTO) throws EditException {
         ResponseDTO<UserDTO> response = userEditController.editUser(userDTO);
         if (response.success()) {
-            UserDTO user = response.data();
-            localSession.setAttribute("user", user);
-            System.out.println("Пользователь успешно изменен");
+            return response.data();
         } else {
             throw new EditException(response.message());
         }

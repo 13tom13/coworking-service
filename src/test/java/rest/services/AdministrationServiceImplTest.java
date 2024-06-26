@@ -1,6 +1,5 @@
 package rest.services;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
@@ -8,7 +7,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryExcepti
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.NoAccessException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.AdministrationServiceImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.implementation.AdministrationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,7 +79,7 @@ class AdministrationServiceImplTest {
         User user  = new User(userDTO.id(),  userDTO.firstName(),  userDTO.lastName(),  userDTO.email(),  "password", Role.USER);
 
         when(userRepository.findById(userDTO.id())).thenReturn(Optional.of(user));
-        when(userRepository.updateUser(user)).thenReturn(user);
+        when(userRepository.updateUser(user)).thenReturn(Optional.of(user));
 
         UserDTO userDTOFromRep = administrationService.editUserByAdministrator(adminDTO, userDTO);
 

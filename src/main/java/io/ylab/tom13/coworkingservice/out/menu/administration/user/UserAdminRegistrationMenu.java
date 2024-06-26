@@ -1,6 +1,5 @@
 package io.ylab.tom13.coworkingservice.out.menu.administration.user;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
@@ -20,16 +19,14 @@ public class UserAdminRegistrationMenu extends Menu {
 
     @Override
     public void display() {
-        UserDTO admin = (UserDTO) localSession.getAttribute("user");
-        AuthenticationDTO authentication = new AuthenticationDTO(admin.id());
         String firstName = readString("Введите имя пользователя:");
         String lastName = readString("Введите фамилию:");
         String email = readString("Введите email:");
-        String hashPassword = readPassword();
+        String hashPassword = readPassword("Введите пароль:");
         Role role = readRole();
-        RegistrationDTO registrationDTO = new RegistrationDTO(firstName, lastName, email, hashPassword, Role.USER);
+        RegistrationDTO registrationDTO = new RegistrationDTO(firstName, lastName, email, hashPassword);
         try {
-            administrationClient.registrationUser(authentication, registrationDTO, role);
+            administrationClient.registrationUser(registrationDTO, role);
         } catch (EditException e) {
             System.err.println(e.getMessage());
         }

@@ -1,6 +1,5 @@
 package io.ylab.tom13.coworkingservice.out.menu.administration.booking;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.client.AdministrationClient;
@@ -27,7 +26,6 @@ public class BookingAdministrationMenu extends Menu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO admin = (UserDTO) localSession.getAttribute("user");
             System.out.println("Меню управления бронированиями");
             System.out.println("Выберите действие:");
             System.out.println("1. Просмотр бронирований пользователя");
@@ -50,14 +48,13 @@ public class BookingAdministrationMenu extends Menu {
     }
 
     private void viewUserBookingsMenu() {
-        UserDTO admin = (UserDTO) localSession.getAttribute("user");
-        AuthenticationDTO authentication  = new AuthenticationDTO(admin.id());
+        UserDTO admin = localSession.getUser();
         String email = readString("Введите email пользователя: ");
         try {
-            UserDTO user = administrationClient.getUserByEmail(authentication, email);
-            localSession.setAttribute("user", user);
+            UserDTO user = administrationClient.getUserByEmail(email);
+            localSession.setUser(user);
             bookingViewMenu.display();
-            localSession.setAttribute("user", admin);
+            localSession.setUser(admin);
         } catch (UserNotFoundException e) {
             System.err.println(e.getMessage());
         }

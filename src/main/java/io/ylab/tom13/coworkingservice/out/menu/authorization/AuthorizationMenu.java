@@ -35,7 +35,7 @@ public class AuthorizationMenu extends Menu {
     public void display() {
         try {
             login();
-            UserDTO userDTO = (UserDTO) localSession.getAttribute("user");
+            UserDTO userDTO = localSession.getUser();
             switch (userDTO.role()) {
                 case USER -> userMenu.display();
                 case ADMINISTRATOR, MODERATOR -> adminMenu.display();
@@ -56,7 +56,8 @@ public class AuthorizationMenu extends Menu {
         String email = readString("Введите email:");
         String password = readString("Введите пароль:");
         AuthorizationDTO authorizationDTO = new AuthorizationDTO(email, password);
-        authorizationClient.login(authorizationDTO);
+        UserDTO loginUser = authorizationClient.login(authorizationDTO);
+        localSession.setUser(loginUser);
     }
 }
 

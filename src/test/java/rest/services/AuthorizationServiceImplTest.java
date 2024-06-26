@@ -6,7 +6,7 @@ import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.AuthorizationServiceImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.implementation.AuthorizationServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

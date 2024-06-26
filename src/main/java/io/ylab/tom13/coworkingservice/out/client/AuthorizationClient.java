@@ -3,8 +3,8 @@ package io.ylab.tom13.coworkingservice.out.client;
 import io.ylab.tom13.coworkingservice.in.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.AuthorizationController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.AuthorizationControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.AuthorizationController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.AuthorizationControllerImpl;
 import io.ylab.tom13.coworkingservice.out.exceptions.LoginException;
 
 /**
@@ -27,11 +27,10 @@ public class AuthorizationClient extends Client {
      *
      * @param authorizationDTO данные для авторизации пользователя
      */
-    public void login(AuthorizationDTO authorizationDTO) throws LoginException {
+    public UserDTO login(AuthorizationDTO authorizationDTO) throws LoginException {
         ResponseDTO<UserDTO> response = controller.login(authorizationDTO);
         if (response.success()) {
-            UserDTO user = response.data();
-            localSession.setAttribute("user", user);
+           return response.data();
         } else {
             throw new LoginException(response.message());
         }

@@ -1,14 +1,9 @@
 package io.ylab.tom13.coworkingservice.out.menu.administration.user;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.client.AdministrationClient;
-import io.ylab.tom13.coworkingservice.out.client.RegistrationClient;
-import io.ylab.tom13.coworkingservice.out.exceptions.RegistrationException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
 
@@ -29,8 +24,7 @@ public class UserAdministrationMenu extends Menu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO admin = (UserDTO) localSession.getAttribute("user");
-            AuthenticationDTO authentication = new AuthenticationDTO(admin.id());
+            UserDTO admin = localSession.getUser();
             if (!admin.role().equals(Role.ADMINISTRATOR)) {
                 System.err.println("Редактирование пользователя вам не доступно.");
                 startMenu = false;
@@ -44,7 +38,7 @@ public class UserAdministrationMenu extends Menu {
             System.out.println();
             int choice = readInt("Введите номер действия: ");
             switch (choice) {
-                case 1 -> getUserList(authentication);
+                case 1 -> getUserList();
                 case 2 -> userAdminRegistrationMenu.display();
                 case 3 -> userEditingAdministratorMenu.display();
                 case 0 -> {
@@ -57,8 +51,8 @@ public class UserAdministrationMenu extends Menu {
     }
 
 
-    private void getUserList(AuthenticationDTO authentication) {
-        List<UserDTO> userDTOList = administrationClient.getUserList(authentication);
+    private void getUserList() {
+        List<UserDTO> userDTOList = administrationClient.getUserList();
         System.out.println("Список пользователей:");
         userDTOList.forEach(System.out::println);
         System.out.println();

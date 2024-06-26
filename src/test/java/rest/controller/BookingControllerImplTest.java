@@ -5,8 +5,9 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
-import io.ylab.tom13.coworkingservice.in.rest.controller.booking.implementation.BookingControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.services.booking.BookingService;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.BookingControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.BookingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +41,7 @@ class BookingControllerImplTest {
     }
 
     @Test
-    void createBooking_success() throws BookingConflictException {
+    void createBooking_success() throws BookingConflictException, RepositoryException {
         BookingDTO bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
         when(bookingService.createBooking(any(BookingDTO.class))).thenReturn(bookingDTO);
 
@@ -52,7 +53,7 @@ class BookingControllerImplTest {
     }
 
     @Test
-    void createBooking_conflict() throws BookingConflictException {
+    void createBooking_conflict() throws BookingConflictException, RepositoryException {
         BookingDTO bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
         when(bookingService.createBooking(any(BookingDTO.class))).thenThrow(new BookingConflictException("Conflict"));
 
@@ -193,7 +194,7 @@ class BookingControllerImplTest {
     }
 
     @Test
-    void updateBooking_success() throws BookingNotFoundException, BookingConflictException {
+    void updateBooking_success() throws BookingNotFoundException, BookingConflictException, RepositoryException {
         BookingDTO booking = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
         when(bookingService.updateBooking(any(BookingDTO.class))).thenReturn(booking);
 
@@ -205,7 +206,7 @@ class BookingControllerImplTest {
     }
 
     @Test
-    void updateBooking_notFound() throws BookingNotFoundException, BookingConflictException {
+    void updateBooking_notFound() throws BookingNotFoundException, BookingConflictException, RepositoryException {
         BookingDTO booking = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
         when(bookingService.updateBooking(any(BookingDTO.class))).thenThrow(new BookingNotFoundException("Not Found"));
 
@@ -217,7 +218,7 @@ class BookingControllerImplTest {
     }
 
     @Test
-    void updateBooking_conflict() throws BookingNotFoundException, BookingConflictException {
+    void updateBooking_conflict() throws BookingNotFoundException, BookingConflictException, RepositoryException {
         BookingDTO booking = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
         when(bookingService.updateBooking(any(BookingDTO.class))).thenThrow(new BookingConflictException("Conflict"));
 

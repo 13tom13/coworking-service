@@ -25,7 +25,7 @@ public interface UserRepository {
      * @throws UserAlreadyExistsException если пользователь с таким email уже существует.
      * @return UserDTO данные добавленного пользователя.
      */
-    User createUser(User user) throws RepositoryException;
+    Optional<User> createUser(User user) throws RepositoryException;
 
     /**
      * Поиск пользователя по email.

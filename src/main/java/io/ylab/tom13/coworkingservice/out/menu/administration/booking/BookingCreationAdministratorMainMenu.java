@@ -1,11 +1,11 @@
 package io.ylab.tom13.coworkingservice.out.menu.administration.booking;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
+import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.client.AdministrationClient;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
@@ -32,16 +32,14 @@ public class BookingCreationAdministratorMainMenu extends Menu {
             UserDTO user = getUserForCreationBooking();
             Map<String, CoworkingDTO> coworkings = bookingClient.getAllAvailableCoworkings();
             createBooking(coworkings, user);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | UnauthorizedException e) {
             System.err.println(e.getMessage());
         }
     }
 
     private UserDTO getUserForCreationBooking() throws UserNotFoundException {
         String email = readString("Введите email пользователя для создания бронирования: ");
-        UserDTO user = (UserDTO) localSession.getAttribute("user");
-        AuthenticationDTO authentication = new AuthenticationDTO(user.id());
-        return administrationClient.getUserByEmail(authentication, email);
+        return administrationClient.getUserByEmail(email);
     }
 
     private void createBooking(Map<String, CoworkingDTO> coworkings, UserDTO user) {

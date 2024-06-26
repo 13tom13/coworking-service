@@ -5,10 +5,11 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
-import io.ylab.tom13.coworkingservice.in.rest.controller.booking.BookingController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.booking.implementation.BookingControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.CoworkingController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.implementation.CoworkingControllerImpl;
+import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
+import io.ylab.tom13.coworkingservice.in.rest.controller.BookingController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.BookingControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.CoworkingController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.CoworkingControllerImpl;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 
 import java.time.LocalDate;
@@ -91,8 +92,12 @@ public class BookingClient extends Client {
         }
     }
 
-    public Map<String, CoworkingDTO> getAllAvailableCoworkings() {
+    public Map<String, CoworkingDTO> getAllAvailableCoworkings() throws UnauthorizedException {
         ResponseDTO<Map<String, CoworkingDTO>> allAvailableCoworking = coworkingController.getAllAvailableCoworkings();
-        return allAvailableCoworking.data();
+        if (allAvailableCoworking.success()) {
+            return allAvailableCoworking.data();
+        } else {
+            throw new UnauthorizedException(allAvailableCoworking.message());
+        }
     }
 }

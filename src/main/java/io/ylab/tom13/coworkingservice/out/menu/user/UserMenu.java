@@ -18,7 +18,7 @@ public class UserMenu extends Menu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO user = (UserDTO) localSession.getAttribute("user");
+            UserDTO user = localSession.getUser();
             System.out.printf("Добро пожаловать %s %n", user);
             System.out.println("Выберите действие:");
             System.out.println("1. Редактирование профиля");
@@ -30,7 +30,7 @@ public class UserMenu extends Menu {
                 case 1 -> userEditMenu.display();
                 case 2 -> bookingMenu.display();
                 case 0 -> {
-                    System.err.println("До свидания");
+                    System.err.println("До свидания " + user.firstName());
                     localSession.removeAttribute("user");
                     startMenu = false;
                 }

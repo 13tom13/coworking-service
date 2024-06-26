@@ -27,7 +27,7 @@ public class UserEditMenu extends Menu {
     private void editUser() throws EditException {
         boolean userManagementMenu = true;
         while (userManagementMenu) {
-            UserDTO user = (UserDTO) localSession.getAttribute("user");
+            UserDTO user = localSession.getUser();
             System.out.printf("Редактировать пользователя: %s %n", user);
             System.out.println("1. Изменить имя пользователя");
             System.out.println("2. Изменить фамилию пользователя");
@@ -52,25 +52,31 @@ public class UserEditMenu extends Menu {
 
     private void editFirstName(UserDTO user) throws EditException {
         String newFirstName = readString("Введите новое имя:");
-        userEditClient.editUser(
+        UserDTO editedUser = userEditClient.editUser(
                 new UserDTO(user.id(), newFirstName, user.lastName(), user.email(), user.role()));
+        System.out.println("Пользователь успешно изменен");
+        localSession.setUser(editedUser);
     }
 
     private void editLastName(UserDTO user) throws EditException {
         String newLastName = readString("Введите новую фамилию:");
-        userEditClient.editUser(
+        UserDTO editedUser = userEditClient.editUser(
                 new UserDTO(user.id(), user.firstName(), newLastName, user.email(), user.role()));
+        System.out.println("Пользователь успешно изменен");
+        localSession.setUser(editedUser);
     }
 
     private void editEmail(UserDTO user) throws EditException {
         String newEmail = readString("Введите новый email:");
-        userEditClient.editUser(
+        UserDTO editedUser = userEditClient.editUser(
                 new UserDTO(user.id(), user.firstName(), user.lastName(), newEmail, user.role()));
+        System.out.println("Пользователь успешно изменен");
+        localSession.setUser(editedUser);
     }
 
     private void editPassword(UserDTO user) throws EditException {
         String oldPassword = readString("Введите старый пароль:");
-        String newHashPassword = readPassword();
+        String newHashPassword = readPassword("Введите новый пароль:");
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), oldPassword, newHashPassword);
         String response = userEditClient.editPassword(passwordChangeDTO);
         System.out.println(response);

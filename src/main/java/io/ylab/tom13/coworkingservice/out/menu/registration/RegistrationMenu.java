@@ -40,8 +40,8 @@ public class RegistrationMenu extends Menu {
         String firstName = readString("Введите имя пользователя:");
         String lastName = readString("Введите фамилию:");
         String email = readString("Введите email:");
-        String hashPassword  = readPassword();
-        RegistrationDTO registrationDTO = new RegistrationDTO(firstName, lastName, email, hashPassword, Role.USER);
+        String hashPassword  = readPassword("Введите пароль:");
+        RegistrationDTO registrationDTO = new RegistrationDTO(firstName, lastName, email, hashPassword);
         try {
             registrationClient.registration(registrationDTO);
         } catch (RegistrationException e) {

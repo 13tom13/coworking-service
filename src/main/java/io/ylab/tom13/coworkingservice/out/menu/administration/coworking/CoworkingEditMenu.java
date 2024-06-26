@@ -1,12 +1,12 @@
 package io.ylab.tom13.coworkingservice.out.menu.administration.coworking;
 
+import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
 import io.ylab.tom13.coworkingservice.out.client.CoworkingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.CoworkingException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 public class CoworkingEditMenu extends Menu {
 
@@ -15,6 +15,7 @@ public class CoworkingEditMenu extends Menu {
     public CoworkingEditMenu() {
         coworkingClient = new CoworkingClient();
     }
+
 
     @Override
     public void display() {

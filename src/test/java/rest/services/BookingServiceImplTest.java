@@ -2,10 +2,12 @@ package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
+import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.booking.implementation.BookingServiceImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.implementation.BookingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,9 +43,9 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void testCreateBooking() throws BookingConflictException {
+    void testCreateBooking() throws BookingConflictException, RepositoryException {
         BookingDTO bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), Arrays.asList(TimeSlot.MORNING, TimeSlot.AFTERNOON));
-        doReturn(bookingDTO).when(bookingRepository).createBooking(any(BookingDTO.class));
+        doReturn(bookingDTO).when(bookingRepository).createBooking(any(Booking.class));
 
         BookingDTO createdBooking = bookingService.createBooking(bookingDTO);
 
@@ -103,9 +105,9 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void testUpdateBooking() throws BookingNotFoundException, BookingConflictException {
+    void testUpdateBooking() throws BookingNotFoundException, BookingConflictException, RepositoryException {
         BookingDTO bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
-        doReturn(bookingDTO).when(bookingRepository).updateBooking(any(BookingDTO.class));
+        doReturn(bookingDTO).when(bookingRepository).updateBooking(any(Booking.class));
 
         BookingDTO updatedBooking = bookingService.updateBooking(bookingDTO);
 

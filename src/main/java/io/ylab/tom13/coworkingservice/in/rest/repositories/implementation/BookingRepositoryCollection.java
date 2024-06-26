@@ -56,8 +56,8 @@ public class BookingRepositoryCollection implements BookingRepository {
 
         removeBookingFromCollections(existingBooking);
         addBookingToCollections(updatedBooking);
-
-        return Optional.ofNullable(bookingsById.get(updatedBooking.id()));
+        Booking bookingFromDB = bookingsById.get(updatedBooking.id());
+        return Optional.ofNullable(bookingFromDB);
     }
 
 
@@ -155,6 +155,9 @@ public class BookingRepositoryCollection implements BookingRepository {
                 .filter(existingBooking -> existingBooking.date().equals(newBooking.date()))
                 .toList();
         for (Booking existingBooking : existingBookingsByCoworkingAndDate) {
+            if (existingBooking.id() == newBooking.id()) {
+                continue;
+            }
             boolean hasOverlap = newBooking.timeSlots().stream()
                     .anyMatch(newTimeSlot -> existingBooking.timeSlots().contains(newTimeSlot));
             if (hasOverlap) {
@@ -169,6 +172,7 @@ public class BookingRepositoryCollection implements BookingRepository {
     }
 
     private void removeBookingFromCollections(Booking booking) {
+        bookingsById.remove(booking.id());
         bookingsByUserId.get(booking.userId()).remove(booking);
         bookingsByCoworkingId.get(booking.coworkingId()).remove(booking);
     }

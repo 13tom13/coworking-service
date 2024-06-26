@@ -1,13 +1,12 @@
 package io.ylab.tom13.coworkingservice.out.client;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.AdministrationController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.AdministrationControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.AdministrationController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.AdministrationControllerImpl;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
 
 import java.util.List;
@@ -21,13 +20,13 @@ public class AdministrationClient extends Client {
     }
 
 
-    public List<UserDTO> getUserList(AuthenticationDTO authentication) {
-        ResponseDTO<List<UserDTO>> allUsers = administrationController.getAllUsers(authentication);
+    public List<UserDTO> getUserList() {
+        ResponseDTO<List<UserDTO>> allUsers = administrationController.getAllUsers();
         return allUsers.data();
     }
 
-    public UserDTO getUserByEmail(AuthenticationDTO authentication, String email) throws UserNotFoundException {
-        ResponseDTO<UserDTO> user = administrationController.getUserByEmail(authentication, email);
+    public UserDTO getUserByEmail(String email) throws UserNotFoundException {
+        ResponseDTO<UserDTO> user = administrationController.getUserByEmail(email);
         if (user.success()) {
             return user.data();
         } else {
@@ -35,13 +34,17 @@ public class AdministrationClient extends Client {
         }
     }
 
-    public UserDTO editUserByAdministrator(AuthenticationDTO authentication, UserDTO userDTO) throws EditException {
-        ResponseDTO<UserDTO> user = administrationController.editUserByAdministrator(authentication, userDTO);
-        return user.data();
+    public UserDTO editUserByAdministrator(UserDTO userDTO) throws EditException {
+        ResponseDTO<UserDTO> user = administrationController.editUserByAdministrator(userDTO);
+        if (user.success()) {
+            return user.data();
+        } else  {
+            throw new EditException(user.message());
+        }
     }
 
-    public String editPasswordByAdministrator(AuthenticationDTO authentication, long userId, String newHashPassword) throws EditException {
-        ResponseDTO<String> response = administrationController.editUserPasswordByAdministrator(authentication, userId, newHashPassword);
+    public String editPasswordByAdministrator(long userId, String newHashPassword) throws EditException {
+        ResponseDTO<String> response = administrationController.editUserPasswordByAdministrator(userId, newHashPassword);
         if (response.success()) {
             return response.data();
         } else {
@@ -49,11 +52,9 @@ public class AdministrationClient extends Client {
         }
     }
 
-    public String registrationUser(AuthenticationDTO authentication, RegistrationDTO registrationDTO, Role role) throws EditException {
-        ResponseDTO<String> response = administrationController.registrationUser(authentication, registrationDTO, role);
-        if (response.success()) {
-            return response.data();
-        } else {
+    public void registrationUser(RegistrationDTO registrationDTO, Role role) throws EditException {
+        ResponseDTO<String> response = administrationController.registrationUser(registrationDTO, role);
+        if (!response.success()) {
             throw new EditException(response.message());
         }
     }

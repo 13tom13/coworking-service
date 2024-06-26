@@ -3,6 +3,7 @@ package io.ylab.tom13.coworkingservice.out.menu.booking;
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
+import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
@@ -15,18 +16,21 @@ public class BookingViewMenu extends Menu {
 
     private final BookingClient bookingClient;
 
-    private final BookingEditMenu bookingEditMenu;
-
     public BookingViewMenu() {
         bookingClient = new BookingClient();
-        bookingEditMenu = new BookingEditMenu();
     }
 
     @Override
     public void display() {
+        Map<String, CoworkingDTO> coworkings;
+        try {
+            coworkings = bookingClient.getAllAvailableCoworkings();
+        } catch (UnauthorizedException e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        UserDTO user = localSession.getUser();
         boolean viewMenu = true;
-        Map<String, CoworkingDTO> coworkings = bookingClient.getAllAvailableCoworkings();
-        UserDTO user = (UserDTO) localSession.getAttribute("user");
         while (viewMenu) {
             System.out.println("Меню просмотра бронирований пользователя");
             System.out.println("Выберите действие:");

@@ -7,8 +7,10 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingUpdatingExceptions;
-import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.implementation.CoworkingControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.services.coworking.CoworkingService;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.security.NoAccessException;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.CoworkingControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +33,8 @@ class CoworkingControllerImplTest {
     @InjectMocks
     private CoworkingControllerImpl coworkingController;
 
+    private final AuthenticationDTO authenticationDTO  = new AuthenticationDTO(1L);
+
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
         Field coworkingControllerField = CoworkingControllerImpl.class.getDeclaredField("coworkingService");
@@ -39,14 +43,14 @@ class CoworkingControllerImplTest {
     }
 
     @Test
-    void getAllCoworking_success() {
+    void getAllCoworking_success() throws NoAccessException {
         Map<String, CoworkingDTO> coworkings = Map.of(
                 "1", new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A"),
                 "2", new ConferenceRoomDTO(2L, "Conference Room 1", "Description 2", true, 10)
         );
-        when(coworkingService.getAllCoworking()).thenReturn(coworkings);
+        when(coworkingService.getAllCoworking(any(AuthenticationDTO.class))).thenReturn(coworkings);
 
-        ResponseDTO<Map<String, CoworkingDTO>> response = coworkingController.getAllCoworking();
+        ResponseDTO<Map<String, CoworkingDTO>> response = coworkingController.getAllCoworking(authenticationDTO);
 
         assertThat(response.success()).isTrue();
         assertThat(response.data()).isEqualTo(coworkings);
@@ -69,11 +73,11 @@ class CoworkingControllerImplTest {
     }
 
     @Test
-    void createCoworking_success() throws CoworkingConflictException {
+    void createCoworking_success() throws CoworkingConflictException, RepositoryException, NoAccessException {
         CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
-        when(coworkingService.createCoworking(any(CoworkingDTO.class))).thenReturn(coworkingDTO);
+        when(coworkingService.createCoworking(any(CoworkingDTO.class), any(AuthenticationDTO.class))).thenReturn(coworkingDTO);
 
-        ResponseDTO<CoworkingDTO> response = coworkingController.createCoworking(coworkingDTO);
+        ResponseDTO<CoworkingDTO> response = coworkingController.createCoworking(coworkingDTO,authenticationDTO);
 
         assertThat(response.success()).isTrue();
         assertThat(response.data()).isEqualTo(coworkingDTO);
@@ -81,11 +85,11 @@ class CoworkingControllerImplTest {
     }
 
     @Test
-    void createCoworking_conflict() throws CoworkingConflictException {
+    void createCoworking_conflict() throws CoworkingConflictException, RepositoryException, NoAccessException {
         CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
-        when(coworkingService.createCoworking(any(CoworkingDTO.class))).thenThrow(new CoworkingConflictException("Conflict"));
+        when(coworkingService.createCoworking(any(CoworkingDTO.class), any(AuthenticationDTO.class))).thenThrow(new CoworkingConflictException("Conflict"));
 
-        ResponseDTO<CoworkingDTO> response = coworkingController.createCoworking(coworkingDTO);
+        ResponseDTO<CoworkingDTO> response = coworkingController.createCoworking(coworkingDTO,authenticationDTO);
 
         assertThat(response.success()).isFalse();
         assertThat(response.data()).isNull();
@@ -93,11 +97,11 @@ class CoworkingControllerImplTest {
     }
 
     @Test
-    void updateCoworking_success() throws CoworkingUpdatingExceptions {
+    void updateCoworking_success() throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException, NoAccessException {
         CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
-        when(coworkingService.updateCoworking(any(CoworkingDTO.class))).thenReturn(coworkingDTO);
+        when(coworkingService.updateCoworking(any(CoworkingDTO.class), any(AuthenticationDTO.class))).thenReturn(coworkingDTO);
 
-        ResponseDTO<CoworkingDTO> response = coworkingController.updateCoworking(coworkingDTO);
+        ResponseDTO<CoworkingDTO> response = coworkingController.updateCoworking(coworkingDTO, authenticationDTO);
 
         assertThat(response.success()).isTrue();
         assertThat(response.data()).isEqualTo(coworkingDTO);
@@ -105,11 +109,11 @@ class CoworkingControllerImplTest {
     }
 
     @Test
-    void updateCoworking_conflict() throws CoworkingUpdatingExceptions {
+    void updateCoworking_conflict() throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException, NoAccessException {
         CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
-        when(coworkingService.updateCoworking(any(CoworkingDTO.class))).thenThrow(new CoworkingUpdatingExceptions("Conflict"));
+        when(coworkingService.updateCoworking(any(CoworkingDTO.class), any(AuthenticationDTO.class))).thenThrow(new CoworkingUpdatingExceptions("Conflict"));
 
-        ResponseDTO<CoworkingDTO> response = coworkingController.updateCoworking(coworkingDTO);
+        ResponseDTO<CoworkingDTO> response = coworkingController.updateCoworking(coworkingDTO, authenticationDTO);
 
         assertThat(response.success()).isFalse();
         assertThat(response.data()).isNull();
@@ -117,10 +121,10 @@ class CoworkingControllerImplTest {
     }
 
     @Test
-    void deleteBooking_success() throws CoworkingNotFoundException {
-        doNothing().when(coworkingService).deleteBooking(1L);
+    void deleteBooking_success() throws CoworkingNotFoundException, NoAccessException {
+        doNothing().when(coworkingService).deleteBooking(1,authenticationDTO);
 
-        ResponseDTO<Void> response = coworkingController.deleteBooking(1L);
+        ResponseDTO<Void> response = coworkingController.deleteBooking(1L,authenticationDTO);
 
         assertThat(response.success()).isTrue();
         assertThat(response.data()).isNull();
@@ -128,10 +132,10 @@ class CoworkingControllerImplTest {
     }
 
     @Test
-    void deleteBooking_notFound() throws CoworkingNotFoundException {
-        doThrow(new CoworkingNotFoundException("Not Found")).when(coworkingService).deleteBooking(1L);
+    void deleteBooking_notFound() throws CoworkingNotFoundException, NoAccessException {
+        doThrow(new CoworkingNotFoundException("Not Found")).when(coworkingService).deleteBooking(1L,authenticationDTO);
 
-        ResponseDTO<Void> response = coworkingController.deleteBooking(1L);
+        ResponseDTO<Void> response = coworkingController.deleteBooking(1L,authenticationDTO);
 
         assertThat(response.success()).isFalse();
         assertThat(response.data()).isNull();

@@ -2,8 +2,8 @@ package io.ylab.tom13.coworkingservice.out.client;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
-import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.CoworkingController;
-import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.implementation.CoworkingControllerImpl;
+import io.ylab.tom13.coworkingservice.in.rest.controller.CoworkingController;
+import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.CoworkingControllerImpl;
 import io.ylab.tom13.coworkingservice.out.exceptions.CoworkingException;
 
 import java.util.Map;

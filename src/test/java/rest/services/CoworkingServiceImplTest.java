@@ -3,13 +3,18 @@ package rest.services;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
+import io.ylab.tom13.coworkingservice.in.entity.model.coworking.ConferenceRoom;
+import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Workplace;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingUpdatingExceptions;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.security.NoAccessException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.CoworkingRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.coworking.implementation.CoworkingServiceImpl;
+import io.ylab.tom13.coworkingservice.in.rest.services.implementation.CoworkingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,8 +26,10 @@ import java.lang.reflect.Field;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Тесты сервиса работы с коворкингами")
 class CoworkingServiceImplTest {
 
     @Mock
@@ -34,11 +41,13 @@ class CoworkingServiceImplTest {
     @InjectMocks
     private CoworkingServiceImpl coworkingService;
 
+    private final AuthenticationDTO authenticationDTO  = new AuthenticationDTO(1L);
+
     @BeforeEach
     void setUp() throws IllegalAccessException, NoSuchFieldException {
-        Field coworkingServiceField1 = CoworkingServiceImpl.class.getDeclaredField("coworkingRepository");
-        coworkingServiceField1.setAccessible(true);
-        coworkingServiceField1.set(coworkingService, coworkingRepository);
+        Field coworkingServiceField = CoworkingServiceImpl.class.getDeclaredField("coworkingRepository");
+        coworkingServiceField.setAccessible(true);
+        coworkingServiceField.set(coworkingService, coworkingRepository);
 
         Field coworkingServiceField2 = CoworkingServiceImpl.class.getDeclaredField("bookingRepository");
         coworkingServiceField2.setAccessible(true);
@@ -46,33 +55,33 @@ class CoworkingServiceImplTest {
     }
 
     @Test
-    void testCreateCoworking() throws CoworkingConflictException {
+    void testCreateCoworking() throws CoworkingConflictException, RepositoryException, NoAccessException {
         CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace", "Description", true, "Office");
-        doReturn(coworkingDTO).when(coworkingRepository).createCoworking(any(WorkplaceDTO.class));
+        when()
 
-        CoworkingDTO createdCoworking = coworkingService.createCoworking(coworkingDTO);
+        CoworkingDTO createdCoworking = coworkingService.createCoworking(coworkingDTO,authenticationDTO);
 
         assertThat(createdCoworking).isNotNull();
         assertThat(createdCoworking.getName()).isEqualTo("Workplace");
     }
 
     @Test
-    void testUpdateWorkplace() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException {
+    void testUpdateWorkplace() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException, NoAccessException {
         CoworkingDTO coworkingDTO = new WorkplaceDTO(2L, "Workplace", "Description", true, "Office");
-        doReturn(coworkingDTO).when(coworkingRepository).updateCoworking(any(WorkplaceDTO.class));
+        doReturn(coworkingDTO).when(coworkingRepository).updateCoworking(any(Workplace.class));
 
-        CoworkingDTO updatedCoworking = coworkingService.updateCoworking(coworkingDTO);
+        CoworkingDTO updatedCoworking = coworkingService.updateCoworking(coworkingDTO,authenticationDTO);
 
         assertThat(updatedCoworking).isNotNull();
         assertThat(updatedCoworking.getName()).isEqualTo("Workplace");
     }
 
     @Test
-    void testUpdateConferenceRoom() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException {
+    void testUpdateConferenceRoom() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException, NoAccessException {
         CoworkingDTO coworkingDTO = new ConferenceRoomDTO(3L, "Conference Room", "Description", true, 10);
-        doReturn(coworkingDTO).when(coworkingRepository).updateCoworking(any(ConferenceRoomDTO.class));
+        doReturn(coworkingDTO).when(coworkingRepository).updateCoworking(any(ConferenceRoom.class));
 
-        CoworkingDTO updatedCoworking = coworkingService.updateCoworking(coworkingDTO);
+        CoworkingDTO updatedCoworking = coworkingService.updateCoworking(coworkingDTO,authenticationDTO);
 
         assertThat(updatedCoworking).isNotNull();
         assertThat(updatedCoworking.getName()).isEqualTo("Conference Room");
@@ -80,8 +89,8 @@ class CoworkingServiceImplTest {
 
 
     @Test
-    void testDeleteCoworking() throws CoworkingNotFoundException {
+    void testDeleteCoworking() throws CoworkingNotFoundException, NoAccessException {
         long coworkingId = 5L;
-        coworkingService.deleteBooking(coworkingId);
+        coworkingService.deleteBooking(coworkingId,authenticationDTO);
     }
 }

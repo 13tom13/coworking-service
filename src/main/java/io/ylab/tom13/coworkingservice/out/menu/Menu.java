@@ -99,8 +99,8 @@ public abstract class Menu {
         }
     }
 
-    protected String readPassword() {
-        String password = readString("Введите пароль:");
+    protected String readPassword(String prompt) {
+        String password = readString(prompt);
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
@@ -135,6 +135,10 @@ public abstract class Menu {
     }
 
     protected void displayAvailableSlots(LocalDate date, List<TimeSlot> availableSlots) {
+        if (availableSlots.isEmpty())  {
+            System.out.println("Нет доступных слотов на " + date);
+            return;
+        }
         System.out.printf("Доступные слоты на %s:%n", date);
         for (int i = 0; i < availableSlots.size(); i++) {
             System.out.printf("%d: %s%n", i + 1, availableSlots.get(i));
@@ -142,6 +146,10 @@ public abstract class Menu {
     }
 
     protected void displaySelectedSlots(LocalDate date, List<TimeSlot> selectedSlots) {
+        if (selectedSlots.isEmpty())  {
+            System.out.println("Нет выбранных слотов на " + date);
+            return;
+        }
         System.out.println("Выбранные слоты на " + date + ":");
         for (int i = 0; i < selectedSlots.size(); i++) {
             System.out.println((i + 1) + ". " + selectedSlots.get(i));
