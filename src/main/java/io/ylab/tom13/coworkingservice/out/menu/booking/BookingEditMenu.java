@@ -1,6 +1,7 @@
 package io.ylab.tom13.coworkingservice.out.menu.booking;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
@@ -23,13 +24,20 @@ public class BookingEditMenu extends Menu {
         bookingClient = new BookingClient();
     }
 
-
     @Override
     public void display() {
+        Map<String, CoworkingDTO> allAvailableCoworkings = bookingClient.getAllAvailableCoworkings();
+        UserDTO user = (UserDTO) localSession.getAttribute("user");
         boolean editMenu = true;
+        BookingDTO booking;
+        try {
+            booking = getBookingForEdit(allAvailableCoworkings, user);
+        } catch (BookingException e) {
+            System.err.println(e.getMessage());
+            return;
+        }
         while (editMenu) {
-            BookingDTO booking = (BookingDTO) Session.getInstance().getAttribute("bookingForEdit");
-            String coworkingBookingName = (String) Session.getInstance().getAttribute("CoworkingBookingName");
+            String coworkingBookingName = getCoworkingNameById(allAvailableCoworkings, booking.coworkingId());
             System.out.println("Меню редактирования бронирования");
             viewBookingForEdit(booking, coworkingBookingName);
             System.out.println("Выберите действие:");
@@ -61,6 +69,34 @@ public class BookingEditMenu extends Menu {
         }
     }
 
+    private void viewBookingsList(Map<String, CoworkingDTO> coworkings, List<BookingDTO> allUserBookings) {
+        for (BookingDTO booking : allUserBookings) {
+            String coworkingName = getCoworkingNameById(coworkings, booking.coworkingId());
+            System.out.printf("(ID:%s)%n%s (%s):%n", booking.id(), coworkingName, booking.date().toString());
+            booking.timeSlots().forEach(System.out::println);
+            System.out.println();
+        }
+    }
+
+    private void viewAllUserBookings(Map<String, CoworkingDTO> allAvailableCoworkings, UserDTO user) {
+        try {
+            List<BookingDTO> allUserBookings = bookingClient.getAllUserBookings(user);
+            if (allUserBookings.isEmpty()) {
+                System.err.println("У пользователя нет бронирований.");
+                return;
+            }
+            viewBookingsList(allAvailableCoworkings, allUserBookings);
+        } catch (BookingException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private BookingDTO getBookingForEdit(Map<String, CoworkingDTO> allAvailableCoworkings, UserDTO user) throws BookingException {
+        viewAllUserBookings(allAvailableCoworkings, user);
+        long bookingId = readLong("Введите ID бронирования для редактирования:");
+        return bookingClient.getBookingById(bookingId);
+    }
+
     private void viewBookingForEdit(BookingDTO booking, String coworkingBookingName) {
         System.out.printf("%s (%s):%n", coworkingBookingName, booking.date().toString());
         booking.timeSlots().forEach(System.out::println);
@@ -69,20 +105,20 @@ public class BookingEditMenu extends Menu {
 
     private void editingBookingTime(BookingDTO booking) {
         List<TimeSlot> availableSlots = bookingClient.getAvailableSlots(booking.coworkingId(), booking.date());
-        List<TimeSlot> bookingSlots  = booking.timeSlots();
+        List<TimeSlot> bookingSlots = booking.timeSlots();
         List<TimeSlot> newBookingSlots = selectSlotsForBooking(new ArrayList<>(availableSlots), new ArrayList<>(bookingSlots), booking.date());
         if (newBookingSlots.isEmpty()) {
             System.out.println("время бронирования не может быть пустым.");
             System.out.println("Изменение времени бронирования отменено.");
             return;
-        } else if (bookingSlots.equals(newBookingSlots)){
+        } else if (bookingSlots.equals(newBookingSlots)) {
             System.out.println("Изменение времени бронирования отменено.");
             return;
         }
         BookingDTO newBookingDTO = updateBookingDTO(booking, newBookingSlots);
         try {
             BookingDTO updatedBooking = bookingClient.updateBooking(newBookingDTO);
-            Session.getInstance().setAttribute("bookingForEdit",updatedBooking);
+            Session.getInstance().setAttribute("bookingForEdit", updatedBooking);
         } catch (BookingException e) {
             System.err.println(e.getMessage());
         }
@@ -98,7 +134,7 @@ public class BookingEditMenu extends Menu {
             if (new HashSet<>(availableSlots).containsAll(newBookingDTO.timeSlots())) {
                 try {
                     BookingDTO updatedBooking = bookingClient.updateBooking(newBookingDTO);
-                    Session.getInstance().setAttribute("bookingForEdit",updatedBooking);
+                    Session.getInstance().setAttribute("bookingForEdit", updatedBooking);
                 } catch (BookingException e) {
                     System.err.println(e.getMessage());
                 }
@@ -123,8 +159,8 @@ public class BookingEditMenu extends Menu {
 
 
     private void editingBookingCoworking(BookingDTO booking) {
-        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("availableCoworkings");
-        String coworkingName  =  (String) Session.getInstance().getAttribute("CoworkingBookingName");
+        Map<String, CoworkingDTO> coworkings = bookingClient.getAllAvailableCoworkings();
+        String coworkingName = (String) Session.getInstance().getAttribute("CoworkingBookingName");
         System.out.println("Забронированный коворкинг: " + coworkingName);
         System.out.println("Доступные коворкинги:");
         coworkings.values().forEach(System.out::println);
@@ -153,8 +189,8 @@ public class BookingEditMenu extends Menu {
             try {
                 String coworkingNameById = getCoworkingNameById(coworkings, newCoworkingId);
                 BookingDTO updatedBooking = bookingClient.updateBooking(newBookingDTO);
-                Session.getInstance().setAttribute("bookingForEdit",updatedBooking);
-                Session.getInstance().setAttribute("CoworkingBookingName",coworkingNameById);
+                Session.getInstance().setAttribute("bookingForEdit", updatedBooking);
+                Session.getInstance().setAttribute("CoworkingBookingName", coworkingNameById);
             } catch (BookingException e) {
                 System.err.println(e.getMessage());
             }
@@ -190,33 +226,33 @@ public class BookingEditMenu extends Menu {
         }
     }
 
-        private BookingDTO updateBookingDTO (BookingDTO booking, List < TimeSlot > newTimeSlots){
-            return BookingDTO.builder()
-                    .id(booking.id())
-                    .userId(booking.userId())
-                    .coworkingId(booking.coworkingId())
-                    .date(booking.date())
-                    .timeSlots(newTimeSlots)
-                    .build();
-        }
-
-        private BookingDTO updateBookingDTO (BookingDTO booking, LocalDate newDate){
-            return BookingDTO.builder()
-                    .id(booking.id())
-                    .userId(booking.userId())
-                    .coworkingId(booking.coworkingId())
-                    .date(newDate)
-                    .timeSlots(booking.timeSlots())
-                    .build();
-        }
-
-        private BookingDTO updateBookingDTO (BookingDTO booking,long newCoworkingId){
-            return BookingDTO.builder()
-                    .id(booking.id())
-                    .userId(booking.userId())
-                    .coworkingId(newCoworkingId)
-                    .date(booking.date())
-                    .timeSlots(booking.timeSlots())
-                    .build();
-        }
+    private BookingDTO updateBookingDTO(BookingDTO booking, List<TimeSlot> newTimeSlots) {
+        return BookingDTO.builder()
+                .id(booking.id())
+                .userId(booking.userId())
+                .coworkingId(booking.coworkingId())
+                .date(booking.date())
+                .timeSlots(newTimeSlots)
+                .build();
     }
+
+    private BookingDTO updateBookingDTO(BookingDTO booking, LocalDate newDate) {
+        return BookingDTO.builder()
+                .id(booking.id())
+                .userId(booking.userId())
+                .coworkingId(booking.coworkingId())
+                .date(newDate)
+                .timeSlots(booking.timeSlots())
+                .build();
+    }
+
+    private BookingDTO updateBookingDTO(BookingDTO booking, long newCoworkingId) {
+        return BookingDTO.builder()
+                .id(booking.id())
+                .userId(booking.userId())
+                .coworkingId(newCoworkingId)
+                .date(booking.date())
+                .timeSlots(booking.timeSlots())
+                .build();
+    }
+}

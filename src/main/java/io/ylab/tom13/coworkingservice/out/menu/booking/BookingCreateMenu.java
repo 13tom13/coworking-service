@@ -26,7 +26,7 @@ public class BookingCreateMenu extends Menu {
     @Override
     public void display() {
         boolean createMenu = true;
-        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) Session.getInstance().getAttribute("availableCoworkings");
+        Map<String, CoworkingDTO> coworkings = bookingClient.getAllAvailableCoworkings();
         UserDTO user = (UserDTO) Session.getInstance().getAttribute("user");
         while (createMenu) {
             System.out.println("Меню создания бронирования");

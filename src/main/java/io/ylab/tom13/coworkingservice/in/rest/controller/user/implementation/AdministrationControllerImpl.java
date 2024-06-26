@@ -1,8 +1,10 @@
 package io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
+import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.NoAccessException;
@@ -35,11 +37,9 @@ public class AdministrationControllerImpl implements AdministrationController {
     public ResponseDTO<UserDTO> getUserByEmail(AuthenticationDTO authentication, String email) {
         try {
             UserDTO user = administrationService.getUserByEmail(authentication, email);
-            System.out.println("привет");
             return ResponseDTO.success(user);
 
         } catch (UserNotFoundException | NoAccessException e) {
-            System.out.println("исключение");
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -60,6 +60,16 @@ public class AdministrationControllerImpl implements AdministrationController {
             administrationService.editUserPasswordByAdministrator(authentication, userId, newHashPassword);
             return ResponseDTO.success("Пароль успешно изменен");
         } catch (RepositoryException | UserNotFoundException | NoAccessException e) {
+            return ResponseDTO.failure(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseDTO<String> registrationUser(AuthenticationDTO authentication, RegistrationDTO registrationDTO, Role role) {
+        try {
+            administrationService.registrationUser(authentication, registrationDTO, role);
+            return ResponseDTO.success("Пользователь успешно создан");
+        } catch (RepositoryException | NoAccessException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }

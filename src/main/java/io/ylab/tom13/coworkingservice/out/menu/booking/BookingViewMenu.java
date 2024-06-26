@@ -25,7 +25,7 @@ public class BookingViewMenu extends Menu {
     @Override
     public void display() {
         boolean viewMenu = true;
-        Map<String, CoworkingDTO> coworkings = (Map<String, CoworkingDTO>) localSession.getAttribute("availableCoworkings");
+        Map<String, CoworkingDTO> coworkings = bookingClient.getAllAvailableCoworkings();
         UserDTO user = (UserDTO) localSession.getAttribute("user");
         while (viewMenu) {
             System.out.println("Меню просмотра бронирований пользователя");
@@ -33,7 +33,6 @@ public class BookingViewMenu extends Menu {
             System.out.println("1. Просмотр всех бронирований");
             System.out.println("2. Просмотр бронирований по дате");
             System.out.println("3. Просмотр бронирований по коворкингу");
-            System.out.println("4. Редактирование бронирования");
             System.out.println("0. Выход из просмотра бронирований");
             System.out.println();
             int choice = readInt("Введите номер действия: ");
@@ -41,7 +40,6 @@ public class BookingViewMenu extends Menu {
                 case 1 -> viewAllUserBookings(coworkings, user);
                 case 2 -> viewUserBookingsByDate(coworkings, user);
                 case 3 -> viewUserBookingsByCoworking(coworkings, user);
-                case 4 -> getBookingForEdit(coworkings, user);
                 case 0 -> {
                     System.err.println("Выход из меню просмотра бронирований");
                     viewMenu = false;
@@ -79,21 +77,6 @@ public class BookingViewMenu extends Menu {
             long coworkingId = getCoworkingIdByName(coworkings);
             List<BookingDTO> userBookingsByCoworking = bookingClient.getUserBookingsByCoworking(coworkingId, user);
             viewBookingsList(coworkings, userBookingsByCoworking);
-        } catch (BookingException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-
-    private void getBookingForEdit(Map<String, CoworkingDTO> coworkings, UserDTO user) {
-        viewAllUserBookings(coworkings, user);
-        long bookingId  = readLong("Введите ID бронирования для редактирования:");
-        try {
-            BookingDTO bookingForEdit = bookingClient.getBookingById(bookingId);
-            String CoworkingName  = getCoworkingNameById(coworkings,bookingForEdit.coworkingId());
-            localSession.setAttribute("CoworkingBookingName", CoworkingName);
-            localSession.setAttribute("bookingForEdit", bookingForEdit);
-            bookingEditMenu.display();
         } catch (BookingException e) {
             System.err.println(e.getMessage());
         }
