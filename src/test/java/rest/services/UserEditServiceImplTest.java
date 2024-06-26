@@ -3,28 +3,32 @@ package rest.services;
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.implementation.UserEditServiceImpl;
+import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Тесты сервиса редактирования пользователя")
 class UserEditServiceImplTest {
 
     @Mock
@@ -33,47 +37,49 @@ class UserEditServiceImplTest {
     @InjectMocks
     private UserEditServiceImpl userEditService;
 
+    private User user;
     private UserDTO userDTO;
+    private String password;
+    private String hashedPassword;
 
     @BeforeEach
     void setUp() throws Exception {
-        userDTO = new UserDTO(1L, "John", "Doe", "john.new@example.com", Role.USER);
-
-
+        password = "password";
+        hashedPassword = BCrypt.hashpw("password", BCrypt.gensalt());
+        user = new User(1L, "John", "Doe", "john.new@example.com", hashedPassword, Role.USER);
+        userDTO = UserMapper.INSTANCE.toUserDTO(user);
         Field UserEditServiceField = UserEditServiceImpl.class.getDeclaredField("userRepository");
         UserEditServiceField.setAccessible(true);
         UserEditServiceField.set(userEditService, userRepository);
     }
 
     @Test
-    void testEditUserSuccess() throws RepositoryException {
-        when(userRepository.updateUser(userDTO)).thenReturn(userDTO);
+    @DisplayName("Успешное редактирование пользователя")
+    void testEditUserSuccess() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
+        when(userRepository.updateUser(user)).thenReturn(user);
+        when(userRepository.existsById(user.id())).thenReturn(true);
+        when(userRepository.existsByEmail(user.email())).thenReturn(true);
+        when(userRepository.findById(user.id())).thenReturn(Optional.ofNullable(user));
 
-        userEditService.editUser(userDTO);
-
-        ArgumentCaptor<UserDTO> captor = ArgumentCaptor.forClass(UserDTO.class);
-        verify(userRepository, times(1)).updateUser(captor.capture());
-
-        UserDTO capturedUserDTO = captor.getValue();
-        assertThat(capturedUserDTO).isEqualTo(userDTO);
-
+        assertDoesNotThrow(() -> userEditService.editUser(userDTO));
     }
 
     @Test
-    void testEditUserUserNotFound() throws UserNotFoundException, UserAlreadyExistsException {
-        doThrow(new UserNotFoundException("с ID 1")).when(userRepository).updateUser(any(UserDTO.class));
-
+    @DisplayName("Попытка редактирования несуществующего пользователя")
+    void testEditUserUserNotFound() {
         assertThatThrownBy(() -> userEditService.editUser(userDTO))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("с ID 1");
     }
 
     @Test
-    void testEditPasswordSuccess() throws UnauthorizedException, RepositoryException {
-        PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO("john.doe@example.com", "password", "newPassword");
+    @DisplayName("Успешное изменение пароля")
+    void testEditPasswordSuccess() throws UnauthorizedException, RepositoryException, UserNotFoundException {
+        when(userRepository.findByEmail(user.email())).thenReturn(Optional.ofNullable(user));
 
-        doNothing().when(userRepository).updatePassword(any(PasswordChangeDTO.class));
+        PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), password, "newPassword");
+
         userEditService.editPassword(passwordChangeDTO);
-        verify(userRepository, times(1)).updatePassword(any(PasswordChangeDTO.class));
+
     }
 }

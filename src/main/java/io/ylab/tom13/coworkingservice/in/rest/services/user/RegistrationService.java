@@ -2,6 +2,7 @@ package io.ylab.tom13.coworkingservice.in.rest.services.user;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 
 /**
@@ -16,6 +17,6 @@ public interface RegistrationService {
      * @return DTO с данными созданного пользователя
      * @throws UserAlreadyExistsException если пользователь с таким email уже существует
      */
-    UserDTO createUser(RegistrationDTO registrationDTO) throws UserAlreadyExistsException;
+    UserDTO createUser(RegistrationDTO registrationDTO) throws UserAlreadyExistsException, RepositoryException;
 }
 

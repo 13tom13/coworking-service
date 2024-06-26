@@ -27,10 +27,10 @@ public class UserEditClient extends Client {
         }
     }
 
-    public void editPassword(PasswordChangeDTO passwordChangeDTO) throws EditException {
+    public String editPassword(PasswordChangeDTO passwordChangeDTO) throws EditException {
         ResponseDTO<String> response = userEditController.editPassword(passwordChangeDTO);
         if (response.success()) {
-            System.out.println(response.data());
+           return response.data();
         } else {
             throw new EditException(response.message());
         }

@@ -70,9 +70,10 @@ public class UserEditMenu extends Menu {
 
     private void editPassword(UserDTO user) throws EditException {
         String oldPassword = readString("Введите старый пароль:");
-        String newHashPassword = BCrypt.hashpw(readString("Введите новый пароль:"), BCrypt.gensalt());
+        String newHashPassword = readPassword();
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), oldPassword, newHashPassword);
-        userEditClient.editPassword(passwordChangeDTO);
+        String response = userEditClient.editPassword(passwordChangeDTO);
+        System.out.println(response);
     }
 
 }

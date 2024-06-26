@@ -1,21 +1,25 @@
 package io.ylab.tom13.coworkingservice.in.rest.repositories;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
+import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository {
 
     /**
      * Создает новое бронирование.
      *
-     * @param booking объект Booking, представляющий бронирование
+     * @param newBooking объект Booking, представляющий бронирование
      * @return созданное бронирование с присвоенным идентификатором
      */
-    BookingDTO createBooking(BookingDTO booking) throws BookingConflictException;
+    Optional<Booking> createBooking(Booking newBooking) throws BookingConflictException, RepositoryException;
 
     /**
      * Обновляет существующее бронирование.
@@ -23,7 +27,7 @@ public interface BookingRepository {
      * @param booking объект Booking, представляющий бронирование с обновленными данными
      * @return обновленное бронирование
      */
-    BookingDTO updateBooking(BookingDTO booking) throws BookingNotFoundException, BookingConflictException;
+    Optional<Booking>  updateBooking(Booking updatedBooking) throws BookingNotFoundException, BookingConflictException, RepositoryException;
 
     /**
      * Удаляет бронирование по идентификатору.
@@ -38,7 +42,7 @@ public interface BookingRepository {
      * @param userId идентификатор пользователя
      * @return список бронирований, связанных с пользователем
      */
-    List<BookingDTO> getBookingsByUser(long userId) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUser(long userId) throws BookingNotFoundException;
 
     /**
      * Получает бронирования по идентификатору пользователя и дате
@@ -47,7 +51,7 @@ public interface BookingRepository {
      * @param date   дата бронирования
      * @return список бронирований, связанных с пользователем
      */
-    List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException;
 
     /**
      * Получает бронирования по идентификатору пользователя и дате
@@ -56,7 +60,7 @@ public interface BookingRepository {
      * @param coworkingId идентификатор коворкинга для фильтрации
      * @return список бронирований, связанных с пользователем
      */
-    List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException;
 
     /**
      * Получает бронирования по идентификатору коворкинга и дате.
@@ -65,7 +69,7 @@ public interface BookingRepository {
      * @param date        дата бронирования
      * @return список бронирований, связанных с коворкингом и датой
      */
-    List<BookingDTO> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date);
+    Collection<Booking> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date);
 
     /**
      * Получает бронирования по ID.
@@ -73,7 +77,8 @@ public interface BookingRepository {
      * @param bookingId ID бронирования
      * @return список бронирований, связанных с коворкингом и датой
      */
-    BookingDTO getBookingById(long bookingId) throws BookingNotFoundException;
+    Optional<Booking> getBookingById(long bookingId) throws BookingNotFoundException;
 
     void deleteAllCoworkingBookings(long coworkingID);
+
 }

@@ -1,10 +1,8 @@
 package rest.repositories;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,30 +23,30 @@ class UserRepositoryCollectionTest {
     @InjectMocks
     private UserRepositoryCollection userRepository;
 
-    private RegistrationDTO testRegistrationDTO;
+    private User testUser;
 
     @BeforeEach
     void setUp() {
-        testRegistrationDTO = new RegistrationDTO("Test", "User", "test@example.com", "password", Role.USER);
+        testUser = new User(userRepository.getNewId(), "Test", "User", "test@example.com", "password", Role.USER);
     }
 
     @Test
-    void testCreateUser() throws UserAlreadyExistsException {
-        UserDTO userDTO = userRepository.createUser(testRegistrationDTO);
+    void testCreateUser() throws RepositoryException {
+        User createdUser = userRepository.createUser(testUser);
 
-        assertThat(userDTO).isNotNull();
-        assertThat(userDTO.email()).isEqualTo("test@example.com");
+        assertThat(createdUser).isNotNull();
+        assertThat(createdUser.email()).isEqualTo("test@example.com");
     }
 
     @Test
-    void testCreateUserThrowsException() throws UserAlreadyExistsException {
-        userRepository.createUser(testRegistrationDTO);
-        assertThrows(UserAlreadyExistsException.class, () -> userRepository.createUser(testRegistrationDTO));
+    void testCreateUserThrowsException() throws RepositoryException {
+        userRepository.createUser(testUser);
+        assertThrows(RepositoryException.class, () -> userRepository.createUser(testUser));
     }
 
     @Test
-    void testFindByEmail() throws UserAlreadyExistsException {
-        userRepository.createUser(testRegistrationDTO);
+    void testFindByEmail() throws RepositoryException {
+        userRepository.createUser(testUser);
 
         Optional<User> foundUser = userRepository.findByEmail("test@example.com");
 
@@ -63,13 +61,13 @@ class UserRepositoryCollectionTest {
     }
 
     @Test
-    void testFindById() throws UserAlreadyExistsException {
-        UserDTO userDTO = userRepository.createUser(testRegistrationDTO);
+    void testFindById() throws RepositoryException {
+        User createdUser = userRepository.createUser(testUser);
 
-        Optional<User> foundUser = userRepository.findById(userDTO.id());
+        Optional<User> foundUser = userRepository.findById(createdUser.id());
 
         assertThat(foundUser).isPresent();
-        assertThat(foundUser.get().id()).isEqualTo(userDTO.id());
+        assertThat(foundUser.get().id()).isEqualTo(createdUser.id());
     }
 
     @Test
@@ -79,12 +77,12 @@ class UserRepositoryCollectionTest {
     }
 
     @Test
-    void testDeleteUserById() throws UserNotFoundException, UserAlreadyExistsException {
-        UserDTO userDTO = userRepository.createUser(testRegistrationDTO);
+    void testDeleteUserById() throws RepositoryException, UserNotFoundException {
+        User createdUser = userRepository.createUser(testUser);
 
-        userRepository.deleteUserById(userDTO.id());
+        userRepository.deleteUserById(createdUser.id());
 
-        Optional<User> foundUser = userRepository.findById(userDTO.id());
+        Optional<User> foundUser = userRepository.findById(createdUser.id());
         assertThat(foundUser).isEmpty();
     }
 
@@ -94,41 +92,25 @@ class UserRepositoryCollectionTest {
     }
 
     @Test
-    void testUpdateUser() throws UserNotFoundException, UserAlreadyExistsException {
-        UserDTO userDTO = userRepository.createUser(testRegistrationDTO);
-        UserDTO updatedUser = new UserDTO(userDTO.id(), "UpdatedFirstName", "UpdatedLastName", "updated@example.com", Role.USER);
+    void testUpdateUser() throws RepositoryException {
+        User createdUser = userRepository.createUser(testUser);
+        User updatedUser = new User(createdUser.id(), "UpdatedFirstName", "UpdatedLastName", "updated@example.com", "password", Role.USER);
 
         userRepository.updateUser(updatedUser);
 
-        Optional<User> foundUser = userRepository.findById(userDTO.id());
+        Optional<User> foundUser = userRepository.findById(createdUser.id());
         assertThat(foundUser).isPresent();
         assertThat(foundUser.get().firstName()).isEqualTo("UpdatedFirstName");
         assertThat(foundUser.get().email()).isEqualTo("updated@example.com");
     }
 
     @Test
-    void testUpdateUserThrowsUserNotFoundException() {
-        UserDTO updatedUser = new UserDTO(999L, "UpdatedFirstName", "UpdatedLastName", "updated@example.com", Role.USER);
-        assertThrows(UserNotFoundException.class, () -> userRepository.updateUser(updatedUser));
-    }
+    void testGetAllUsers() throws RepositoryException {
+        User user1 = new User(userRepository.getNewId(), "Test1", "User1", "test1@example.com", "password1", Role.USER);
+        User user2 = new User(userRepository.getNewId(), "Test2", "User2", "test2@example.com", "password2", Role.USER);
 
-    @Test
-    void testUpdateUserThrowsUserAlreadyExistsException() throws UserAlreadyExistsException {
-        RegistrationDTO registrationDTO1 = new RegistrationDTO("Test", "User", "test@example.com", "password", Role.USER);
-        RegistrationDTO registrationDTO2 = new RegistrationDTO("Test", "User", "test2@example.com", "password", Role.USER);
-        userRepository.createUser(registrationDTO1);
-        UserDTO userDTO2 = userRepository.createUser(registrationDTO2);
-        UserDTO updatedUser = new UserDTO(userDTO2.id(), "Test", "User", "test@example.com", Role.USER);
-
-        assertThrows(UserAlreadyExistsException.class, () -> userRepository.updateUser(updatedUser));
-    }
-
-    @Test
-    void testGetAllUsers() throws UserAlreadyExistsException {
-        RegistrationDTO registrationDTO1 = new RegistrationDTO("test1@example.com", "password", "Test1", "User1", Role.USER);
-        RegistrationDTO registrationDTO2 = new RegistrationDTO("test2@example.com", "password", "Test2", "User2", Role.USER);
-        userRepository.createUser(registrationDTO1);
-        userRepository.createUser(registrationDTO2);
+        userRepository.createUser(user1);
+        userRepository.createUser(user2);
 
         Collection<User> users = userRepository.getAllUsers();
 

@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.menu.coworking;
+package io.ylab.tom13.coworkingservice.out.menu.administration.coworking;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.out.client.CoworkingClient;

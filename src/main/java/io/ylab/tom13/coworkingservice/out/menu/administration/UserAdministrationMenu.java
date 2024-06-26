@@ -5,6 +5,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
+import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 import io.ylab.tom13.coworkingservice.out.client.AdministrationClient;
 import io.ylab.tom13.coworkingservice.out.client.RegistrationClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
@@ -69,15 +70,17 @@ public class UserAdministrationMenu extends Menu {
     }
 
     private void userEditing(AuthenticationDTO authentication) {
-        UserDTO user;
+
         try {
-            user = getUserForEdit(authentication);
+            UserDTO user = getUserForEdit(authentication);
+            localSession.setAttribute("userForEdit", user);
         } catch (UserNotFoundException e) {
             System.err.println(e.getMessage());
             return;
         }
         boolean userManagementMenu = true;
         while (userManagementMenu) {
+            UserDTO user = (UserDTO) localSession.getAttribute("userForEdit");
             System.out.printf("Редактировать пользователя: %s %n", user);
             System.out.println("1. Изменить имя пользователя");
             System.out.println("2. Изменить фамилию пользователя");
@@ -112,33 +115,42 @@ public class UserAdministrationMenu extends Menu {
     }
 
     private UserDTO getUserForEdit(AuthenticationDTO authentication) throws UserNotFoundException {
-
-            String email = readString("Введите email пользователя:");
-            return administrationClient.getUserByEmail(authentication, email);
+        String email = readString("Введите email пользователя:");
+        return administrationClient.getUserByEmail(authentication, email);
     }
 
     private void editFirstName(AuthenticationDTO authentication, UserDTO user) throws EditException {
         String newFirstName = readString("Введите новое имя:");
-        administrationClient.editUserByAdministrator(authentication,
+        UserDTO userDTO = administrationClient.editUserByAdministrator(authentication,
                 new UserDTO(user.id(), newFirstName, user.lastName(), user.email(), user.role()));
+        editUser(authentication, userDTO);
     }
 
     private void editLastName(AuthenticationDTO authentication, UserDTO user) throws EditException {
         String newLastName = readString("Введите новую фамилию:");
-        administrationClient.editUserByAdministrator(authentication,
-                new UserDTO(user.id(), user.firstName(), newLastName, user.email(), user.role()));
+        UserDTO userDTO = new UserDTO(user.id(), user.firstName(), newLastName, user.email(), user.role());
+        editUser(authentication, userDTO);
     }
 
     private void editEmail(AuthenticationDTO authentication, UserDTO user) throws EditException {
         String newEmail = readString("Введите новый email:");
-        administrationClient.editUserByAdministrator(authentication,
-                new UserDTO(user.id(), user.firstName(), user.lastName(), newEmail, user.role()));
+        UserDTO userDTO = new UserDTO(user.id(), user.firstName(), user.lastName(), newEmail, user.role());
+        editUser(authentication, userDTO);
     }
 
     private void editPassword(AuthenticationDTO authentication, UserDTO user) throws EditException {
-        String newHashPassword = BCrypt.hashpw(readString("Введите новый пароль:"), BCrypt.gensalt());
+        String hashPassword = readPassword();
         long userId = user.id();
-        administrationClient.editPasswordByAdministrator(authentication, userId, newHashPassword);
+        String response = administrationClient.editPasswordByAdministrator(authentication, userId, hashPassword);
+        System.out.println(response);
+    }
+
+    //TODO: редактирование ролей пользователя
+
+    private void editUser(AuthenticationDTO authentication, UserDTO user) throws EditException {
+        UserDTO userDTO = administrationClient.editUserByAdministrator(authentication, user);
+        localSession.setAttribute("userForEdit", userDTO);
+        System.out.println("Пользователь успешно изменен ");
     }
 
 }

@@ -5,6 +5,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingUpdatingExceptions;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.coworking.CoworkingController;
 import io.ylab.tom13.coworkingservice.in.rest.services.coworking.CoworkingService;
 import io.ylab.tom13.coworkingservice.in.rest.services.coworking.implementation.CoworkingServiceImpl;
@@ -36,7 +37,7 @@ public class CoworkingControllerImpl implements CoworkingController {
         try {
             CoworkingDTO coworking = coworkingService.createCoworking(coworkingDTO);
             return ResponseDTO.success(coworking);
-        } catch (CoworkingConflictException e) {
+        } catch (CoworkingConflictException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -46,7 +47,7 @@ public class CoworkingControllerImpl implements CoworkingController {
         try {
             CoworkingDTO coworking = coworkingService.updateCoworking(coworkingDTO);
             return ResponseDTO.success(coworking);
-        } catch (CoworkingUpdatingExceptions e) {
+        } catch (CoworkingUpdatingExceptions | CoworkingNotFoundException | CoworkingConflictException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }

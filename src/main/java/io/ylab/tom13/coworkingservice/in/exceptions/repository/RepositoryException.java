@@ -1,6 +1,6 @@
 package io.ylab.tom13.coworkingservice.in.exceptions.repository;
 
-public abstract class RepositoryException extends Exception {
+public class RepositoryException extends Exception {
 
     /**
      * Конструктор исключения с указанием сообщения ошибки.
@@ -8,6 +8,6 @@ public abstract class RepositoryException extends Exception {
      * @param message сообщение ошибки
      */
     public RepositoryException(String message) {
-        super(message);
+        super("Ошибка репозитория: " + message);
     }
 }

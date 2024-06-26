@@ -3,7 +3,7 @@ package io.ylab.tom13.coworkingservice.out.menu.administration;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.menu.coworking.CoworkingAdministrationMenu;
+import io.ylab.tom13.coworkingservice.out.menu.administration.coworking.CoworkingAdministrationMenu;
 
 public class AdminMenu extends Menu {
 

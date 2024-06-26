@@ -1,20 +1,23 @@
 package io.ylab.tom13.coworkingservice.in.rest.repositories;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
+
+import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Coworking;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 
-import java.util.Map;
+import java.util.Collection;
+import java.util.Optional;
 
 public interface CoworkingRepository {
 
-    Map<String, CoworkingDTO> getAllCoworking();
+    Collection<Coworking> getAllCoworking();
 
-    Map<String, CoworkingDTO> getAllAvailableCoworkings();
+    Optional<Coworking> getCoworkingById(long coworkingId) throws CoworkingNotFoundException;
 
-    CoworkingDTO createCoworking(CoworkingDTO coworkingDTO) throws CoworkingConflictException;
+    Optional<Coworking> createCoworking(Coworking coworkingDTO) throws CoworkingConflictException, RepositoryException;
 
     void deleteCoworking(long coworkingId) throws CoworkingNotFoundException;
 
-    CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingNotFoundException, CoworkingConflictException;
+    Optional<Coworking> updateCoworking(Coworking coworkingDTO) throws CoworkingNotFoundException, CoworkingConflictException;
 }

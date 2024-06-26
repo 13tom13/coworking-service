@@ -1,9 +1,9 @@
 package io.ylab.tom13.coworkingservice.in.rest.repositories;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
@@ -25,7 +25,7 @@ public interface UserRepository {
      * @throws UserAlreadyExistsException если пользователь с таким email уже существует.
      * @return UserDTO данные добавленного пользователя.
      */
-    UserDTO createUser(RegistrationDTO registrationDTO) throws UserAlreadyExistsException;
+    User createUser(User user) throws RepositoryException;
 
     /**
      * Поиск пользователя по email.
@@ -55,10 +55,10 @@ public interface UserRepository {
      * Обновляет информацию о пользователе.
      *
      * @param user объект пользователя для обновления
-     * @throws UserNotFoundException если пользователь с указанным ID не найден.
+     * @throws UserNotFoundException      если пользователь с указанным ID не найден.
      * @throws UserAlreadyExistsException если найден пользователь с таким же email.
      */
-    UserDTO updateUser(UserDTO user) throws UserNotFoundException, UserAlreadyExistsException;
+    Optional<User> updateUser(User user) throws RepositoryException;
 
     /**
      * Получение всех пользователей из репозитория.
@@ -67,6 +67,5 @@ public interface UserRepository {
      */
     Collection<User> getAllUsers();
 
-    void updatePassword(PasswordChangeDTO passwordChangeDTO) throws UserNotFoundException, UnauthorizedException;
 }
 

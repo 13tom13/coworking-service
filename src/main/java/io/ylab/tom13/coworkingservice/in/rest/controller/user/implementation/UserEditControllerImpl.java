@@ -4,6 +4,8 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.UserEditController;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.UserEditService;
@@ -22,7 +24,7 @@ public class UserEditControllerImpl implements UserEditController {
         try {
             UserDTO user = userEditService.editUser(userDTO);
             return ResponseDTO.success(user);
-        } catch (RepositoryException e) {
+        } catch (RepositoryException | UserNotFoundException | UserAlreadyExistsException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -32,7 +34,7 @@ public class UserEditControllerImpl implements UserEditController {
         try {
             userEditService.editPassword(passwordChangeDTO);
             return ResponseDTO.success("Пароль успешно изменен");
-        } catch (UnauthorizedException | RepositoryException e) {
+        } catch (UnauthorizedException | RepositoryException | UserNotFoundException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }

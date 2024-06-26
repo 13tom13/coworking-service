@@ -4,6 +4,8 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.AuthenticationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.NoAccessException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
@@ -12,9 +14,10 @@ import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.ylab.tom13.coworkingservice.in.utils.Utils.hasRole;
+import static io.ylab.tom13.coworkingservice.in.utils.Security.hasRole;
 
 public class AdministrationServiceImpl implements AdministrationService {
 
@@ -24,16 +27,56 @@ public class AdministrationServiceImpl implements AdministrationService {
         userRepository = UserRepositoryCollection.getInstance();
     }
 
+    private final UserMapper userMapper = UserMapper.INSTANCE;
+
     @Override
-    public List<UserDTO> getAllUsers(AuthenticationDTO authenticationDTO) throws NoAccessException {
-        long adminId = authenticationDTO.userId();
-        if (hasRole(adminId, Role.ADMINISTRATOR, userRepository)) {
+    public List<UserDTO> getAllUsers(AuthenticationDTO authentication) throws NoAccessException {
+        if (hasRole(authentication.userId(), Role.ADMINISTRATOR, userRepository)){
             Collection<User> allUsers = userRepository.getAllUsers();
+
             return allUsers.stream()
                     .map(UserMapper.INSTANCE::toUserDTO)
                     .collect(Collectors.toList());
-        } else {
-            throw new NoAccessException();
-        }
+
+        } else throw new NoAccessException();
+    }
+
+    @Override
+    public UserDTO getUserByEmail(AuthenticationDTO authentication, String email) throws UserNotFoundException, NoAccessException {
+        hasRole(authentication.userId(), Role.ADMINISTRATOR, userRepository);
+        if (hasRole(authentication.userId(), Role.ADMINISTRATOR, userRepository)){
+            Optional<User> byEmail = userRepository.findByEmail(email);
+            User user = byEmail.orElseThrow(() -> new UserNotFoundException("с email " + email));
+
+            return userMapper.toUserDTO(user);
+        } else throw new NoAccessException();
+    }
+
+    @Override
+    public UserDTO editUserByAdministrator(AuthenticationDTO authentication, UserDTO userDTO) throws UserNotFoundException, NoAccessException, RepositoryException {
+        hasRole(authentication.userId(), Role.ADMINISTRATOR, userRepository);
+        if (hasRole(authentication.userId(), Role.ADMINISTRATOR, userRepository)){
+            long id = userDTO.id();
+            Optional<User> byId = userRepository.findById(id);
+            User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID " + id));
+            User userChanged = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), userDTO.email(), userFromRep.password(), userFromRep.role());
+            Optional<User> updatedUser = userRepository.updateUser(userChanged);
+            if (updatedUser.isPresent()){
+                return userMapper.toUserDTO(userChanged);
+            } else throw new RepositoryException("Не удалось обновить пользователя с ID " + userDTO.id());
+        } else throw new NoAccessException();
+
+    }
+
+    @Override
+    public void editUserPasswordByAdministrator(AuthenticationDTO authentication, long userId, String newHashPassword) throws NoAccessException, UserNotFoundException, RepositoryException {
+        hasRole(authentication.userId(), Role.ADMINISTRATOR, userRepository);
+        if (hasRole(authentication.userId(), Role.ADMINISTRATOR, userRepository)){
+            Optional<User> byId = userRepository.findById(userId);
+            User userFromRep  = byId.orElseThrow(()  -> new UserNotFoundException("с ID  " + userId));
+            User userChanged = new User(userFromRep.id(), userFromRep.firstName(), userFromRep.lastName(), userFromRep.email(), newHashPassword, userFromRep.role());
+            if (userRepository.updateUser(userChanged).isEmpty())
+                throw new RepositoryException("Не удалось обновить пароль с ID " + userId);
+        } else throw new NoAccessException();
     }
 }

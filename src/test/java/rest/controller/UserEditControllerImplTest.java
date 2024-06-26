@@ -5,6 +5,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.UserEditControllerImpl;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.UserEditService;
@@ -40,7 +41,7 @@ public class UserEditControllerImplTest {
     }
 
     @Test
-    void testEditUserSuccess() throws RepositoryException {
+    void testEditUserSuccess() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
         when(userEditService.editUser(any(UserDTO.class))).thenReturn(userDTO);
 
         ResponseDTO<UserDTO> response = userEditController.editUser(userDTO);
@@ -50,7 +51,7 @@ public class UserEditControllerImplTest {
     }
 
     @Test
-    void testEditUserRepositoryException() throws RepositoryException {
+    void testEditUserRepositoryException() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
 
         String errorMessage = "User not found";
         when(userEditService.editUser(userDTO)).thenThrow(new UserNotFoundException(errorMessage));

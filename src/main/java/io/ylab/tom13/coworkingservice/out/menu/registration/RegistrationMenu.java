@@ -40,7 +40,7 @@ public class RegistrationMenu extends Menu {
         String firstName = readString("Введите имя пользователя:");
         String lastName = readString("Введите фамилию:");
         String email = readString("Введите email:");
-        String hashPassword = BCrypt.hashpw(readString("Введите пароль:"), BCrypt.gensalt());
+        String hashPassword  = readPassword();
         RegistrationDTO registrationDTO = new RegistrationDTO(firstName, lastName, email, hashPassword, Role.USER);
         try {
             registrationClient.registration(registrationDTO);

@@ -4,13 +4,14 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface BookingService {
 
-    BookingDTO createBooking(BookingDTO bookingDTO) throws BookingConflictException;
+    BookingDTO createBooking(BookingDTO bookingDTO) throws BookingConflictException, RepositoryException;
 
     void cancelBooking(long bookingId) throws BookingNotFoundException;
 
@@ -24,7 +25,7 @@ public interface BookingService {
 
     BookingDTO getBookingById(long bookingId) throws BookingNotFoundException;
 
-    BookingDTO updateBooking(BookingDTO booking) throws BookingNotFoundException, BookingConflictException;
+    BookingDTO updateBooking(BookingDTO booking) throws BookingNotFoundException, BookingConflictException, RepositoryException;
 
 }
 

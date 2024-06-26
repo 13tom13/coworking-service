@@ -25,13 +25,25 @@ public class AdministrationClient extends Client {
     }
 
     public UserDTO getUserByEmail(AuthenticationDTO authentication, String email) throws UserNotFoundException {
-        //test
-        return null;
+        ResponseDTO<UserDTO> user = administrationController.getUserByEmail(authentication, email);
+        if (user.success()) {
+            return user.data();
+        } else {
+            throw new UserNotFoundException(user.message());
+        }
     }
 
-    public void editUserByAdministrator(AuthenticationDTO authentication, UserDTO userDTO) throws EditException {
+    public UserDTO editUserByAdministrator(AuthenticationDTO authentication, UserDTO userDTO) throws EditException {
+        ResponseDTO<UserDTO> user = administrationController.editUserByAdministrator(authentication, userDTO);
+        return user.data();
     }
 
-    public void editPasswordByAdministrator(AuthenticationDTO authentication, long userId, String newHashPassword) throws EditException {
+    public String editPasswordByAdministrator(AuthenticationDTO authentication, long userId, String newHashPassword) throws EditException {
+        ResponseDTO<String> response = administrationController.editUserPasswordByAdministrator(authentication, userId, newHashPassword);
+        if (response.success()) {
+            return response.data();
+        } else {
+            throw new EditException(response.message());
+        }
     }
 }

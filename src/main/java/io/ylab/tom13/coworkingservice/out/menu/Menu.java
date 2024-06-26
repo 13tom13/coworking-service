@@ -4,6 +4,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -96,6 +97,11 @@ public abstract class Menu {
                 System.err.println("Неверный формат даты. Пожалуйста, введите дату в формате ДД.ММ.ГГ.");
             }
         }
+    }
+
+    protected String readPassword() {
+        String password = readString("Введите пароль:");
+        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
     protected long getCoworkingIdByName(Map<String, CoworkingDTO> coworkings) throws BookingException {

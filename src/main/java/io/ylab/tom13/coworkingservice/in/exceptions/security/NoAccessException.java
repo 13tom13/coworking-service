@@ -5,4 +5,8 @@ public class NoAccessException extends Exception{
     public NoAccessException() {
         super("Отказано в доступе");
     }
+
+    public NoAccessException(String message) {
+        super(message);
+    }
 }

@@ -4,6 +4,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.RegistrationControllerImpl;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation.UserEditControllerImpl;
@@ -45,7 +46,7 @@ class RegistrationControllerImplTest {
     }
 
     @Test
-    void testCreateUserSuccess() throws UserAlreadyExistsException {
+    void testCreateUserSuccess() throws UserAlreadyExistsException, RepositoryException {
         when(registrationService.createUser(registrationDTO)).thenReturn(userDTO);
 
         ResponseDTO<UserDTO> response = registrationController.createUser(registrationDTO);
@@ -55,7 +56,7 @@ class RegistrationControllerImplTest {
     }
 
     @Test
-    void testCreateUserUserAlreadyExistsException() throws UserAlreadyExistsException {
+    void testCreateUserUserAlreadyExistsException() throws UserAlreadyExistsException, RepositoryException {
         String errorMessage = "User already exists";
         when(registrationService.createUser(registrationDTO)).thenThrow(new UserAlreadyExistsException(errorMessage));
 

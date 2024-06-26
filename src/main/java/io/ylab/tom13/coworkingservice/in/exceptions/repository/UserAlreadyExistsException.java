@@ -3,7 +3,7 @@ package io.ylab.tom13.coworkingservice.in.exceptions.repository;
 /**
  * Исключение, которое выбрасывается, если пользователь с указанным email уже существует.
  */
-public class UserAlreadyExistsException extends RepositoryException {
+public class UserAlreadyExistsException extends Exception {
 
     /**
      * Конструктор исключения с указанием email пользователя.

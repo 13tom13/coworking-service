@@ -5,6 +5,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.booking.BookingController;
 import io.ylab.tom13.coworkingservice.in.rest.services.booking.BookingService;
 import io.ylab.tom13.coworkingservice.in.rest.services.booking.implementation.BookingServiceImpl;
@@ -25,7 +26,7 @@ public class BookingControllerImpl implements BookingController {
         try {
             BookingDTO booking = bookingService.createBooking(bookingDTO);
             return ResponseDTO.success(booking);
-        } catch (BookingConflictException e) {
+        } catch (BookingConflictException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -94,7 +95,7 @@ public class BookingControllerImpl implements BookingController {
             System.out.println(booking.id());
             BookingDTO updatedBooking = bookingService.updateBooking(booking);
             return ResponseDTO.success(updatedBooking);
-        } catch (BookingNotFoundException | BookingConflictException e) {
+        } catch (BookingNotFoundException | BookingConflictException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }

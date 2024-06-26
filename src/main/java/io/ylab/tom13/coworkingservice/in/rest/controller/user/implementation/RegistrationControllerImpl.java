@@ -3,6 +3,7 @@ package io.ylab.tom13.coworkingservice.in.rest.controller.user.implementation;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.user.RegistrationController;
 import io.ylab.tom13.coworkingservice.in.rest.services.user.RegistrationService;
@@ -30,7 +31,7 @@ public class RegistrationControllerImpl implements RegistrationController {
         try {
             UserDTO user = registrationService.createUser(registrationDTO);
             return ResponseDTO.success(user);
-        } catch (UserAlreadyExistsException e) {
+        } catch (UserAlreadyExistsException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
