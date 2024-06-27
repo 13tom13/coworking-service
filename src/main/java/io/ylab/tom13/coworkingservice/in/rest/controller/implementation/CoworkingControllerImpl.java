@@ -70,12 +70,12 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
     }
 
     @Override
-    public ResponseDTO<Void> deleteBooking(long coworkingId) {
+    public ResponseDTO<Void> deleteCoworking(long coworkingId) {
         if (!hasRole(Role.ADMINISTRATOR, Role.MODERATOR)) {
             return ResponseDTO.failure(new NoAccessException().getMessage());
         }
         try {
-            coworkingService.deleteBooking(coworkingId);
+            coworkingService.deleteCoworking(coworkingId);
             return ResponseDTO.success(null);
         } catch (CoworkingNotFoundException e) {
             return ResponseDTO.failure(e.getMessage());

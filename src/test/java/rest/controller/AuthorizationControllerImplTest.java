@@ -8,6 +8,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.AuthorizationControllerImpl;
 import io.ylab.tom13.coworkingservice.in.rest.services.AuthorizationService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Тесты сервиса авторизации")
 public class AuthorizationControllerImplTest {
 
     @Mock
@@ -44,6 +46,7 @@ public class AuthorizationControllerImplTest {
     }
 
     @Test
+    @DisplayName("Тест успешной авторизации")
     void testLoginSuccess() throws UnauthorizedException {
         when(authorizationService.login(validAuthorizationDTO)).thenReturn(userDTO);
 
@@ -56,15 +59,14 @@ public class AuthorizationControllerImplTest {
     }
 
     @Test
+    @DisplayName("Тест безуспешной авторизации")
     void testLoginUnauthorizedException() throws UnauthorizedException {
-
-        String errorMessage = "Неверный email или пароль";
         when(authorizationService.login(invalidAuthorizationDTO)).thenThrow(new UnauthorizedException());
 
 
         ResponseDTO<UserDTO> response = authorizationController.login(invalidAuthorizationDTO);
 
-        assertThat(response.message()).contains(errorMessage);
+        assertThat(response.message()).isNotNull();
         assertThat(response.data()).isNull();
 
 

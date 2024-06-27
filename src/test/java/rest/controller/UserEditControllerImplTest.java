@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import rest.security.SecurityControllerTest;
 
 import java.lang.reflect.Field;
 
@@ -23,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Тест контроллера для редактирования пользователя")
-public class UserEditControllerImplTest {
+@DisplayName("Тесты контроллера редактирования пользователя")
+public class UserEditControllerImplTest extends SecurityControllerTest {
 
     @Mock
     private UserEditService userEditService;
@@ -34,18 +35,22 @@ public class UserEditControllerImplTest {
 
     private UserDTO userDTO;
 
+
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
         Field userEditControllerField = UserEditControllerImpl.class.getDeclaredField("userEditService");
         userEditControllerField.setAccessible(true);
         userEditControllerField.set(userEditController, userEditService);
+
         userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com", Role.USER);
+
+        when(session.getUser()).thenReturn(userDTO);
     }
 
     @Test
     @DisplayName("Тест успешно редактировать пользователя")
     void testEditUserSuccess() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
-        when(userEditService.editUser(any(UserDTO.class))).thenReturn(userDTO);
+        when(userEditService.editUser(userDTO)).thenReturn(userDTO);
 
         ResponseDTO<UserDTO> response = userEditController.editUser(userDTO);
 

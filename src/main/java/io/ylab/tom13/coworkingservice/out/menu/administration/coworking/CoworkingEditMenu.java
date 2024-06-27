@@ -1,6 +1,5 @@
 package io.ylab.tom13.coworkingservice.out.menu.administration.coworking;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
@@ -108,7 +107,7 @@ public class CoworkingEditMenu extends Menu {
         switch (choice) {
             case 1 -> {
                 try {
-                    coworkingClient.deleteBooking(coworkingDTO.getId());
+                    coworkingClient.deleteCoworking(coworkingDTO.getId());
                     System.err.println("Коворкинг успешно удалено.");
                 } catch (CoworkingException e) {
                     System.err.println(e.getMessage());

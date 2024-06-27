@@ -37,8 +37,8 @@ public class CoworkingClient extends Client {
         }
     }
 
-    public void deleteBooking(long coworkingId) throws CoworkingException {
-        ResponseDTO<Void> responseDTO = coworkingController.deleteBooking(coworkingId);
+    public void deleteCoworking(long coworkingId) throws CoworkingException {
+        ResponseDTO<Void> responseDTO = coworkingController.deleteCoworking(coworkingId);
         if (!responseDTO.success()) {
             throw new CoworkingException("Не удалось удалить - " + responseDTO.message());
         }

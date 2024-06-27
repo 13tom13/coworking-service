@@ -9,6 +9,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExists
 import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.RegistrationControllerImpl;
 import io.ylab.tom13.coworkingservice.in.rest.services.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Тесты контроллера регистрации пользователя")
 class RegistrationControllerImplTest {
 
     @Mock
@@ -45,6 +47,7 @@ class RegistrationControllerImplTest {
     }
 
     @Test
+    @DisplayName("Тест успешно создания пользователя")
     void testCreateUserSuccess() throws UserAlreadyExistsException, RepositoryException {
         when(registrationService.createUser(registrationDTO)).thenReturn(userDTO);
 
@@ -55,6 +58,7 @@ class RegistrationControllerImplTest {
     }
 
     @Test
+    @DisplayName("Тест попытки создания пользователя с существующим email")
     void testCreateUserUserAlreadyExistsException() throws UserAlreadyExistsException, RepositoryException {
         String errorMessage = "User already exists";
         when(registrationService.createUser(registrationDTO)).thenThrow(new UserAlreadyExistsException(errorMessage));

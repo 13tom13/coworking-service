@@ -107,7 +107,7 @@ class CoworkingServiceImplTest {
         long coworkingId = 5L;
         doThrow(CoworkingNotFoundException.class).when(coworkingRepository).deleteCoworking(coworkingId);
 
-        assertThrows(CoworkingNotFoundException.class, () -> coworkingService.deleteBooking(coworkingId));
+        assertThrows(CoworkingNotFoundException.class, () -> coworkingService.deleteCoworking(coworkingId));
 
         verify(coworkingRepository).deleteCoworking(coworkingId);
     }

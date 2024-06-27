@@ -19,5 +19,5 @@ public interface CoworkingService {
 
     CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException;
 
-    void deleteBooking(long coworkingId) throws CoworkingNotFoundException;
+    void deleteCoworking(long coworkingId) throws CoworkingNotFoundException;
 }

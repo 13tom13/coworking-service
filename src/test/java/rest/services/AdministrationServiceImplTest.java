@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Тест сервиса администратора")
+@DisplayName("Тесты сервиса администратора")
 class AdministrationServiceImplTest {
 
     @Mock

@@ -77,7 +77,7 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
     }
 
     @Override
-    public void deleteBooking(long coworkingId) throws CoworkingNotFoundException {
+    public void deleteCoworking(long coworkingId) throws CoworkingNotFoundException {
         coworkingRepository.deleteCoworking(coworkingId);
         bookingRepository.deleteAllCoworkingBookings(coworkingId);
     }

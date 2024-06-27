@@ -11,14 +11,17 @@ import java.util.Optional;
 
 public abstract class SecurityController {
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
+
+    private Session session;
 
     protected SecurityController() {
         userRepository = UserRepositoryCollection.getInstance();
+        session = Session.getInstance();
     }
 
     public boolean hasRole(Role... roles) {
-        UserDTO user = Session.getInstance().getUser();
+        UserDTO user = session.getUser();
         Optional<User> userOptional = userRepository.findById(user.id());
 
         if (userOptional.isEmpty()) {
@@ -38,8 +41,7 @@ public abstract class SecurityController {
 
 
     public boolean hasAuthenticated() {
-        return Session.getInstance().getUser() != null;
+        return session.getUser() != null;
     }
-
 
 }
