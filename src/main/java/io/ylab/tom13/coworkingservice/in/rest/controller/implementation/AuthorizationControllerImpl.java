@@ -23,7 +23,7 @@ public class AuthorizationControllerImpl implements AuthorizationController {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public ResponseDTO<UserDTO> login(AuthorizationDTO authorizationDTO) {

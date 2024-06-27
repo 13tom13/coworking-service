@@ -3,13 +3,27 @@ package io.ylab.tom13.coworkingservice.in.rest.controller;
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 
+/**
+ * Интерфейс для управления операциями редактирования пользователей.
+ */
 public interface UserEditController {
 
-    ResponseDTO<UserDTO> editUser (UserDTO userDTO);
+    /**
+     * Редактирует информацию о пользователе на основе предоставленного объекта UserDTO.
+     *
+     * @param userDTO DTO с информацией о пользователе для редактирования.
+     * @return ResponseDTO с обновленным объектом UserDTO или сообщением об ошибке.
+     */
+    ResponseDTO<UserDTO> editUser(UserDTO userDTO);
 
-    ResponseDTO<String> editPassword (PasswordChangeDTO passwordChangeDTO);
+    /**
+     * Изменяет пароль пользователя на основе предоставленного объекта PasswordChangeDTO.
+     *
+     * @param passwordChangeDTO DTO с новым паролем и идентификатором пользователя.
+     * @return ResponseDTO с сообщением об успешном изменении пароля или сообщением об ошибке.
+     */
+    ResponseDTO<String> editPassword(PasswordChangeDTO passwordChangeDTO);
 
 }
 

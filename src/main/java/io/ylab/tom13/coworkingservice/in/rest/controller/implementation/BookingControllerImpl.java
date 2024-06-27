@@ -15,17 +15,27 @@ import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Реализация интерфейса {@link BookingController}.
+ * Обрабатывает запросы, связанные с бронированием в системе.
+ */
 public class BookingControllerImpl extends SecurityController implements BookingController {
 
     private final BookingService bookingService;
 
+    /**
+     * Конструктор для инициализации объекта контроллера бронирования.
+     */
     public BookingControllerImpl() {
         this.bookingService = new BookingServiceImpl();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<BookingDTO> createBooking(BookingDTO bookingDTO) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {
@@ -36,9 +46,12 @@ public class BookingControllerImpl extends SecurityController implements Booking
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<Void> cancelBooking(long bookingId) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {
@@ -49,10 +62,12 @@ public class BookingControllerImpl extends SecurityController implements Booking
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<List<BookingDTO>> getBookingsByUser(long userId) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {
@@ -63,9 +78,12 @@ public class BookingControllerImpl extends SecurityController implements Booking
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<List<BookingDTO>> getBookingsByUserAndDate(long userId, LocalDate date) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {
@@ -76,9 +94,12 @@ public class BookingControllerImpl extends SecurityController implements Booking
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<List<BookingDTO>> getBookingsByUserAndCoworking(long userId, long coworkingId) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {
@@ -89,32 +110,40 @@ public class BookingControllerImpl extends SecurityController implements Booking
         }
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<List<TimeSlot>> getAvailableSlots(long coworkingId, LocalDate date) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
-        List<TimeSlot> bookingsByCoworking = bookingService.getAvailableSlots(coworkingId, date);
-        return ResponseDTO.success(bookingsByCoworking);
+        List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
+        return ResponseDTO.success(availableSlots);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<BookingDTO> getBookingById(long bookingId) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {
-            BookingDTO bookingsById = bookingService.getBookingById(bookingId);
-            return ResponseDTO.success(bookingsById);
+            BookingDTO bookingById = bookingService.getBookingById(bookingId);
+            return ResponseDTO.success(bookingById);
         } catch (BookingNotFoundException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<BookingDTO> updateBooking(BookingDTO booking) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {

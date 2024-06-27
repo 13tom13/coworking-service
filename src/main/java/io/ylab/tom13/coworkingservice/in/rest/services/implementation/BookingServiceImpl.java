@@ -14,17 +14,26 @@ import io.ylab.tom13.coworkingservice.in.utils.mapper.BookingMapper;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Реализация интерфейса {@link BookingService}.
+ * Сервиса для управления операциями бронирования.
+ */
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
 
-
+    /**
+     * Конструктор для инициализации сервиса бронирования.
+     */
     public BookingServiceImpl() {
         this.bookingRepository = BookingRepositoryCollection.getInstance();
     }
 
     private final BookingMapper bookingMapper = BookingMapper.INSTANCE;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BookingDTO createBooking(BookingDTO bookingDTO) throws BookingConflictException, RepositoryException {
         if (bookingDTO.date().isBefore(LocalDate.now())) {
@@ -38,30 +47,44 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.toBookingDTO(bookingFromRepository.get());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void cancelBooking(long bookingId) throws BookingNotFoundException {
         bookingRepository.deleteBooking(bookingId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<BookingDTO> getBookingsByUser(long userId) throws BookingNotFoundException {
         Collection<Booking> bookingsByUser = bookingRepository.getBookingsByUser(userId);
         return bookingsByUser.stream().map(bookingMapper::toBookingDTO).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException {
         Collection<Booking> bookingsByUserAndDate = bookingRepository.getBookingsByUserAndDate(userId, date);
         return bookingsByUserAndDate.stream().map(bookingMapper::toBookingDTO).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException {
         Collection<Booking> bookingsByUserAndCoworking = bookingRepository.getBookingsByUserAndCoworking(userId, coworkingId);
         return bookingsByUserAndCoworking.stream().map(bookingMapper::toBookingDTO).toList();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) {
         List<Booking> bookings = new ArrayList<>(bookingRepository.getBookingsByCoworkingAndDate(coworkingId, date));
@@ -77,15 +100,21 @@ public class BookingServiceImpl implements BookingService {
         return availableSlots;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BookingDTO getBookingById(long bookingId) throws BookingNotFoundException {
         Optional<Booking> bookingById = bookingRepository.getBookingById(bookingId);
-        if (bookingById.isEmpty())  {
+        if (bookingById.isEmpty()) {
             throw new BookingNotFoundException("Бронирование с таким id не найдено");
         }
         return bookingMapper.toBookingDTO(bookingById.get());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BookingDTO updateBooking(BookingDTO booking) throws BookingNotFoundException, BookingConflictException, RepositoryException {
         if (booking.date().isBefore(LocalDate.now())) {
@@ -94,7 +123,7 @@ public class BookingServiceImpl implements BookingService {
 
         Booking updateBooking = bookingMapper.toBooking(booking);
         Optional<Booking> bookingFromRep = bookingRepository.updateBooking(updateBooking);
-        if (bookingFromRep.isEmpty())  {
+        if (bookingFromRep.isEmpty()) {
             throw new RepositoryException("Не удалось обновить бронирование");
         }
 

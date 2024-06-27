@@ -12,17 +12,27 @@ import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.UserEditServiceImpl;
 import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
 
+/**
+ * Реализация интерфейса {@link UserEditController}.
+ * Обрабатывает запросы на редактирование пользователя.
+ */
 public class UserEditControllerImpl extends SecurityController implements UserEditController {
 
     private final UserEditService userEditService;
 
+    /**
+     * Конструктор для инициализации контроллера редактирования пользователей.
+     */
     public UserEditControllerImpl() {
         userEditService = new UserEditServiceImpl();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<UserDTO> editUser(UserDTO userDTO) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {
@@ -33,9 +43,12 @@ public class UserEditControllerImpl extends SecurityController implements UserEd
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<String> editPassword(PasswordChangeDTO passwordChangeDTO) {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {

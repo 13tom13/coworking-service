@@ -15,28 +15,38 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.Optional;
 
+/**
+ * Реализация интерфейса {@link UserEditService}.
+ * Сервиса для редактирования пользовательских данных.
+ */
 public class UserEditServiceImpl implements UserEditService {
 
     private final UserRepository userRepository;
-
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
+    /**
+     * Конструктор для инициализации сервиса редактирования пользователей.
+     */
     public UserEditServiceImpl() {
         this.userRepository = UserRepositoryCollection.getInstance();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO editUser(UserDTO userDTO) throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
+
         User existingUser = userRepository.findById(userDTO.id()).orElseThrow(() -> new UserNotFoundException("с ID " + userDTO.id()));
 
         String newEmail = userDTO.email();
         String existingEmail = existingUser.email();
-
         if (!newEmail.equals(existingEmail) && userRepository.findByEmail(newEmail).isPresent()) {
             throw new UserAlreadyExistsException(newEmail);
         }
 
         User userToUpdate = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), newEmail, existingUser.password(), userDTO.role());
+
         Optional<User> updatedUser = userRepository.updateUser(userToUpdate);
 
         if (userRepository.findById(userToUpdate.id()).isEmpty()
@@ -47,8 +57,12 @@ public class UserEditServiceImpl implements UserEditService {
         return userMapper.toUserDTO(updatedUser.get());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void editPassword(PasswordChangeDTO passwordChangeDTO) throws UnauthorizedException, RepositoryException, UserNotFoundException {
+
         String email = passwordChangeDTO.email();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("с email " + email));
 
@@ -59,9 +73,16 @@ public class UserEditServiceImpl implements UserEditService {
         userRepository.updateUser(updatedUser);
     }
 
+    /**
+     * Проверяет соответствие пароля из DTO паролю пользователя.
+     *
+     * @param passwordFromDTO пароль из DTO для проверки.
+     * @param passwordFromRep пароль пользователя из репозитория.
+     * @throws UnauthorizedException если старый пароль не совпадает с паролем пользователя.
+     */
     private void checkPassword(String passwordFromDTO, String passwordFromRep) throws UnauthorizedException {
         if (!BCrypt.checkpw(passwordFromDTO, passwordFromRep)) {
-            throw new UnauthorizedException("Старый пароля не совпадает");
+            throw new UnauthorizedException("Старый пароль не совпадает");
         }
     }
 }

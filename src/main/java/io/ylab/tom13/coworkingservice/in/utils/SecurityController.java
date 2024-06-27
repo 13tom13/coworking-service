@@ -9,17 +9,28 @@ import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.util.Optional;
 
+/**
+ * Абстрактный класс для управления безопасностью и доступом.
+ */
 public abstract class SecurityController {
 
     private UserRepository userRepository;
-
     private Session session;
 
+    /**
+     * Конструктор инициализирует экземпляры UserRepository и Session.
+     */
     protected SecurityController() {
         userRepository = UserRepositoryCollection.getInstance();
         session = Session.getInstance();
     }
 
+    /**
+     * Проверяет, есть ли у текущего пользователя одна из указанных ролей.
+     *
+     * @param roles Роли для проверки у текущего пользователя.
+     * @return true, если пользователь имеет хотя бы одну из указанных ролей; в противном случае false.
+     */
     public boolean hasRole(Role... roles) {
         UserDTO user = session.getUser();
         Optional<User> userOptional = userRepository.findById(user.id());
@@ -39,7 +50,11 @@ public abstract class SecurityController {
         return false;
     }
 
-
+    /**
+     * Проверяет, аутентифицирован ли текущий пользователь.
+     *
+     * @return true, если есть аутентифицированная пользовательская сессия; в противном случае false.
+     */
     public boolean hasAuthenticated() {
         return session.getUser() != null;
     }

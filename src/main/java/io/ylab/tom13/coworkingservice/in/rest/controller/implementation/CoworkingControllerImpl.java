@@ -16,14 +16,24 @@ import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
 
 import java.util.Map;
 
+/**
+ * Реализация интерфейса {@link CoworkingControllerImpl}.
+ * Обрабатывает запросы, связанные с управлением коворкингами.
+ */
 public class CoworkingControllerImpl extends SecurityController implements CoworkingController {
 
     private final CoworkingService coworkingService;
 
+    /**
+     * Конструктор для инициализации контроллера коворкингов.
+     */
     public CoworkingControllerImpl() {
         coworkingService = new CoworkingServiceImpl();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<Map<String, CoworkingDTO>> getAllCoworking() {
         if (!hasRole(Role.ADMINISTRATOR, Role.MODERATOR)) {
@@ -31,9 +41,11 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
         }
         Map<String, CoworkingDTO> allCoworking = coworkingService.getAllCoworking();
         return ResponseDTO.success(allCoworking);
-
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<Map<String, CoworkingDTO>> getAllAvailableCoworkings() {
         if (!hasAuthenticated()) {
@@ -43,6 +55,9 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
         return ResponseDTO.success(allCoworking);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<CoworkingDTO> createCoworking(CoworkingDTO coworkingDTO) {
         if (!hasRole(Role.ADMINISTRATOR, Role.MODERATOR)) {
@@ -56,6 +71,9 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<CoworkingDTO> updateCoworking(CoworkingDTO coworkingDTO) {
         if (!hasRole(Role.ADMINISTRATOR, Role.MODERATOR)) {
@@ -69,6 +87,9 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<Void> deleteCoworking(long coworkingId) {
         if (!hasRole(Role.ADMINISTRATOR, Role.MODERATOR)) {

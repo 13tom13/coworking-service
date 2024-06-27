@@ -3,11 +3,13 @@ package io.ylab.tom13.coworkingservice.in.rest.controller;
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
-import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Контроллер для управления операциями бронирования.
+ */
 public interface BookingController {
 
     /**
@@ -26,11 +28,10 @@ public interface BookingController {
      */
     ResponseDTO<Void> cancelBooking(long bookingId);
 
-
     /**
      * Получение бронирований по пользователю.
      *
-     * @param userId ID пользователя для получения бронирований пользователя.
+     * @param userId ID пользователя для получения бронирований.
      * @return ResponseDTO с коллекцией бронирований пользователя.
      */
     ResponseDTO<List<BookingDTO>> getBookingsByUser(long userId);
@@ -38,28 +39,27 @@ public interface BookingController {
     /**
      * Получение бронирований по пользователю и дате.
      *
-     * @param userId ID пользователя для получения бронирований пользователя.
-     * @param date Дата для фильтрации бронирований по дате.
+     * @param userId ID пользователя для получения бронирований.
+     * @param date   Дата для фильтрации бронирований по дате.
      * @return ResponseDTO с коллекцией бронирований пользователя.
      */
     ResponseDTO<List<BookingDTO>> getBookingsByUserAndDate(long userId, LocalDate date);
 
     /**
-     * Получение бронирований по пользователю и дате.
+     * Получение бронирований по пользователю и коворкингу.
      *
-     * @param userId ID пользователя для получения бронирований пользователя.
+     * @param userId      ID пользователя для получения бронирований.
      * @param coworkingId ID коворкинга для фильтрации.
      * @return ResponseDTO с коллекцией бронирований пользователя.
      */
     ResponseDTO<List<BookingDTO>> getBookingsByUserAndCoworking(long userId, long coworkingId);
 
-
     /**
-     * Получение свободных слотов для бронирования по дате.
+     * Получение свободных слотов для бронирования по коворкингу и дате.
      *
-     * @param coworkingId ID пользователя для фильтрации бронирований по коворкингу.
-     * @param date Дата для фильтрации бронирований по дате.
-     * @return ResponseDTO с коллекцией бронирований пользователя.
+     * @param coworkingId ID коворкинга для фильтрации свободных слотов.
+     * @param date        Дата для фильтрации свободных слотов.
+     * @return ResponseDTO с коллекцией доступных временных слотов.
      */
     ResponseDTO<List<TimeSlot>> getAvailableSlots(long coworkingId, LocalDate date);
 
@@ -67,16 +67,15 @@ public interface BookingController {
      * Получение бронирования по ID.
      *
      * @param bookingId ID искомого бронирования.
-     * @return ResponseDTO с коллекцией бронирований пользователя.
+     * @return ResponseDTO с найденным бронированием или сообщением об ошибке.
      */
     ResponseDTO<BookingDTO> getBookingById(long bookingId);
 
     /**
-     * Внесение изменений в бронирование.
+     * Обновление информации о бронировании.
      *
      * @param booking данные бронирования для внесения изменений.
-     * @return ResponseDTO с коллекцией бронирований пользователя.
+     * @return ResponseDTO с обновленными данными бронирования или сообщением об ошибке.
      */
     ResponseDTO<BookingDTO> updateBooking(BookingDTO booking);
 }
-

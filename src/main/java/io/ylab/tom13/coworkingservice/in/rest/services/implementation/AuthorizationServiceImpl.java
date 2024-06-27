@@ -13,7 +13,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.Optional;
 
 /**
- * Реализация сервиса авторизации пользователей.
+ * Реализация интерфейса {@link AuthorizationService}.
+ * Сервиса авторизации пользователей.
  */
 public class AuthorizationServiceImpl implements AuthorizationService {
 
@@ -50,7 +51,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     /**
      * Аутентификация пользователя сравнивает предоставленный пароль с сохраненным хэшированным паролем.
      *
-     * @param passwordFromDTO пароль, предоставленный для аутентификации
+     * @param passwordFromDTO        пароль, предоставленный для аутентификации
      * @param passwordFromRepository хэшированный пароль пользователя из хранилища
      * @return true, если пароли совпадают, иначе false
      */

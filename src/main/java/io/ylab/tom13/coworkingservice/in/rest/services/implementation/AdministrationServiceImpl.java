@@ -17,34 +17,47 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
+/**
+ * Реализация интерфейса {@link AdministrationService}.
+ * Сервис администрирования пользователей.
+ */
 public class AdministrationServiceImpl implements AdministrationService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Конструктор для инициализации сервиса администрирования пользователей.
+     */
     public AdministrationServiceImpl() {
         userRepository = UserRepositoryCollection.getInstance();
     }
 
     private final UserMapper userMapper = UserMapper.INSTANCE;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<UserDTO> getAllUsers() {
-
         Collection<User> allUsers = userRepository.getAllUsers();
-
         return allUsers.stream()
                 .map(UserMapper.INSTANCE::toUserDTO)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO getUserByEmail(String email) throws UserNotFoundException {
         Optional<User> byEmail = userRepository.findByEmail(email);
         User user = byEmail.orElseThrow(() -> new UserNotFoundException("с email " + email));
-
         return userMapper.toUserDTO(user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserDTO editUserByAdministrator(UserDTO userDTO) throws UserNotFoundException, RepositoryException {
         long id = userDTO.id();
@@ -54,18 +67,27 @@ public class AdministrationServiceImpl implements AdministrationService {
         Optional<User> updatedUser = userRepository.updateUser(userChanged);
         if (updatedUser.isPresent()) {
             return userMapper.toUserDTO(userChanged);
-        } else throw new RepositoryException("Не удалось обновить пользователя с ID " + userDTO.id());
+        } else {
+            throw new RepositoryException("Не удалось обновить пользователя с ID " + userDTO.id());
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void editUserPasswordByAdministrator(long userId, String newHashPassword) throws UserNotFoundException, RepositoryException {
         Optional<User> byId = userRepository.findById(userId);
         User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID  " + userId));
         User userChanged = new User(userFromRep.id(), userFromRep.firstName(), userFromRep.lastName(), userFromRep.email(), newHashPassword, userFromRep.role());
-        if (userRepository.updateUser(userChanged).isEmpty())
+        if (userRepository.updateUser(userChanged).isEmpty()) {
             throw new RepositoryException("Не удалось обновить пароль с ID " + userId);
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void registrationUser(RegistrationDTO registrationDTO, Role role) throws RepositoryException {
         User newUser = new User(0, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(),

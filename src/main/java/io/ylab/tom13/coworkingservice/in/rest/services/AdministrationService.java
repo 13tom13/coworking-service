@@ -8,15 +8,53 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundExcep
 
 import java.util.List;
 
+/**
+ * Сервис для администрирования пользователей.
+ */
 public interface AdministrationService {
 
+    /**
+     * Получение списка всех пользователей.
+     *
+     * @return список всех пользователей в виде списка DTO.
+     */
     List<UserDTO> getAllUsers();
 
+    /**
+     * Получение пользователя по электронной почте.
+     *
+     * @param email электронная почта пользователя для поиска.
+     * @return DTO пользователя.
+     * @throws UserNotFoundException если пользователь не найден.
+     */
     UserDTO getUserByEmail(String email) throws UserNotFoundException;
 
+    /**
+     * Редактирование пользователя администратором.
+     *
+     * @param userDTO DTO с информацией для редактирования пользователя.
+     * @return отредактированный DTO пользователя.
+     * @throws UserNotFoundException если пользователь не найден.
+     * @throws RepositoryException   если произошла ошибка репозитория при сохранении данных.
+     */
     UserDTO editUserByAdministrator(UserDTO userDTO) throws UserNotFoundException, RepositoryException;
 
+    /**
+     * Изменение пароля пользователя администратором.
+     *
+     * @param userId          ID пользователя для изменения пароля.
+     * @param newHashPassword новый хешированный пароль пользователя.
+     * @throws UserNotFoundException если пользователь не найден.
+     * @throws RepositoryException   если произошла ошибка репозитория при сохранении данных.
+     */
     void editUserPasswordByAdministrator(long userId, String newHashPassword) throws UserNotFoundException, RepositoryException;
 
+    /**
+     * Регистрация нового пользователя администратором.
+     *
+     * @param registrationDTO DTO с данными для регистрации нового пользователя.
+     * @param role            роль, которую получит новый пользователь.
+     * @throws RepositoryException если произошла ошибка репозитория при сохранении данных.
+     */
     void registrationUser(RegistrationDTO registrationDTO, Role role) throws RepositoryException;
 }

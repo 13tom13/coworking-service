@@ -12,8 +12,6 @@ import io.ylab.tom13.coworkingservice.in.rest.services.implementation.Registrati
 /**
  * Реализация интерфейса {@link RegistrationController}.
  * Обрабатывает запросы на создание нового пользователя и возвращает соответствующие результаты.
- *
- * @inheritDoc
  */
 public class RegistrationControllerImpl implements RegistrationController {
 
@@ -24,7 +22,7 @@ public class RegistrationControllerImpl implements RegistrationController {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public ResponseDTO<UserDTO> createUser(final RegistrationDTO registrationDTO) {

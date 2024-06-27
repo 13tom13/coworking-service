@@ -14,14 +14,24 @@ import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
 
 import java.util.List;
 
+/**
+ * Реализация интерфейса {@link AdministrationController}.
+ * Этот класс обеспечивает выполнение административных функций для управления пользователями в системе.
+ */
 public class AdministrationControllerImpl extends SecurityController implements AdministrationController {
 
     private final AdministrationService administrationService;
 
+    /**
+     * Конструктор для инициализации объекта и подключения к службе администрирования.
+     */
     public AdministrationControllerImpl() {
         administrationService = new AdministrationServiceImpl();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<List<UserDTO>> getAllUsers() {
         if (!hasRole(Role.ADMINISTRATOR)) {
@@ -31,6 +41,9 @@ public class AdministrationControllerImpl extends SecurityController implements 
         return ResponseDTO.success(allUsers);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<UserDTO> getUserByEmail(String email) {
         if (!hasRole(Role.ADMINISTRATOR)) {
@@ -44,6 +57,9 @@ public class AdministrationControllerImpl extends SecurityController implements 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<UserDTO> editUserByAdministrator(UserDTO userDTO) {
         if (!hasRole(Role.ADMINISTRATOR)) {
@@ -57,6 +73,9 @@ public class AdministrationControllerImpl extends SecurityController implements 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<String> editUserPasswordByAdministrator(long userId, String newHashPassword) {
         if (!hasRole(Role.ADMINISTRATOR)) {
@@ -70,6 +89,9 @@ public class AdministrationControllerImpl extends SecurityController implements 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ResponseDTO<String> registrationUser(RegistrationDTO registrationDTO, Role role) {
         if (!hasRole(Role.ADMINISTRATOR)) {
@@ -83,3 +105,4 @@ public class AdministrationControllerImpl extends SecurityController implements 
         }
     }
 }
+

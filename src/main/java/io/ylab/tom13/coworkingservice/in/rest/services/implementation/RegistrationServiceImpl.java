@@ -14,7 +14,8 @@ import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 import java.util.Optional;
 
 /**
- * Реализация сервиса регистрации пользователей.
+ * Реализация интерфейса {@link RegistrationService}.
+ * Сервиса регистрации пользователей.
  */
 public class RegistrationServiceImpl implements RegistrationService {
 
