@@ -1,0 +1,63 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="3" author="13tom13">
+        <insert tableName="coworkings" schemaName="main">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Офис 1"/>
+            <column name="description" value="Антикафе с кофемашиной и пуфиками"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="type" value="WORKPLACE"/>
+            <column name="workplace_type" value="Антикафе"/>
+        </insert>
+
+        <insert tableName="coworkings" schemaName="main">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Офис 2"/>
+            <column name="description" value="Рабочее пространство с 3 компьютерами"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="type" value="WORKPLACE"/>
+            <column name="workplace_type" value="Офис"/>
+        </insert>
+
+        <insert tableName="coworkings" schemaName="main">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Офис 3"/>
+            <column name="description" value="Переговорная комната с большим столом"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="type" value="WORKPLACE"/>
+            <column name="workplace_type" value="Переговорная"/>
+        </insert>
+
+        <insert tableName="coworkings" schemaName="main">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="Зал 1"/>
+            <column name="description" value="Большой конференц-зал"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="type" value="CONFERENCE_ROOM"/>
+            <column name="conference_room_capacity" valueNumeric="300"/>
+        </insert>
+
+        <insert tableName="coworkings" schemaName="main">
+            <column name="id" valueNumeric="5"/>
+            <column name="name" value="Зал 2"/>
+            <column name="description" value="Средний конференц-зал"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="type" value="CONFERENCE_ROOM"/>
+            <column name="conference_room_capacity" valueNumeric="150"/>
+        </insert>
+
+        <insert tableName="coworkings" schemaName="main">
+            <column name="id" valueNumeric="6"/>
+            <column name="name" value="Зал 3"/>
+            <column name="description" value="Малый конференц-зал"/>
+            <column name="available" valueBoolean="true"/>
+            <column name="type" value="CONFERENCE_ROOM"/>
+            <column name="conference_room_capacity" valueNumeric="50"/>
+        </insert>
+    </changeSet>
+
+
+</databaseChangeLog>

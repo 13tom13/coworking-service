@@ -1,4 +1,4 @@
-package rest.services;
+package rest.rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;

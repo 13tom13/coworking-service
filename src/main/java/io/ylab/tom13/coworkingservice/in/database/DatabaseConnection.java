@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static io.ylab.tom13.coworkingservice.in.config.AppConfig.*;
+import static io.ylab.tom13.coworkingservice.in.config.ApplicationConfig.*;
 
 public class DatabaseConnection {
 

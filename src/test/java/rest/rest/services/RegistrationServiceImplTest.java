@@ -1,4 +1,4 @@
-package rest.services;
+package rest.rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;

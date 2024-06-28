@@ -1,4 +1,4 @@
-package rest.controller;
+package rest.rest.controller;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
