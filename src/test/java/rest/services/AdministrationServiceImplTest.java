@@ -1,9 +1,10 @@
-package rest.rest.services;
+package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.AdministrationServiceImpl;
@@ -66,7 +67,7 @@ class AdministrationServiceImplTest {
 
     @Test
     @DisplayName("Успешное редактирование пользователя")
-    void testEditUserByAdministratorSuccess() throws UserNotFoundException, RepositoryException {
+    void testEditUserByAdministratorSuccess() throws UserNotFoundException, RepositoryException, UserAlreadyExistsException {
         UserDTO userDTO = new UserDTO(2L, "Edited", "User", "edited.user@example.com", Role.USER);
         User user = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), userDTO.email(), "password", Role.USER);
 
@@ -82,7 +83,7 @@ class AdministrationServiceImplTest {
 
     @Test
     @DisplayName("Пользователь для изменений не найден")
-    void testEditUserByAdministratorUserNotFound() throws RepositoryException {
+    void testEditUserByAdministratorUserNotFound() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
         UserDTO userDTO = new UserDTO(999L, "Nonexistent", "User", "nonexistent.user@example.com", Role.USER);
         assertThrows(UserNotFoundException.class, () -> administrationService.editUserByAdministrator(userDTO));
         verify(userRepository, times(1)).findById(userDTO.id());

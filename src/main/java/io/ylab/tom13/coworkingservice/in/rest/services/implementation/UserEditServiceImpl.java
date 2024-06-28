@@ -8,12 +8,15 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExists
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.SQLException;
 import java.util.Optional;
+
+import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
 
 /**
  * Реализация интерфейса {@link UserEditService}.
@@ -28,7 +31,11 @@ public class UserEditServiceImpl implements UserEditService {
      * Конструктор для инициализации сервиса редактирования пользователей.
      */
     public UserEditServiceImpl() {
-        this.userRepository = UserRepositoryCollection.getInstance();
+        try {
+            userRepository = new UserRepositoryJdbc(getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -61,7 +68,7 @@ public class UserEditServiceImpl implements UserEditService {
      * {@inheritDoc}
      */
     @Override
-    public void editPassword(PasswordChangeDTO passwordChangeDTO) throws UnauthorizedException, RepositoryException, UserNotFoundException {
+    public void editPassword(PasswordChangeDTO passwordChangeDTO) throws UnauthorizedException, RepositoryException, UserNotFoundException, UserAlreadyExistsException {
 
         String email = passwordChangeDTO.email();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("с email " + email));

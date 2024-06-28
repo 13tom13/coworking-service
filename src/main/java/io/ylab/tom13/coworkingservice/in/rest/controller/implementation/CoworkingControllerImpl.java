@@ -12,7 +12,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.controller.CoworkingController;
 import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.CoworkingServiceImpl;
-import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
+import io.ylab.tom13.coworkingservice.in.security.SecurityController;
 
 import java.util.Map;
 

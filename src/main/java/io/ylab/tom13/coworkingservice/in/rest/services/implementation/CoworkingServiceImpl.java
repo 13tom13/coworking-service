@@ -15,7 +15,7 @@ import io.ylab.tom13.coworkingservice.in.rest.repositories.CoworkingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryCollection;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryCollection;
 import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
-import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
+import io.ylab.tom13.coworkingservice.in.security.SecurityController;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.ConferenceRoomMapper;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.WorkplaceMapper;
 

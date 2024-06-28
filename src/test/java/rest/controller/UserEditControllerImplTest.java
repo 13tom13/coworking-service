@@ -1,4 +1,4 @@
-package rest.rest.controller;
+package rest.controller;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import rest.security.SecurityControllerTest;
+import security.SecurityControllerTest;
 
 import java.lang.reflect.Field;
 

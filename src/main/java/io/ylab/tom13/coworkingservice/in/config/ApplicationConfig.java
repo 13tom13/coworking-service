@@ -60,5 +60,11 @@ public class ApplicationConfig {
         return databaseConfig != null ? (String) databaseConfig.get("changelog") : null;
     }
 
+    public static String getLiquibaseTestChangelog() {
+        Map<String, Object> databaseConfig = getLiquibaseConfig();
+        Map<String, Object> testDatabaseConfig = (Map<String, Object>) databaseConfig.get("test");
+        return testDatabaseConfig != null ? (String) testDatabaseConfig.get("changelog") : null;
+    }
+
 
 }

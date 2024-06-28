@@ -1,10 +1,11 @@
-package rest.rest.services;
+package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
@@ -53,7 +54,7 @@ class UserEditServiceImplTest {
 
     @Test
     @DisplayName("Успешное редактирование пользователя")
-    void testEditUserSuccess() throws RepositoryException {
+    void testEditUserSuccess() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
         when(userRepository.updateUser(user)).thenReturn(Optional.ofNullable(user));
         when(userRepository.findByEmail(user.email())).thenReturn(Optional.ofNullable(user));
         when(userRepository.findById(user.id())).thenReturn(Optional.ofNullable(user));
@@ -71,7 +72,7 @@ class UserEditServiceImplTest {
 
     @Test
     @DisplayName("Успешное изменение пароля")
-    void testEditPasswordSuccess() throws UnauthorizedException, RepositoryException, UserNotFoundException {
+    void testEditPasswordSuccess() throws UnauthorizedException, RepositoryException, UserNotFoundException, UserAlreadyExistsException {
         when(userRepository.findByEmail(user.email())).thenReturn(Optional.ofNullable(user));
 
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), password, "newPassword");

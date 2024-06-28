@@ -1,13 +1,16 @@
-package io.ylab.tom13.coworkingservice.in.utils;
+package io.ylab.tom13.coworkingservice.in.security;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
 
+import java.sql.SQLException;
 import java.util.Optional;
+
+import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
 
 /**
  * Абстрактный класс для управления безопасностью и доступом.
@@ -21,7 +24,11 @@ public abstract class SecurityController {
      * Конструктор инициализирует экземпляры UserRepository и Session.
      */
     protected SecurityController() {
-        userRepository = UserRepositoryCollection.getInstance();
+        try {
+            userRepository = new UserRepositoryJdbc(getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         session = Session.getInstance();
     }
 

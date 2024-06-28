@@ -5,12 +5,15 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.AuthorizationService;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.SQLException;
 import java.util.Optional;
+
+import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
 
 /**
  * Реализация интерфейса {@link AuthorizationService}.
@@ -24,7 +27,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
      * Конструктор для инициализации сервиса авторизации с использованием репозитория пользователей.
      */
     public AuthorizationServiceImpl() {
-        userRepository = UserRepositoryCollection.getInstance();
+        try {
+            userRepository = new UserRepositoryJdbc(getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

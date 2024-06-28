@@ -10,7 +10,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.controller.UserEditController;
 import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.UserEditServiceImpl;
-import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
+import io.ylab.tom13.coworkingservice.in.security.SecurityController;
 
 /**
  * Реализация интерфейса {@link UserEditController}.
@@ -54,7 +54,7 @@ public class UserEditControllerImpl extends SecurityController implements UserEd
         try {
             userEditService.editPassword(passwordChangeDTO);
             return ResponseDTO.success("Пароль успешно изменен");
-        } catch (UnauthorizedException | RepositoryException | UserNotFoundException e) {
+        } catch (UnauthorizedException | RepositoryException | UserNotFoundException | UserAlreadyExistsException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }

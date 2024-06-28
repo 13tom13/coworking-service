@@ -7,11 +7,14 @@ import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.RegistrationService;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
 
+import java.sql.SQLException;
 import java.util.Optional;
+
+import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
 
 /**
  * Реализация интерфейса {@link RegistrationService}.
@@ -27,7 +30,11 @@ public class RegistrationServiceImpl implements RegistrationService {
      * Конструктор для инициализации сервиса регистрации с использованием репозитория пользователей.
      */
     public RegistrationServiceImpl() {
-        userRepository = UserRepositoryCollection.getInstance();
+        try {
+            userRepository = new UserRepositoryJdbc(getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

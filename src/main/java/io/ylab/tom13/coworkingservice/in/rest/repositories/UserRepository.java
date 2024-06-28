@@ -1,12 +1,9 @@
 package io.ylab.tom13.coworkingservice.in.rest.repositories;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -21,11 +18,12 @@ public interface UserRepository {
      * Добавление нового пользователя в репозиторий.
      * Пользователи должны быть уникальными по email.
      *
-     * @param registrationDTO DTO с данными пользователя для добавления.
-     * @throws UserAlreadyExistsException если пользователь с таким email уже существует.
+     * @param user пользователь для добавления.
      * @return UserDTO данные добавленного пользователя.
+     * @throws RepositoryException ошибка репозитория.
+     * @throws UserAlreadyExistsException если пользователь с таким email уже существует.
      */
-    Optional<User> createUser(User user) throws RepositoryException;
+    Optional<User> createUser(User user) throws RepositoryException, UserAlreadyExistsException;
 
     /**
      * Поиск пользователя по email.
@@ -48,8 +46,9 @@ public interface UserRepository {
      *
      * @param id ID пользователя для удаления.
      * @throws UserNotFoundException если пользователь с указанным ID не найден.
+     * @throws RepositoryException ошибка репозитория.
      */
-    void deleteUserById(long id) throws UserNotFoundException;
+    void deleteUserById(long id) throws UserNotFoundException, RepositoryException;
 
     /**
      * Обновляет информацию о пользователе.
@@ -57,8 +56,9 @@ public interface UserRepository {
      * @param user объект пользователя для обновления
      * @throws UserNotFoundException      если пользователь с указанным ID не найден.
      * @throws UserAlreadyExistsException если найден пользователь с таким же email.
+     * @throws RepositoryException ошибка репозитория.
      */
-    Optional<User> updateUser(User user) throws RepositoryException;
+    Optional<User> updateUser(User user) throws RepositoryException, UserAlreadyExistsException, UserNotFoundException;
 
     /**
      * Получение всех пользователей из репозитория.

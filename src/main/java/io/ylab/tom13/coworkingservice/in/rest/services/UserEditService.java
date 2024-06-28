@@ -31,5 +31,5 @@ public interface UserEditService {
      * @throws RepositoryException   если возникает ошибка репозитория при доступе к данным.
      * @throws UserNotFoundException если пользователь с указанным ID не найден.
      */
-    void editPassword(PasswordChangeDTO passwordChangeDTO) throws UnauthorizedException, RepositoryException, UserNotFoundException;
+    void editPassword(PasswordChangeDTO passwordChangeDTO) throws UnauthorizedException, RepositoryException, UserNotFoundException, UserAlreadyExistsException;
 }

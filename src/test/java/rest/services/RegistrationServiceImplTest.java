@@ -1,4 +1,4 @@
-package rest.rest.services;
+package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
@@ -62,7 +62,7 @@ public class RegistrationServiceImplTest {
 
     @Test
     @DisplayName("Тест ошибка репозитория при создании пользователя")
-    void testExceptionRepository() throws RepositoryException {
+    void testExceptionRepository() throws RepositoryException, UserAlreadyExistsException {
         when(userRepository.createUser(any(User.class))).thenReturn(Optional.empty());
 
         assertThrows(RepositoryException.class, () -> registrationService.createUser(registrationDTO));

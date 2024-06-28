@@ -1,4 +1,4 @@
-package rest.rest.services;
+package rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;

@@ -1,7 +1,7 @@
-package rest.security;
+package security;
 
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
+import io.ylab.tom13.coworkingservice.in.security.SecurityController;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
