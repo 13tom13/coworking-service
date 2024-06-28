@@ -1,12 +1,14 @@
 package io.ylab.tom13.coworkingservice.in.entity.dto.coworking;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * DTO класс для конференц-залов, наследует CoworkingDTO.
  * Содержит дополнительный атрибут - вместимость зала.
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class ConferenceRoomDTO extends CoworkingDTO {
     /** Вместимость конференц-зала */
     private int capacity;

@@ -1,12 +1,14 @@
 package io.ylab.tom13.coworkingservice.in.entity.model.coworking;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Класс ConferenceRoom представляет конференц-зал как тип коворкинга.
  * Наследуется от абстрактного класса Coworking и добавляет атрибут вместимости зала.
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class ConferenceRoom extends Coworking {
     /** Вместимость конференц-зала */
     private final int capacity;

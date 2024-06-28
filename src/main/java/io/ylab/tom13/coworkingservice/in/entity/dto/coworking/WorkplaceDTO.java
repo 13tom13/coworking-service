@@ -1,12 +1,14 @@
 package io.ylab.tom13.coworkingservice.in.entity.dto.coworking;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * DTO класс для рабочих мест, наследует CoworkingDTO.
  * Содержит дополнительный атрибут - тип рабочего места.
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class WorkplaceDTO extends CoworkingDTO {
     /** Тип рабочего места */
     private String type;
