@@ -13,13 +13,16 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryExcepti
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.CoworkingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryCollection;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.in.security.SecurityController;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.ConferenceRoomMapper;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.WorkplaceMapper;
 
+import java.sql.SQLException;
 import java.util.*;
+
+import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
 
 
 /**
@@ -38,7 +41,11 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      * Инициализирует репозитории для работы с данными коворкингов и бронирований.
      */
     public CoworkingServiceImpl() {
-        coworkingRepository = CoworkingRepositoryCollection.getInstance();
+        try {
+            coworkingRepository = new CoworkingRepositoryJdbc(getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         bookingRepository = BookingRepositoryCollection.getInstance();
     }
 
@@ -46,7 +53,7 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      * {@inheritDoc}
      */
     @Override
-    public Map<String, CoworkingDTO> getAllCoworking() {
+    public Map<String, CoworkingDTO> getAllCoworking() throws RepositoryException {
         Collection<Coworking> allCoworking = coworkingRepository.getAllCoworking();
         return getCoworkingByNameHashMap(allCoworking);
     }
@@ -55,11 +62,9 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      * {@inheritDoc}
      */
     @Override
-    public Map<String, CoworkingDTO> getAllAvailableCoworkings() {
+    public Map<String, CoworkingDTO> getAllAvailableCoworkings() throws RepositoryException {
         Collection<Coworking> allCoworking = coworkingRepository.getAllCoworking();
-        List<Coworking> availableCoworking = allCoworking.stream()
-                .filter(Coworking::isAvailable)
-                .toList();
+        List<Coworking> availableCoworking = allCoworking.stream().filter(Coworking::isAvailable).toList();
         return getCoworkingByNameHashMap(availableCoworking);
     }
 
@@ -81,7 +86,7 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      * {@inheritDoc}
      */
     @Override
-    public CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException {
+    public CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException, RepositoryException {
         Coworking coworking = convertToEntity(coworkingDTO);
         Optional<Coworking> coworkingFromRepository = coworkingRepository.updateCoworking(coworking);
         if (coworkingFromRepository.isPresent()) {
@@ -95,7 +100,7 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      * {@inheritDoc}
      */
     @Override
-    public void deleteCoworking(long coworkingId) throws CoworkingNotFoundException {
+    public void deleteCoworking(long coworkingId) throws CoworkingNotFoundException, RepositoryException {
         coworkingRepository.deleteCoworking(coworkingId);
         bookingRepository.deleteAllCoworkingBookings(coworkingId);
     }

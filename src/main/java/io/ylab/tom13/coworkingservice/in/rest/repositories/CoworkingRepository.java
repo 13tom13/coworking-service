@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public interface CoworkingRepository {
 
-    Collection<Coworking> getAllCoworking();
+    Collection<Coworking> getAllCoworking() throws RepositoryException;
 
-    Optional<Coworking> getCoworkingById(long coworkingId) throws CoworkingNotFoundException;
+    Optional<Coworking> getCoworkingById(long coworkingId) throws CoworkingNotFoundException, RepositoryException;
 
     Optional<Coworking> createCoworking(Coworking coworkingDTO) throws CoworkingConflictException, RepositoryException;
 
-    void deleteCoworking(long coworkingId) throws CoworkingNotFoundException;
+    void deleteCoworking(long coworkingId) throws CoworkingNotFoundException, RepositoryException;
 
-    Optional<Coworking> updateCoworking(Coworking coworkingDTO) throws CoworkingNotFoundException, CoworkingConflictException;
+    Optional<Coworking> updateCoworking(Coworking coworkingDTO) throws CoworkingNotFoundException, CoworkingConflictException, RepositoryException;
 }
