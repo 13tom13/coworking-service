@@ -51,7 +51,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public void cancelBooking(long bookingId) throws BookingNotFoundException {
+    public void cancelBooking(long bookingId) throws BookingNotFoundException, RepositoryException {
         bookingRepository.deleteBooking(bookingId);
     }
 
@@ -59,7 +59,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public List<BookingDTO> getBookingsByUser(long userId) throws BookingNotFoundException {
+    public List<BookingDTO> getBookingsByUser(long userId) throws BookingNotFoundException, RepositoryException {
         Collection<Booking> bookingsByUser = bookingRepository.getBookingsByUser(userId);
         return bookingsByUser.stream().map(bookingMapper::toBookingDTO).toList();
     }
@@ -68,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException {
+    public List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException, RepositoryException {
         Collection<Booking> bookingsByUserAndDate = bookingRepository.getBookingsByUserAndDate(userId, date);
         return bookingsByUserAndDate.stream().map(bookingMapper::toBookingDTO).toList();
     }
@@ -77,7 +77,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException {
+    public List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException, RepositoryException {
         Collection<Booking> bookingsByUserAndCoworking = bookingRepository.getBookingsByUserAndCoworking(userId, coworkingId);
         return bookingsByUserAndCoworking.stream().map(bookingMapper::toBookingDTO).toList();
     }
@@ -86,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) {
+    public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) throws RepositoryException {
         List<Booking> bookings = new ArrayList<>(bookingRepository.getBookingsByCoworkingAndDate(coworkingId, date));
         List<TimeSlot> availableSlots = new ArrayList<>(Arrays.asList(TimeSlot.values()));
         if (bookings.isEmpty()) {
@@ -104,7 +104,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public BookingDTO getBookingById(long bookingId) throws BookingNotFoundException {
+    public BookingDTO getBookingById(long bookingId) throws BookingNotFoundException, RepositoryException {
         Optional<Booking> bookingById = bookingRepository.getBookingById(bookingId);
         if (bookingById.isEmpty()) {
             throw new BookingNotFoundException("Бронирование с таким id не найдено");

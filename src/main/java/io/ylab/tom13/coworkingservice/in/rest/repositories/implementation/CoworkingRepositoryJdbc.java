@@ -111,7 +111,6 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
             } catch (SQLException e) {
                 connection.rollback();
                 if (e.getSQLState().equals("23505")) { // unique_violation
-                    System.err.println("SQL Error: " + e.getMessage());
                     throw new CoworkingConflictException("Имя коворкинга уже занято");
                 } else {
                     throw new RepositoryException("Ошибка при создании коворкинга: " + e.getMessage());

@@ -34,7 +34,7 @@ public interface BookingRepository {
      *
      * @param bookingId идентификатор бронирования
      */
-    void deleteBooking(long bookingId) throws BookingNotFoundException;
+    void deleteBooking(long bookingId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает бронирования по идентификатору пользователя.
@@ -42,7 +42,7 @@ public interface BookingRepository {
      * @param userId идентификатор пользователя
      * @return список бронирований, связанных с пользователем
      */
-    Collection<Booking> getBookingsByUser(long userId) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUser(long userId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает бронирования по идентификатору пользователя и дате
@@ -51,7 +51,7 @@ public interface BookingRepository {
      * @param date   дата бронирования
      * @return список бронирований, связанных с пользователем
      */
-    Collection<Booking> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает бронирования по идентификатору пользователя и дате
@@ -60,7 +60,7 @@ public interface BookingRepository {
      * @param coworkingId идентификатор коворкинга для фильтрации
      * @return список бронирований, связанных с пользователем
      */
-    Collection<Booking> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает бронирования по идентификатору коворкинга и дате.
@@ -69,7 +69,7 @@ public interface BookingRepository {
      * @param date        дата бронирования
      * @return список бронирований, связанных с коворкингом и датой
      */
-    Collection<Booking> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date);
+    Collection<Booking> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date) throws RepositoryException;
 
     /**
      * Получает бронирования по ID.
@@ -77,7 +77,7 @@ public interface BookingRepository {
      * @param bookingId ID бронирования
      * @return список бронирований, связанных с коворкингом и датой
      */
-    Optional<Booking> getBookingById(long bookingId) throws BookingNotFoundException;
+    Optional<Booking> getBookingById(long bookingId) throws BookingNotFoundException, RepositoryException;
 
     void deleteAllCoworkingBookings(long coworkingID);
 

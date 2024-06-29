@@ -6,7 +6,6 @@
 
 
     <changeSet id="7" author="13tom13">
-
         <createTable tableName="time_slots" schemaName="relations">
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>

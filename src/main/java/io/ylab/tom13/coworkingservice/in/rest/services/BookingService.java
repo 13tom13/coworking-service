@@ -30,7 +30,7 @@ public interface BookingService {
      * @param bookingId ID бронирования для отмены.
      * @throws BookingNotFoundException если бронирование с указанным ID не найдено.
      */
-    void cancelBooking(long bookingId) throws BookingNotFoundException;
+    void cancelBooking(long bookingId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает список бронирований пользователя.
@@ -39,7 +39,7 @@ public interface BookingService {
      * @return список DTO бронирований пользователя.
      * @throws BookingNotFoundException если не найдено бронирование для указанного пользователя.
      */
-    List<BookingDTO> getBookingsByUser(long userId) throws BookingNotFoundException;
+    List<BookingDTO> getBookingsByUser(long userId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает список бронирований пользователя на указанную дату.
@@ -49,7 +49,7 @@ public interface BookingService {
      * @return список DTO бронирований пользователя на указанную дату.
      * @throws BookingNotFoundException если не найдено бронирование для указанного пользователя на указанную дату.
      */
-    List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException;
+    List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает список бронирований пользователя в указанном коворкинге.
@@ -59,7 +59,7 @@ public interface BookingService {
      * @return список DTO бронирований пользователя в указанном коворкинге.
      * @throws BookingNotFoundException если не найдено бронирование для указанного пользователя в указанном коворкинге.
      */
-    List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException;
+    List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает список доступных временных слотов для бронирования в указанный день в указанном коворкинге.
@@ -68,7 +68,7 @@ public interface BookingService {
      * @param date        дата для фильтрации доступных слотов.
      * @return список доступных временных слотов в указанный день в указанном коворкинге.
      */
-    List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date);
+    List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) throws RepositoryException;
 
     /**
      * Получает бронирование по его ID.
@@ -77,7 +77,7 @@ public interface BookingService {
      * @return DTO бронирования с указанным ID.
      * @throws BookingNotFoundException если бронирование с указанным ID не найдено.
      */
-    BookingDTO getBookingById(long bookingId) throws BookingNotFoundException;
+    BookingDTO getBookingById(long bookingId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Обновляет информацию о существующем бронировании.

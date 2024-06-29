@@ -57,7 +57,7 @@ public class BookingControllerImpl extends SecurityController implements Booking
         try {
             bookingService.cancelBooking(bookingId);
             return ResponseDTO.success(null);
-        } catch (BookingNotFoundException e) {
+        } catch (BookingNotFoundException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -73,7 +73,7 @@ public class BookingControllerImpl extends SecurityController implements Booking
         try {
             List<BookingDTO> bookingsByUser = bookingService.getBookingsByUser(userId);
             return ResponseDTO.success(bookingsByUser);
-        } catch (BookingNotFoundException e) {
+        } catch (BookingNotFoundException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -89,7 +89,7 @@ public class BookingControllerImpl extends SecurityController implements Booking
         try {
             List<BookingDTO> bookingsByUserAndDate = bookingService.getBookingsByUserAndDate(userId, date);
             return ResponseDTO.success(bookingsByUserAndDate);
-        } catch (BookingNotFoundException e) {
+        } catch (BookingNotFoundException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -105,7 +105,7 @@ public class BookingControllerImpl extends SecurityController implements Booking
         try {
             List<BookingDTO> bookingsByUserAndCoworking = bookingService.getBookingsByUserAndCoworking(userId, coworkingId);
             return ResponseDTO.success(bookingsByUserAndCoworking);
-        } catch (BookingNotFoundException e) {
+        } catch (BookingNotFoundException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -118,8 +118,12 @@ public class BookingControllerImpl extends SecurityController implements Booking
         if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
-        List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
-        return ResponseDTO.success(availableSlots);
+        try {
+            List<TimeSlot> availableSlots = availableSlots = bookingService.getAvailableSlots(coworkingId, date);
+            return ResponseDTO.success(availableSlots);
+        } catch (RepositoryException e) {
+            return ResponseDTO.failure(e.getMessage());
+        }
     }
 
     /**
@@ -133,7 +137,7 @@ public class BookingControllerImpl extends SecurityController implements Booking
         try {
             BookingDTO bookingById = bookingService.getBookingById(bookingId);
             return ResponseDTO.success(bookingById);
-        } catch (BookingNotFoundException e) {
+        } catch (BookingNotFoundException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
