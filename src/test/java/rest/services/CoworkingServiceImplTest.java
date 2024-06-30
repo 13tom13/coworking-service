@@ -74,7 +74,7 @@ class CoworkingServiceImplTest {
 
     @Test
     @DisplayName("Тест успешного изменения рабочего места")
-    void testUpdateWorkplace() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException {
+    void testUpdateWorkplace() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException, RepositoryException {
         Coworking workplace = WorkplaceMapper.INSTANCE.toWorkplace((WorkplaceDTO) coworkingDTO);
 
         when(coworkingRepository.updateCoworking(any(Coworking.class))).thenReturn(Optional.ofNullable(workplace));
@@ -87,7 +87,7 @@ class CoworkingServiceImplTest {
 
     @Test
     @DisplayName("Тест успешного изменения конференц-зала")
-    void testUpdateConferenceRoom() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException {
+    void testUpdateConferenceRoom() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException, RepositoryException {
         coworkingDTO = new ConferenceRoomDTO(3L, "Conference Room", "Description", true, 10);
 
         ConferenceRoom conferenceRoom = ConferenceRoomMapper.INSTANCE.toConferenceRoom((ConferenceRoomDTO) coworkingDTO);
@@ -103,7 +103,7 @@ class CoworkingServiceImplTest {
 
     @Test
     @DisplayName("Тест ошибки при попытке удалить коворкинг с несуществующим ID")
-    void testDeleteCoworking() throws CoworkingNotFoundException {
+    void testDeleteCoworking() throws CoworkingNotFoundException, RepositoryException {
         long coworkingId = 5L;
         doThrow(CoworkingNotFoundException.class).when(coworkingRepository).deleteCoworking(coworkingId);
 

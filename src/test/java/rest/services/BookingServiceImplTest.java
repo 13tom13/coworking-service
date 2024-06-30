@@ -65,7 +65,7 @@ class BookingServiceImplTest {
 
     @Test
     @DisplayName("Тест отмены бронирования")
-    void testCancelBooking() throws BookingNotFoundException {
+    void testCancelBooking() throws BookingNotFoundException, RepositoryException {
         bookingService.cancelBooking(bookingDTO.id());
 
         Mockito.verify(bookingRepository, Mockito.times(1)).deleteBooking(bookingDTO.id());
@@ -73,7 +73,7 @@ class BookingServiceImplTest {
 
     @Test
     @DisplayName("Тест ошибки при отмене бронирования")
-    void testCancelBookingException() throws BookingNotFoundException {
+    void testCancelBookingException() throws BookingNotFoundException, RepositoryException {
         doThrow(BookingNotFoundException.class).when(bookingRepository).deleteBooking(bookingDTO.id());
 
         assertThrows(BookingNotFoundException.class, () -> bookingService.cancelBooking(bookingDTO.id()));
@@ -81,7 +81,7 @@ class BookingServiceImplTest {
 
     @Test
     @DisplayName("Тест получения бронирований пользователя")
-    void testGetBookingsByUser() throws BookingNotFoundException {
+    void testGetBookingsByUser() throws BookingNotFoundException, RepositoryException {
         long userId = 1L;
         List<Booking> bookings = new ArrayList<>();
         bookings.add(new Booking(1L, userId, 1L, LocalDate.now(), List.of(TimeSlot.MORNING)));
@@ -97,7 +97,7 @@ class BookingServiceImplTest {
 
     @Test
     @DisplayName("Тест получения свободных слотов для бронирования")
-    void testGetAvailableSlots() {
+    void testGetAvailableSlots() throws RepositoryException {
         List<Booking> bookings = new ArrayList<>();
         bookings.add(booking);
 
@@ -111,7 +111,7 @@ class BookingServiceImplTest {
 
     @Test
     @DisplayName("Тест получения бронирования по id")
-    void testGetBookingById() throws BookingNotFoundException {
+    void testGetBookingById() throws BookingNotFoundException, RepositoryException {
         doReturn(Optional.ofNullable(booking)).when(bookingRepository).getBookingById(booking.id());
 
         BookingDTO foundBooking = bookingService.getBookingById(booking.id());

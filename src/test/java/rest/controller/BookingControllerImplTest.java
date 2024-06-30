@@ -84,7 +84,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест отмены бронирования")
-    void cancelBooking_success() throws BookingNotFoundException {
+    void cancelBooking_success() throws BookingNotFoundException, RepositoryException {
         doNothing().when(bookingService).cancelBooking(1L);
 
         ResponseDTO<Void> response = bookingController.cancelBooking(1L);
@@ -96,7 +96,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест ошибки при отмене бронирования")
-    void cancelBooking_notFound() throws BookingNotFoundException {
+    void cancelBooking_notFound() throws BookingNotFoundException, RepositoryException {
         doThrow(new BookingNotFoundException("Not Found")).when(bookingService).cancelBooking(1L);
 
         ResponseDTO<Void> response = bookingController.cancelBooking(1L);
@@ -108,7 +108,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест получения списка бронирований по пользователю")
-    void getBookingsByUser_success() throws BookingNotFoundException {
+    void getBookingsByUser_success() throws BookingNotFoundException, RepositoryException {
         List<BookingDTO> bookings = List.of(bookingDTO);
         when(bookingService.getBookingsByUser(bookingDTO.userId())).thenReturn(bookings);
 
@@ -121,7 +121,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест ненахождение бронирований по пользователю")
-    void getBookingsByUser_notFound() throws BookingNotFoundException {
+    void getBookingsByUser_notFound() throws BookingNotFoundException, RepositoryException {
         when(bookingService.getBookingsByUser(bookingDTO.userId())).thenThrow(new BookingNotFoundException("Not Found"));
 
         ResponseDTO<List<BookingDTO>> response = bookingController.getBookingsByUser(bookingDTO.userId());
@@ -133,7 +133,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест получения списка бронирований по пользователю и дате")
-    void getBookingsByUserAndDate_success() throws BookingNotFoundException {
+    void getBookingsByUserAndDate_success() throws BookingNotFoundException, RepositoryException {
         List<BookingDTO> bookings = List.of(bookingDTO);
         when(bookingService.getBookingsByUserAndDate(bookingDTO.userId(), bookingDTO.date())).thenReturn(bookings);
 
@@ -146,7 +146,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест ненахождение бронирований по пользователю и дате")
-    void getBookingsByUserAndDate_notFound() throws BookingNotFoundException {
+    void getBookingsByUserAndDate_notFound() throws BookingNotFoundException, RepositoryException {
         when(bookingService.getBookingsByUserAndDate(bookingDTO.userId(), bookingDTO.date())).thenThrow(new BookingNotFoundException("Not Found"));
 
         ResponseDTO<List<BookingDTO>> response = bookingController.getBookingsByUserAndDate(bookingDTO.userId(), bookingDTO.date());
@@ -158,7 +158,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест получения списка бронирований по пользователю и коворкингу")
-    void getBookingsByUserAndCoworking_success() throws BookingNotFoundException {
+    void getBookingsByUserAndCoworking_success() throws BookingNotFoundException, RepositoryException {
         List<BookingDTO> bookings = List.of(bookingDTO);
         when(bookingService.getBookingsByUserAndCoworking(bookingDTO.userId(), bookingDTO.coworkingId())).thenReturn(bookings);
 
@@ -171,7 +171,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест ненахождение бронирований по пользователю и коворкингу")
-    void getBookingsByUserAndCoworking_notFound() throws BookingNotFoundException {
+    void getBookingsByUserAndCoworking_notFound() throws BookingNotFoundException, RepositoryException {
         when(bookingService.getBookingsByUserAndCoworking(1L, 1L)).thenThrow(new BookingNotFoundException("Not Found"));
 
         ResponseDTO<List<BookingDTO>> response = bookingController.getBookingsByUserAndCoworking(1L, 1L);
@@ -183,7 +183,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест получения списка доступного времени бронирования")
-    void getAvailableSlots_success() {
+    void getAvailableSlots_success() throws RepositoryException {
         List<TimeSlot> slots = List.of(TimeSlot.MORNING, TimeSlot.AFTERNOON);
         when(bookingService.getAvailableSlots(bookingDTO.coworkingId(), bookingDTO.date())).thenReturn(slots);
 
@@ -196,7 +196,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест получения бронирования по id")
-    void getBookingById_success() throws BookingNotFoundException {
+    void getBookingById_success() throws BookingNotFoundException, RepositoryException {
         when(bookingService.getBookingById(bookingDTO.id())).thenReturn(bookingDTO);
 
         ResponseDTO<BookingDTO> response = bookingController.getBookingById(bookingDTO.id());
@@ -208,7 +208,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест ненахождение бронирования по id")
-    void getBookingById_notFound() throws BookingNotFoundException {
+    void getBookingById_notFound() throws BookingNotFoundException, RepositoryException {
         when(bookingService.getBookingById(bookingDTO.id())).thenThrow(new BookingNotFoundException("Not Found"));
 
         ResponseDTO<BookingDTO> response = bookingController.getBookingById(bookingDTO.id());
