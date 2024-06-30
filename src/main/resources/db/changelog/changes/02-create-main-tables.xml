@@ -15,7 +15,7 @@
                         incrementBy="1"/>
     </changeSet>
 
-    <changeSet id="1" author="13tom13">
+    <changeSet id="create_users_table" author="13tom13">
         <createTable tableName="users" schemaName="main">
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -52,7 +52,7 @@
         <setColumnRemarks tableName="users" schemaName="main" columnName="role" remarks="Роль пользователя"/>
     </changeSet>
 
-    <changeSet id="2" author="13tom13">
+    <changeSet id="create_coworkings_table" author="13tom13">
         <createTable tableName="coworkings" schemaName="main">
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -93,7 +93,7 @@
     </changeSet>
 
 
-    <changeSet id="5" author="13tom13">
+    <changeSet id="create_bookings_table" author="13tom13">
         <createTable tableName="bookings" schemaName="main">
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -139,6 +139,34 @@
         <setColumnRemarks tableName="bookings" schemaName="main" columnName="user_id" remarks="Идентификатор пользователя"/>
         <setColumnRemarks tableName="bookings" schemaName="main" columnName="coworking_id" remarks="Идентификатор коворкинга"/>
         <setColumnRemarks tableName="bookings" schemaName="main" columnName="date" remarks="Дата бронирования"/>
+    </changeSet>
+
+    <changeSet id="create_time_slots_table_and_filling" author="13tom13">
+        <createTable tableName="time_slots" schemaName="main">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="slot_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <setTableRemarks tableName="time_slots" schemaName="main" remarks="Описание таблицы time_slots"/>
+        <setColumnRemarks tableName="time_slots" schemaName="main" columnName="id" remarks="Уникальный идентификатор временного слота"/>
+        <setColumnRemarks tableName="time_slots" schemaName="main" columnName="slot_name" remarks="Название временного слота"/>
+
+        <insert tableName="time_slots" schemaName="main">
+            <column name="id" value="1"/>
+            <column name="slot_name" value="MORNING"/>
+        </insert>
+        <insert tableName="time_slots" schemaName="main">
+            <column name="id" value="2"/>
+            <column name="slot_name" value="AFTERNOON"/>
+        </insert>
+        <insert tableName="time_slots" schemaName="main">
+            <column name="id" value="3"/>
+            <column name="slot_name" value="EVENING"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

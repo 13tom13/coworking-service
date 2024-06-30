@@ -119,7 +119,7 @@ public class BookingControllerImpl extends SecurityController implements Booking
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
         try {
-            List<TimeSlot> availableSlots = availableSlots = bookingService.getAvailableSlots(coworkingId, date);
+            List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
             return ResponseDTO.success(availableSlots);
         } catch (RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());

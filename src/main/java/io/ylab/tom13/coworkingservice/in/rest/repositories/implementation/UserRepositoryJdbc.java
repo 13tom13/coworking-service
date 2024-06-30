@@ -41,11 +41,7 @@ public class UserRepositoryJdbc implements UserRepository {
             connection.setAutoCommit(false);
 
             try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, user.firstName());
-                statement.setString(2, user.lastName());
-                statement.setString(3, user.email());
-                statement.setString(4, user.password());
-                statement.setString(5, user.role().name());
+                userToStatement(user, statement);
 
                 int affectedRows = statement.executeUpdate();
 
@@ -53,7 +49,6 @@ public class UserRepositoryJdbc implements UserRepository {
                     connection.rollback();
                     throw new RepositoryException("Создание пользователя не удалось, нет затронутых строк.");
                 }
-
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         long id = generatedKeys.getLong(1);
@@ -90,12 +85,11 @@ public class UserRepositoryJdbc implements UserRepository {
                 FROM main.users
                 """;
         List<User> users = new ArrayList<>();
-
         try (PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                User user = getUserFromResultSet(resultSet);
+                User user = resultSetToUser(resultSet);
                 users.add(user);
             }
 
@@ -118,11 +112,10 @@ public class UserRepositoryJdbc implements UserRepository {
                 """;
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-
             statement.setString(1, email);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    User user = getUserFromResultSet(resultSet);
+                    User user = resultSetToUser(resultSet);
                     return Optional.of(user);
                 }
             }
@@ -149,7 +142,7 @@ public class UserRepositoryJdbc implements UserRepository {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    User user = getUserFromResultSet(resultSet);
+                    User user = resultSetToUser(resultSet);
                     return Optional.of(user);
                 }
             }
@@ -203,11 +196,7 @@ public class UserRepositoryJdbc implements UserRepository {
         try {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, user.firstName());
-                preparedStatement.setString(2, user.lastName());
-                preparedStatement.setString(3, user.email());
-                preparedStatement.setString(4, user.password());
-                preparedStatement.setString(5, user.role().name());
+                userToStatement(user, preparedStatement);
                 preparedStatement.setLong(6, user.id());
 
                 int affectedRows = preparedStatement.executeUpdate();
@@ -231,8 +220,10 @@ public class UserRepositoryJdbc implements UserRepository {
         }
     }
 
-
-    private User getUserFromResultSet(ResultSet resultSet) throws SQLException {
+    /**
+     * Метод для получения объекта {@link User} из {@link ResultSet}
+     */
+    private User resultSetToUser (ResultSet resultSet) throws SQLException {
         return new User(
                 resultSet.getLong("id"),
                 resultSet.getString("first_name"),
@@ -241,5 +232,16 @@ public class UserRepositoryJdbc implements UserRepository {
                 resultSet.getString("password"),
                 Role.valueOf(resultSet.getString("role"))
         );
+    }
+
+    /**
+     * Метод для передачи объекта {@link User} в {@link PreparedStatement}
+     */
+    private void userToStatement (User user, PreparedStatement statement) throws SQLException {
+        statement.setString(1, user.firstName());
+        statement.setString(2, user.lastName());
+        statement.setString(3, user.email());
+        statement.setString(4, user.password());
+        statement.setString(5, user.role().name());
     }
 }

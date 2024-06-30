@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <changeSet id="1" author="13tom13">
+    <changeSet id="add_bookings_for_test_user" author="13tom13">
         <insert tableName="bookings" schemaName="main">
             <column name="user_id" valueComputed="(SELECT id FROM main.users WHERE email = 'test@mail.ru')"/>
             <column name="coworking_id" valueComputed="(SELECT id FROM main.coworkings WHERE name = 'Зал 1')"/>

@@ -12,13 +12,14 @@ import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingUpdatingE
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.CoworkingRepository;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.in.security.SecurityController;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.ConferenceRoomMapper;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.WorkplaceMapper;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -42,11 +43,12 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      */
     public CoworkingServiceImpl() {
         try {
-            coworkingRepository = new CoworkingRepositoryJdbc(getConnection());
+            Connection connection = getConnection();
+            coworkingRepository = new CoworkingRepositoryJdbc(connection);
+            bookingRepository = new BookingRepositoryJdbc(connection);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        bookingRepository = BookingRepositoryCollection.getInstance();
     }
 
     /**

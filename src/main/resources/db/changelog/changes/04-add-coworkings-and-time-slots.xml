@@ -3,7 +3,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
 
-    <changeSet id="3" author="13tom13">
+    <changeSet id="add_coworkings" author="13tom13">
         <insert tableName="coworkings" schemaName="main">
             <column name="name" value="Офис 1"/>
             <column name="description" value="Антикафе с кофемашиной и пуфиками"/>
@@ -52,6 +52,5 @@
             <column name="conference_room_capacity" valueNumeric="50"/>
         </insert>
     </changeSet>
-
 
 </databaseChangeLog>

@@ -7,12 +7,15 @@ import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictExcep
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.BookingService;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.BookingMapper;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
+
+import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
 
 /**
  * Реализация интерфейса {@link BookingService}.
@@ -26,7 +29,11 @@ public class BookingServiceImpl implements BookingService {
      * Конструктор для инициализации сервиса бронирования.
      */
     public BookingServiceImpl() {
-        this.bookingRepository = BookingRepositoryCollection.getInstance();
+        try {
+            this.bookingRepository = new BookingRepositoryJdbc(getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private final BookingMapper bookingMapper = BookingMapper.INSTANCE;
@@ -39,8 +46,10 @@ public class BookingServiceImpl implements BookingService {
         if (bookingDTO.date().isBefore(LocalDate.now())) {
             throw new BookingConflictException("Время бронирования не может быть в прошлом");
         }
+
         Booking newBooking = new Booking(0, bookingDTO.userId(), bookingDTO.coworkingId(), bookingDTO.date(), bookingDTO.timeSlots());
         Optional<Booking> bookingFromRepository = bookingRepository.createBooking(newBooking);
+
         if (bookingFromRepository.isEmpty()) {
             throw new RepositoryException("Не удалось создать бронирование");
         }

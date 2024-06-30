@@ -8,11 +8,9 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryExcepti
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
 
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Реализация репозитория бронирований с использованием JDBC.
@@ -27,145 +25,117 @@ public class BookingRepositoryJdbc implements BookingRepository {
 
     @Override
     public Optional<Booking> createBooking(Booking newBooking) throws BookingConflictException, RepositoryException {
-        String insertBookingSql = """
-                INSERT INTO main.bookings (user_id, coworking_id, date)
-                VALUES (?, ?, ?)
-                """;
-
-        String insertBookingTimeSlotsSql = """
-                INSERT INTO relations.booking_time_slots (booking_id, time_slot_id)
-                VALUES (?, ?)
-                """;
-
         try {
             connection.setAutoCommit(false);
-            try (PreparedStatement insertBookingStatement = connection.prepareStatement(insertBookingSql, PreparedStatement.RETURN_GENERATED_KEYS);
-                 PreparedStatement insertBookingTimeSlotsStatement = connection.prepareStatement(insertBookingTimeSlotsSql)) {
+            String insertBookingSQL = """
+                    INSERT INTO main.bookings (user_id, coworking_id, date) VALUES (?, ?, ?)
+                    """;
+            try (PreparedStatement bookingStatement = connection.prepareStatement(insertBookingSQL, Statement.RETURN_GENERATED_KEYS)) {
+                bookingStatement.setLong(1, newBooking.userId());
+                bookingStatement.setLong(2, newBooking.coworkingId());
+                bookingStatement.setDate(3, Date.valueOf(newBooking.date()));
 
-                insertBookingStatement.setLong(1, newBooking.userId());
-                insertBookingStatement.setLong(2, newBooking.coworkingId());
-                insertBookingStatement.setObject(3, newBooking.date());
-
-                int affectedRows = insertBookingStatement.executeUpdate();
-
+                int affectedRows = bookingStatement.executeUpdate();
                 if (affectedRows == 0) {
                     connection.rollback();
                     throw new RepositoryException("Создание бронирования не удалось, нет затронутых строк.");
                 }
-
-                try (ResultSet generatedKeys = insertBookingStatement.getGeneratedKeys()) {
+                try (ResultSet generatedKeys = bookingStatement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         long bookingId = generatedKeys.getLong(1);
-
-//                        for (TimeSlot timeSlotId : newBooking.timeSlots()) {
-//                            insertBookingTimeSlotsStatement.setLong(1, bookingId);
-//                            insertBookingTimeSlotsStatement.setLong(2, timeSlotId);
-//                            insertBookingTimeSlotsStatement.addBatch();
-//                        }
-
-                        insertBookingTimeSlotsStatement.executeBatch();
+                        insertTimeSlots(bookingId, newBooking);
+                        checkBookingOverlap(newBooking);
                         connection.commit();
-
                         return Optional.of(new Booking(bookingId, newBooking.userId(), newBooking.coworkingId(), newBooking.date(), newBooking.timeSlots()));
                     } else {
                         connection.rollback();
-                        throw new RepositoryException("Создание бронирования не удалось, ID не был получен.");
+                        throw new RepositoryException("Создание пользователя не удалось, ID не был получен.");
                     }
                 }
             } catch (SQLException e) {
                 connection.rollback();
-                if (e.getSQLState().equals("23505")) { // unique_violation
-                    throw new BookingConflictException("Время бронирования совпадает с существующим бронированием");
-                } else {
-                    throw new RepositoryException("Ошибка при создании бронирования: " + e.getMessage());
-                }
+                throw new RepositoryException("Ошибка при создании бронирования: " + e.getMessage());
             } finally {
                 connection.setAutoCommit(true);
             }
         } catch (SQLException e) {
-            throw new RepositoryException("Ошибка при соединении с базой данных: " + e.getMessage());
+            throw new RepositoryException("Ошибка при установке автокоммита: " + e.getMessage());
         }
     }
 
+
     @Override
     public Optional<Booking> updateBooking(Booking updatedBooking) throws BookingNotFoundException, BookingConflictException, RepositoryException {
-        String updateBookingSql = """
+        try {
+            connection.setAutoCommit(false);
+            long bookingId = updatedBooking.id();
+
+            if (getBookingById(bookingId).isEmpty()) {
+                throw new BookingNotFoundException("Бронирование с указанным ID не найдено");
+            }
+
+            checkBookingOverlap(updatedBooking);
+
+            String updateBookingSQL = """
                 UPDATE main.bookings
                 SET user_id = ?, coworking_id = ?, date = ?
                 WHERE id = ?
                 """;
+            try (PreparedStatement bookingStatement = connection.prepareStatement(updateBookingSQL)) {
+                bookingStatement.setLong(1, updatedBooking.userId());
+                bookingStatement.setLong(2, updatedBooking.coworkingId());
+                bookingStatement.setDate(3, Date.valueOf(updatedBooking.date()));
+                bookingStatement.setLong(4, bookingId);
 
-        String deleteBookingTimeSlotsSql = """
-                DELETE FROM relations.booking_time_slots
-                WHERE booking_id = ?
-                """;
-
-        String insertBookingTimeSlotsSql = """
-                INSERT INTO relations.booking_time_slots (booking_id, time_slot_id)
-                VALUES (?, ?)
-                """;
-
-        try {
-            connection.setAutoCommit(false);
-            try (PreparedStatement updateBookingStatement = connection.prepareStatement(updateBookingSql);
-                 PreparedStatement deleteBookingTimeSlotsStatement = connection.prepareStatement(deleteBookingTimeSlotsSql);
-                 PreparedStatement insertBookingTimeSlotsStatement = connection.prepareStatement(insertBookingTimeSlotsSql)) {
-
-                updateBookingStatement.setLong(1, updatedBooking.userId());
-                updateBookingStatement.setLong(2, updatedBooking.coworkingId());
-                updateBookingStatement.setObject(3, updatedBooking.date());
-                updateBookingStatement.setLong(4, updatedBooking.id());
-
-                int affectedRows = updateBookingStatement.executeUpdate();
+                int affectedRows = bookingStatement.executeUpdate();
 
                 if (affectedRows == 0) {
                     connection.rollback();
-                    throw new BookingNotFoundException("Бронирование не найдено");
+                    throw new RepositoryException("Обновление бронирования не удалось, нет затронутых строк.");
                 }
 
-                deleteBookingTimeSlotsStatement.setLong(1, updatedBooking.id());
-                deleteBookingTimeSlotsStatement.executeUpdate();
+                deleteTimeSlots(bookingId);
 
-//                for (String timeSlotId : updatedBooking.timeSlots()) {
-//                    insertBookingTimeSlotsStatement.setLong(1, updatedBooking.id());
-//                    insertBookingTimeSlotsStatement.setLong(2, Long.parseLong(timeSlotId));
-//                    insertBookingTimeSlotsStatement.addBatch();
-//                }
+                insertTimeSlots(bookingId, updatedBooking);
 
-                insertBookingTimeSlotsStatement.executeBatch();
                 connection.commit();
-
                 return Optional.of(updatedBooking);
-
             } catch (SQLException e) {
                 connection.rollback();
-                if (e.getSQLState().equals("23505")) { // unique_violation
-                    throw new BookingConflictException("Время бронирования совпадает с существующим бронированием");
-                } else {
-                    throw new RepositoryException("Ошибка при обновлении бронирования: " + e.getMessage());
-                }
+                throw new RepositoryException("Ошибка при обновлении бронирования: " + e.getMessage());
             } finally {
                 connection.setAutoCommit(true);
             }
         } catch (SQLException e) {
-            throw new RepositoryException("Ошибка при соединении с базой данных: " + e.getMessage());
+            throw new RepositoryException("Ошибка при установке автокоммита: " + e.getMessage());
         }
     }
 
+
     @Override
     public void deleteBooking(long bookingId) throws BookingNotFoundException, RepositoryException {
-        String deleteBookingSql = "DELETE FROM main.bookings WHERE id = ?";
         try {
             connection.setAutoCommit(false);
-            try (PreparedStatement deleteBookingStatement = connection.prepareStatement(deleteBookingSql)) {
-                deleteBookingStatement.setLong(1, bookingId);
 
-                int affectedRows = deleteBookingStatement.executeUpdate();
+            if (getBookingById(bookingId).isEmpty()) {
+                throw new BookingNotFoundException("Бронирование с указанным ID не найдено");
+            }
 
+            String deleteBookingSQL = """
+                DELETE FROM main.bookings
+                WHERE id = ?
+                """;
+            try (PreparedStatement bookingStatement = connection.prepareStatement(deleteBookingSQL)) {
+                bookingStatement.setLong(1, bookingId);
+
+                int affectedRows = bookingStatement.executeUpdate();
                 if (affectedRows == 0) {
                     connection.rollback();
-                    throw new BookingNotFoundException("Бронирование для удаления не найдено");
+                    throw new RepositoryException("Удаление бронирования не удалось, нет затронутых строк.");
                 }
+
+
+                deleteTimeSlots(bookingId);
 
                 connection.commit();
             } catch (SQLException e) {
@@ -175,225 +145,264 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 connection.setAutoCommit(true);
             }
         } catch (SQLException e) {
-            throw new RepositoryException("Ошибка при соединении с базой данных: " + e.getMessage());
+            throw new RepositoryException("Ошибка при установке автокоммита: " + e.getMessage());
         }
     }
 
     @Override
     public Collection<Booking> getBookingsByUser(long userId) throws BookingNotFoundException, RepositoryException {
-        String selectBookingsSql = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, array_agg(bts.time_slot_id::text) AS time_slots
+        String query = """
+                SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
                 FROM main.bookings b
-                         LEFT JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
+                JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
                 WHERE b.user_id = ?
-                GROUP BY b.id, b.user_id, b.coworking_id, b.date
                 """;
 
-        try {
-            List<Booking> bookings = new ArrayList<>();
-            try (PreparedStatement statement = connection.prepareStatement(selectBookingsSql)) {
-                statement.setLong(1, userId);
-                ResultSet resultSet = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, userId);
 
-//                while (resultSet.next()) {
-//                    long id = resultSet.getLong("id");
-//                    long coworkingId = resultSet.getLong("coworking_id");
-//                    LocalDate date = resultSet.getObject("date", LocalDate.class);
-//                    String[] timeSlotsArray = (String[]) resultSet.getArray("time_slots").getArray();
-//                    List<String> timeSlots = timeSlotsArray == null ? new ArrayList<>() : List.of(timeSlotsArray);
-//
-////                    bookings.add(new Booking(id, userId, coworkingId, date, timeSlots));
-//                }
+            Collection<Booking> userBookings = statementToBookings(statement);
+
+            if (userBookings.isEmpty()) {
+                throw new BookingNotFoundException("Бронирования пользователя не найдено");
             }
-            if (bookings.isEmpty()) {
-                throw new BookingNotFoundException("Бронирования пользователя не найдены");
-            }
-            return bookings;
+
+            return userBookings;
+
         } catch (SQLException e) {
-            throw new RepositoryException("Ошибка при выполнении запроса: " + e.getMessage());
+            throw new RepositoryException("Ошибка при получении бронирований пользователя: " + e.getMessage());
         }
     }
 
+
     @Override
     public Collection<Booking> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException, RepositoryException {
-        String selectBookingsSql = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, array_agg(bts.time_slot_id::text) AS time_slots
+        String query = """
+                SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
                 FROM main.bookings b
-                         LEFT JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
+                JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
                 WHERE b.user_id = ? AND b.date = ?
-                GROUP BY b.id, b.user_id, b.coworking_id, b.date
                 """;
 
-        try {
-            List<Booking> bookings = new ArrayList<>();
-            try (PreparedStatement statement = connection.prepareStatement(selectBookingsSql)) {
-                statement.setLong(1, userId);
-                statement.setObject(2, date);
-                ResultSet resultSet = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, userId);
+            statement.setDate(2, Date.valueOf(date));
 
-//                while (resultSet.next()) {
-//                    long id = resultSet.getLong("id");
-//                    long coworkingId = resultSet.getLong("coworking_id");
-//                    LocalDate bookingDate = resultSet.getObject("date", LocalDate.class);
-//                    String[] timeSlotsArray = (String[]) resultSet.getArray("time_slots").getArray();
-//                    List<String> timeSlots = timeSlotsArray == null ? new ArrayList<>() : List.of(timeSlotsArray);
-//
-//                    bookings.add(new Booking(id, userId, coworkingId, bookingDate, timeSlots));
-//                }
+            Collection<Booking> userBookings = statementToBookings(statement);
+
+            if (userBookings.isEmpty()) {
+                throw new BookingNotFoundException("Бронирования пользователя не найдено");
             }
-            if (bookings.isEmpty()) {
-                throw new BookingNotFoundException("У пользователя нет бронирований на эту дату: " + date);
-            }
-            return bookings;
+
+            return userBookings;
         } catch (SQLException e) {
-            throw new RepositoryException("Ошибка при выполнении запроса: " + e.getMessage());
+            throw new RepositoryException("Ошибка при получении бронирований пользователя и по дате: " + e.getMessage());
         }
     }
 
     @Override
     public Collection<Booking> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException, RepositoryException {
-        String selectBookingsSql = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, array_agg(bts.time_slot_id::text) AS time_slots
-                FROM main.bookings b
-                         LEFT JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
-                WHERE b.user_id = ? AND b.coworking_id = ?
-                GROUP BY b.id, b.user_id, b.coworking_id, b.date
-                """;
+        String query = """
+            SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
+            FROM main.bookings b
+            JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
+            WHERE b.user_id = ? AND b.coworking_id = ?
+            """;
 
-        try {
-            List<Booking> bookings = new ArrayList<>();
-            try (PreparedStatement statement = connection.prepareStatement(selectBookingsSql)) {
-                statement.setLong(1, userId);
-                statement.setLong(2, coworkingId);
-                ResultSet resultSet = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, userId);
+            statement.setLong(2, coworkingId);
 
-//                while (resultSet.next()) {
-//                    long id = resultSet.getLong("id");
-//                    LocalDate bookingDate = resultSet.getObject("date", LocalDate.class);
-//                    String[] timeSlotsArray = (String[]) resultSet.getArray("time_slots").getArray();
-//                    List<String> timeSlots = timeSlotsArray == null ? new ArrayList<>() : List.of(timeSlotsArray);
-//
-//                    bookings.add(new Booking(id, userId, coworkingId, bookingDate, timeSlots));
-//                }
-            }
+            Collection<Booking> bookings = statementToBookings(statement);
+
             if (bookings.isEmpty()) {
-                throw new BookingNotFoundException("У пользователя нет бронирований в этом коворкинге");
+                throw new BookingNotFoundException("Бронирования пользователя в этом коворкинге не найдены");
             }
+
             return bookings;
+
         } catch (SQLException e) {
-            throw new RepositoryException("Ошибка при выполнении запроса: " + e.getMessage());
+            throw new RepositoryException("Ошибка при получении бронирований по пользователю и коворкингу: " + e.getMessage());
         }
     }
 
     @Override
     public Collection<Booking> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date) throws RepositoryException {
-        String selectBookingsSql = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, array_agg(bts.time_slot_id::text) AS time_slots
+        String query = """
+                SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
                 FROM main.bookings b
-                         LEFT JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
+                JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
                 WHERE b.coworking_id = ? AND b.date = ?
-                GROUP BY b.id, b.user_id, b.coworking_id, b.date
                 """;
 
-        try {
-            List<Booking> bookings = new ArrayList<>();
-            try (PreparedStatement statement = connection.prepareStatement(selectBookingsSql)) {
-                statement.setLong(1, coworkingId);
-                statement.setObject(2, date);
-                ResultSet resultSet = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, coworkingId);
+            statement.setDate(2, Date.valueOf(date));
 
-//                while (resultSet.next()) {
-//                    long id = resultSet.getLong("id");
-//                    long userId = resultSet.getLong("user_id");
-//                    String[] timeSlotsArray = (String[]) resultSet.getArray("time_slots").getArray();
-//                    List<String> timeSlots = timeSlotsArray == null ? new ArrayList<>() : List.of(timeSlotsArray);
-//
-//                    bookings.add(new Booking(id, userId, coworkingId, date, timeSlots));
-//                }
-            }
-            return bookings;
+            return statementToBookings(statement);
+
         } catch (SQLException e) {
-            throw new RepositoryException("Ошибка при выполнении запроса: " + e.getMessage());
+            throw new RepositoryException("Ошибка при получении бронирований по коворкингу и дате: " + e.getMessage());
         }
     }
 
     @Override
     public Optional<Booking> getBookingById(long bookingId) throws BookingNotFoundException, RepositoryException {
-        String selectBookingSql = """
-                SELECT b.user_id, b.coworking_id, b.date, array_agg(bts.time_slot_id::text) AS time_slots
-                FROM main.bookings b
-                         LEFT JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
-                WHERE b.id = ?
-                GROUP BY b.user_id, b.coworking_id, b.date
-                """;
+        String query = """
+            SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
+            FROM main.bookings b
+            JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
+            WHERE b.id = ?
+            """;
 
-        try {
-            try (PreparedStatement statement = connection.prepareStatement(selectBookingSql)) {
-                statement.setLong(1, bookingId);
-                ResultSet resultSet = statement.executeQuery();
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, bookingId);
 
-                if (resultSet.next()) {
-                    long userId = resultSet.getLong("user_id");
-                    long coworkingId = resultSet.getLong("coworking_id");
-                    LocalDate bookingDate = resultSet.getObject("date", LocalDate.class);
-                    String[] timeSlotsArray = (String[]) resultSet.getArray("time_slots").getArray();
-                    List<String> timeSlots = timeSlotsArray == null ? new ArrayList<>() : List.of(timeSlotsArray);
+            Collection<Booking> bookings = statementToBookings(statement);
 
-//                    return Optional.of(new Booking(bookingId, userId, coworkingId, bookingDate));
-                    return Optional.empty();
-                } else {
-                    throw new BookingNotFoundException("Бронирование с указанным ID не найдено");
-                }
+            if (bookings.isEmpty()) {
+                throw new BookingNotFoundException("Бронирование с указанным ID не найдено");
             }
+
+            return Optional.of(bookings.iterator().next());
+
         } catch (SQLException e) {
-            throw new RepositoryException("Ошибка при выполнении запроса: " + e.getMessage());
+            throw new RepositoryException("Ошибка при получении бронирования по ID: " + e.getMessage());
         }
     }
 
     @Override
-    public void deleteAllCoworkingBookings(long coworkingId) {
-        String deleteBookingsSql = "DELETE FROM main.bookings WHERE coworking_id = ?";
-//        try {
-//            connection.setAutoCommit(false);
-//            try (PreparedStatement deleteBookingsStatement = connection.prepareStatement(deleteBookingsSql)) {
-//                deleteBookingsStatement.setLong(1, coworkingId);
-//
-//                int affectedRows = deleteBookingsStatement.executeUpdate();
-//
-//                if (affectedRows == 0) {
-//                    connection.rollback();
-//                    throw new RepositoryException("Удаление бронирований для коворкинга не выполнено, нет затронутых строк.");
-//                }
-//
-//                connection.commit();
-//            } catch (SQLException e) {
-//                connection.rollback();
-//                throw new RepositoryException("Ошибка при удалении бронирований для коворкинга: " + e.getMessage());
-//            } finally {
-//                connection.setAutoCommit(true);
-//            }
-//        } catch (SQLException e) {
-//            throw new RepositoryException("Ошибка при соединении с базой данных: " + e.getMessage());
-//        }
+    public void deleteAllCoworkingBookings(long coworkingId) throws RepositoryException {
+        try {
+            connection.setAutoCommit(false);
+
+            String selectBookingIdsSQL = """
+                SELECT id
+                FROM main.bookings
+                WHERE coworking_id = ?
+                """;
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectBookingIdsSQL)) {
+                selectStatement.setLong(1, coworkingId);
+                ResultSet rs = selectStatement.executeQuery();
+                List<Long> bookingIds = new ArrayList<>();
+                while (rs.next()) {
+                    bookingIds.add(rs.getLong("id"));
+                }
+
+                for (Long bookingId : bookingIds) {
+                    deleteTimeSlots(bookingId);
+                }
+
+                String deleteBookingsSQL = """
+                    DELETE FROM main.bookings
+                    WHERE coworking_id = ?
+                    """;
+                try (PreparedStatement bookingStatement = connection.prepareStatement(deleteBookingsSQL)) {
+                    bookingStatement.setLong(1, coworkingId);
+                    bookingStatement.executeUpdate();
+                }
+
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw new RepositoryException("Ошибка при удалении всех бронирований коворкинга: " + e.getMessage());
+            } finally {
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Ошибка при установке автокоммита: " + e.getMessage());
+        }
     }
 
-    // Приватные методы для проверок и управления состоянием
 
-    private boolean isBookingOverlapping(Booking newBooking) {
-        // Реализация метода isBookingOverlapping
-        return false;
+    private void insertTimeSlots(long bookingId, Booking newBooking) throws SQLException {
+        String insertTimeSlotSQL = """
+                INSERT INTO relations.booking_time_slots (booking_id, time_slot_id) VALUES (?, ?)
+                """;
+        try (PreparedStatement timeSlotStatement = connection.prepareStatement(insertTimeSlotSQL)) {
+            for (TimeSlot timeSlot : newBooking.timeSlots()) {
+                timeSlotStatement.setLong(1, bookingId);
+                timeSlotStatement.setLong(2, timeSlot.getId());
+                timeSlotStatement.addBatch();
+            }
+            timeSlotStatement.executeBatch();
+        }
     }
 
-    private boolean isBookingReduced(Booking existingBooking, Booking updatedBooking) {
-        // Реализация метода isBookingReduced
-        return false;
+    private void checkBookingOverlap(Booking newBooking) throws RepositoryException, BookingConflictException {
+        String query = """
+                SELECT b.id
+                FROM main.bookings b
+                JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
+                WHERE b.coworking_id = ? AND b.date = ? AND bts.time_slot_id IN (
+                """;
+
+        String placeholders = String.join(",", Collections.nCopies(newBooking.timeSlots().size(), "?"));
+        query += placeholders + ")";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setLong(1, newBooking.coworkingId());
+            stmt.setDate(2, Date.valueOf(newBooking.date()));
+
+            int index = 3;
+            for (TimeSlot slot : newBooking.timeSlots()) {
+                stmt.setLong(index++, slot.getId());
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                throw new BookingConflictException("Время бронирования совпадает с существующим бронированием");
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Ошибка при проверке пересечения бронирований: " + e.getMessage());
+        }
     }
 
-    private void removeBookingFromCollections(Booking booking) {
-        // Реализация метода removeBookingFromCollections
+    private TimeSlot getTimeSlotById(long id) {
+        for (TimeSlot slot : TimeSlot.values()) {
+            if (slot.getId() == id) {
+                return slot;
+            }
+        }
+        throw new IllegalArgumentException("Неизвестный TimeSlot ID: " + id);
     }
 
-    private void addBookingToCollections(Booking booking) {
-        // Реализация метода addBookingToCollections
+    private Collection<Booking> statementToBookings(PreparedStatement statement) throws SQLException {
+        Map<Long, Booking> bookingMap = new HashMap<>();
+        try (ResultSet rs = statement.executeQuery()) {
+            while (rs.next()) {
+                long bookingId = rs.getLong("id");
+                long userId = rs.getLong("user_id");
+                long coworkingId = rs.getLong("coworking_id");
+                LocalDate date = rs.getDate("date").toLocalDate();
+                long timeSlotId = rs.getLong("time_slot_id");
+
+                Booking booking = bookingMap.computeIfAbsent(bookingId, id ->
+                        new Booking(
+                                id,
+                                userId,
+                                coworkingId,
+                                date,
+                                new ArrayList<>()
+                        )
+                );
+
+                TimeSlot timeSlot = getTimeSlotById(timeSlotId);
+                booking.timeSlots().add(timeSlot);
+
+            }
+            return bookingMap.values();
+        }
+    }
+
+    private void deleteTimeSlots(long bookingId) throws SQLException {
+        String deleteTimeSlotsSQL = """
+            DELETE FROM relations.booking_time_slots
+            WHERE booking_id = ?
+            """;
+        try (PreparedStatement deleteStatement = connection.prepareStatement(deleteTimeSlotsSQL)) {
+            deleteStatement.setLong(1, bookingId);
+            deleteStatement.executeUpdate();
+        }
     }
 }
