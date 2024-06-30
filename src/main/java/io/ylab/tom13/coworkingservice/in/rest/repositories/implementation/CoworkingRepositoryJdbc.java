@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * Реализация интерфейса {@link CoworkingRepository}.
+ * CRUD операции с пользователями с использованием JDBC.
+ */
 public class CoworkingRepositoryJdbc implements CoworkingRepository {
 
     private final Connection connection;
@@ -212,6 +216,11 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
         }
     }
 
+    /**
+     * Проверяет уникальность имени коворкинга
+     *
+     * @param name имя коворкинга для проверки
+     */
     private boolean isCoworkingNameUnique(String name) throws RepositoryException {
         String sql = """
                 SELECT COUNT(*)
@@ -233,6 +242,12 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
         }
     }
 
+
+    /**
+     * Получает объект {@link Coworking} из ResultSet
+     *
+     * @param resultSet результат выполнения запроса к базе данных
+     */
     private Coworking getCoworkingFromResultSet(ResultSet resultSet) throws SQLException {
         long id = resultSet.getLong("id");
         String name = resultSet.getString("name");
