@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+import static io.ylab.tom13.coworkingservice.in.utils.security.PasswordUtil.hashPassword;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
@@ -44,7 +44,7 @@ class UserEditServiceImplTest {
     @BeforeEach
     void setUp() throws Exception {
         password = "password";
-        String hashedPassword = BCrypt.hashpw("password", BCrypt.gensalt());
+        String hashedPassword = hashPassword("password");
         user = new User(1L, "John", "Doe", "john.new@example.com", hashedPassword, Role.USER);
         userDTO = UserMapper.INSTANCE.toUserDTO(user);
         Field UserEditServiceField = UserEditServiceImpl.class.getDeclaredField("userRepository");

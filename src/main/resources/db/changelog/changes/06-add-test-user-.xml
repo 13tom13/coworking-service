@@ -8,7 +8,7 @@
             <column name="first_name" value="Иван"/>
             <column name="last_name" value="Иванов"/>
             <column name="email" value="test@mail.ru"/>
-            <column name="password" value="$2a$10$sBR5UGLHDptL6j6u6mLR1ubKezG66OSWpfQcMn/QGnrSolYeTZoT6"/>
+            <column name="password" value="yQS8rCn0wWT6sB1EwQCAVw==:dxgoOmvj0uRjrJGuwEtdYaK4DSiMV9D4+v1l4PaC548="/>
             <column name="role" value="USER"/>
         </insert>
     </changeSet>

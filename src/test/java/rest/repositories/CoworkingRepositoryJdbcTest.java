@@ -1,6 +1,6 @@
 package rest.repositories;
 
-import database.TestcontainersConnector;
+import database.TestcontainersConnectorTest;
 import io.ylab.tom13.coworkingservice.in.entity.model.coworking.ConferenceRoom;
 import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Coworking;
 import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Workplace;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 @DisplayName("Тесты репозитория коворкингов")
-class CoworkingRepositoryJdbcTest extends TestcontainersConnector {
+class CoworkingRepositoryJdbcTest extends TestcontainersConnectorTest {
 
     private CoworkingRepositoryJdbc coworkingRepository;
     private Coworking coworking;

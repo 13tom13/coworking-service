@@ -10,7 +10,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.controller.BookingController;
 import io.ylab.tom13.coworkingservice.in.rest.services.BookingService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.BookingServiceImpl;
-import io.ylab.tom13.coworkingservice.in.security.SecurityController;
+import io.ylab.tom13.coworkingservice.in.utils.security.SecurityController;
 
 import java.time.LocalDate;
 import java.util.List;

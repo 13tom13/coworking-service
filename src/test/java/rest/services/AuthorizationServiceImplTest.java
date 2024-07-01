@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+import static io.ylab.tom13.coworkingservice.in.utils.security.PasswordUtil.hashPassword;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,7 +40,7 @@ public class AuthorizationServiceImplTest {
 
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
-        existingUser = new User(1L, "John", "Doe", "john.doe@example.com", BCrypt.hashpw(password, BCrypt.gensalt()), Role.USER);
+        existingUser = new User(1L, "John", "Doe", "john.doe@example.com", hashPassword(password), Role.USER);
 
         Field userRepositoryField = AuthorizationServiceImpl.class.getDeclaredField("userRepository");
         userRepositoryField.setAccessible(true);

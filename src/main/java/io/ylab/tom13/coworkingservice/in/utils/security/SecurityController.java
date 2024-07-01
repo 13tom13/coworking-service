@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.in.security;
+package io.ylab.tom13.coworkingservice.in.utils.security;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;

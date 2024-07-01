@@ -4,14 +4,14 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
-import org.mindrot.jbcrypt.BCrypt;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+
+import static io.ylab.tom13.coworkingservice.in.utils.security.PasswordUtil.hashPassword;
 
 /**
  * Базовый класс для меню приложения.
@@ -101,7 +101,7 @@ public abstract class Menu {
 
     protected String readPassword(String prompt) {
         String password = readString(prompt);
-        return BCrypt.hashpw(password, BCrypt.gensalt());
+        return hashPassword(password);
     }
 
     protected long getCoworkingIdByName(Map<String, CoworkingDTO> coworkings) throws BookingException {
@@ -135,7 +135,7 @@ public abstract class Menu {
     }
 
     protected void displayAvailableSlots(LocalDate date, List<TimeSlot> availableSlots) {
-        if (availableSlots.isEmpty())  {
+        if (availableSlots.isEmpty()) {
             System.out.println("Нет доступных слотов на " + date);
             return;
         }
@@ -146,7 +146,7 @@ public abstract class Menu {
     }
 
     protected void displaySelectedSlots(LocalDate date, List<TimeSlot> selectedSlots) {
-        if (selectedSlots.isEmpty())  {
+        if (selectedSlots.isEmpty()) {
             System.out.println("Нет выбранных слотов на " + date);
             return;
         }

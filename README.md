@@ -15,7 +15,7 @@ Coworking Service - это консольное приложение для уп
 2. Перейдите в каталог проекта: `cd coworking-service`
 3. Соберите проект с помощью Maven: `mvn clean install`
 4. Запустите базу данных PostgresSQL в Docker командой: `docker-compose up -d`
-5. Запустите приложение: `java -jar target/coworking-service-1.0-SNAPSHOT.jar`
+5. Запустите приложение: `java -jar target/coworking-service-1.1-SNAPSHOT.jar`
 
 ## Функционал
 

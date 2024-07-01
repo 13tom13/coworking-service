@@ -11,12 +11,12 @@ import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 import java.util.Optional;
 
 import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
+import static io.ylab.tom13.coworkingservice.in.utils.security.PasswordUtil.verifyPassword;
 
 /**
  * Реализация интерфейса {@link UserEditService}.
@@ -56,8 +56,7 @@ public class UserEditServiceImpl implements UserEditService {
 
         Optional<User> updatedUser = userRepository.updateUser(userToUpdate);
 
-        if (userRepository.findById(userToUpdate.id()).isEmpty()
-            || userRepository.findByEmail(userToUpdate.email()).isEmpty() || updatedUser.isEmpty()) {
+        if (userRepository.findById(userToUpdate.id()).isEmpty() || userRepository.findByEmail(userToUpdate.email()).isEmpty() || updatedUser.isEmpty()) {
             throw new RepositoryException("Не удалось обновить пользователя с ID " + userDTO.id());
         }
 
@@ -88,9 +87,10 @@ public class UserEditServiceImpl implements UserEditService {
      * @throws UnauthorizedException если старый пароль не совпадает с паролем пользователя.
      */
     private void checkPassword(String passwordFromDTO, String passwordFromRep) throws UnauthorizedException {
-        if (!BCrypt.checkpw(passwordFromDTO, passwordFromRep)) {
+        if (!verifyPassword(passwordFromDTO, passwordFromRep)) {
             throw new UnauthorizedException("Старый пароль не совпадает");
         }
+
     }
 }
 

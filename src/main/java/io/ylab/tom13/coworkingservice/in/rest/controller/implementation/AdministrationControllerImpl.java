@@ -11,7 +11,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.NoAccessException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.AdministrationController;
 import io.ylab.tom13.coworkingservice.in.rest.services.AdministrationService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.AdministrationServiceImpl;
-import io.ylab.tom13.coworkingservice.in.security.SecurityController;
+import io.ylab.tom13.coworkingservice.in.utils.security.SecurityController;
 
 import java.util.List;
 

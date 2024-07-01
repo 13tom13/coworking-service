@@ -1,6 +1,6 @@
 package rest.repositories;
 
-import database.TestcontainersConnector;
+import database.TestcontainersConnectorTest;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @DisplayName("Тесты репозитория бронирований")
-class BookingRepositoryJdbcTest extends TestcontainersConnector {
+class BookingRepositoryJdbcTest extends TestcontainersConnectorTest {
 
     private BookingRepositoryJdbc bookingRepository;
     private Booking booking;

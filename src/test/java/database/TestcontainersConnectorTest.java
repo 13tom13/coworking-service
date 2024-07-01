@@ -21,7 +21,7 @@ import static io.ylab.tom13.coworkingservice.in.config.ApplicationConfig.getLiqu
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public abstract class TestcontainersConnector {
+public abstract class TestcontainersConnectorTest {
 
     private final static String TEST_CHANGELOG = getLiquibaseTestChangelog();
     private final static String TEST_DATABASE = "testdb";
