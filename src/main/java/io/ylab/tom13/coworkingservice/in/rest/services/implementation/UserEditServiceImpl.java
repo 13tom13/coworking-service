@@ -52,7 +52,7 @@ public class UserEditServiceImpl implements UserEditService {
             throw new UserAlreadyExistsException(newEmail);
         }
 
-        User userToUpdate = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), newEmail, existingUser.password(), userDTO.role());
+        User userToUpdate = userMapper.toUserWithEmailAndPassword(userDTO, newEmail, existingUser.password());
 
         Optional<User> updatedUser = userRepository.updateUser(userToUpdate);
 
@@ -75,7 +75,7 @@ public class UserEditServiceImpl implements UserEditService {
         checkPassword(passwordChangeDTO.oldPassword(), user.password());
 
         String newPassword = passwordChangeDTO.newPassword();
-        User updatedUser = new User(user.id(), user.firstName(), user.lastName(), user.email(), newPassword, user.role());
+        User updatedUser = userMapper.toUserWithPassword(user, newPassword);
         userRepository.updateUser(updatedUser);
     }
 

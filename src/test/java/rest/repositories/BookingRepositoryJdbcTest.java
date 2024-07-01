@@ -1,6 +1,6 @@
 package rest.repositories;
 
-import database.TestcontainersConnectorTest;
+import database.TestcontainersConnector;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
@@ -12,33 +12,34 @@ import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictE
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryJdbc;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryJdbc;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @DisplayName("Тесты репозитория бронирований")
-class BookingRepositoryJdbcTest extends TestcontainersConnectorTest {
+class BookingRepositoryJdbcTest extends TestcontainersConnector {
 
+    private Connection connection;
     private BookingRepositoryJdbc bookingRepository;
     private Booking booking;
+    private long userId;
+    private long coworkingId;
 
     @BeforeEach
     void setUp() throws RepositoryException, UserAlreadyExistsException, CoworkingConflictException {
-        bookingRepository = new BookingRepositoryJdbc(getConnection());
-        UserRepositoryJdbc userRepository = new UserRepositoryJdbc(getConnection());
-        CoworkingRepositoryJdbc coworkingRepository = new CoworkingRepositoryJdbc(getConnection());
-        User user = new User(0, "John", "Doe", "john.new@example.com", "password", Role.USER);
-        Workplace workplace = new Workplace(0, "testWorkplace", "test", true, "Workplace");
-        userRepository.createUser(user);
-        coworkingRepository.createCoworking(workplace);
-        booking = new Booking(0L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
+        connection = getConnection();
+        bookingRepository = new BookingRepositoryJdbc(connection);
+        User userForTest = new User(0, "John", "Doe", "john.new@example.com", "password", Role.USER);
+        Workplace workplaceForTest = new Workplace(0L, "testWorkplace", "test", true, "Workplace");
+        testUserToDB(userForTest);
+        testCoworkingToDB(workplaceForTest);
+        booking = new Booking(0L, userId, coworkingId, LocalDate.now(), List.of(TimeSlot.MORNING));
     }
 
     @Test
@@ -128,5 +129,78 @@ class BookingRepositoryJdbcTest extends TestcontainersConnectorTest {
 
         Assertions.assertThat(bookings).isNotEmpty();
         Assertions.assertThat(bookings.iterator().next().date()).isEqualTo(booking.date());
+    }
+
+    private void testUserToDB(User user) throws RepositoryException, UserAlreadyExistsException {
+        String sql = """
+                INSERT INTO main.users (first_name, last_name, email, password, role)
+                VALUES (?, ?, ?, ?, ?)
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            statement.setString(1, user.firstName());
+            statement.setString(2, user.lastName());
+            statement.setString(3, user.email());
+            statement.setString(4, user.password());
+            statement.setString(5, user.role().name());
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new RepositoryException("Создание пользователя не удалось, нет затронутых строк.");
+            }
+
+            try (var generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    userId = generatedKeys.getLong(1);
+                } else {
+                    throw new RepositoryException("Создание пользователя не удалось, ID не был получен.");
+                }
+            }
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23505")) { // unique_violation
+                throw new UserAlreadyExistsException("Пользователь с таким email уже существует");
+            } else {
+                throw new RepositoryException("Ошибка при создании пользователя: " + e.getMessage());
+            }
+        }
+    }
+
+    private void testCoworkingToDB(Workplace workplace) throws RepositoryException, CoworkingConflictException {
+        String sql = """
+                INSERT INTO main.coworkings (name, description, available, type, workplace_type, conference_room_capacity)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            statement.setString(1, workplace.getName());
+            statement.setString(2, workplace.getDescription());
+            statement.setBoolean(3, workplace.isAvailable());
+            statement.setString(4, workplace.getType());
+            statement.setNull(5, Types.VARCHAR);
+            statement.setNull(6, Types.INTEGER);
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new RepositoryException("Создание коворкинга не удалось, нет затронутых строк.");
+            }
+
+            try (var generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    coworkingId = generatedKeys.getLong(1);
+                } else {
+                    throw new RepositoryException("Создание коворкинга не удалось, ID не был получен.");
+                }
+            }
+
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23505")) { // unique_violation
+                throw new CoworkingConflictException("Имя коворкинга уже занято");
+            } else {
+                throw new RepositoryException("Ошибка при создании коворкинга: " + e.getMessage());
+            }
+        }
     }
 }

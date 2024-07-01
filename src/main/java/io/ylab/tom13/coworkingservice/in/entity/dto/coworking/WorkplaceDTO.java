@@ -8,19 +8,21 @@ import lombok.EqualsAndHashCode;
  * Содержит дополнительный атрибут - тип рабочего места.
  */
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class WorkplaceDTO extends CoworkingDTO {
-    /** Тип рабочего места */
+    /**
+     * Тип рабочего места
+     */
     private String type;
 
     /**
      * Конструктор для инициализации объекта рабочего места.
      *
-     * @param id уникальный идентификатор
-     * @param name название
+     * @param id          уникальный идентификатор
+     * @param name        название
      * @param description описание
-     * @param available доступность
-     * @param type тип рабочего места
+     * @param available   доступность
+     * @param type        тип рабочего места
      */
     public WorkplaceDTO(long id, String name, String description, boolean available, String type) {
         super(id, name, description, available);

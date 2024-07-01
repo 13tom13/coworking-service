@@ -84,19 +84,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
         try {
             connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                statement.setString(1, coworking.getName());
-                statement.setString(2, coworking.getDescription());
-                statement.setBoolean(3, coworking.isAvailable());
-                statement.setString(4, coworking.getClass().getSimpleName());
-                if (coworking instanceof Workplace) {
-                    statement.setString(5, ((Workplace) coworking).getType());
-                    statement.setNull(6, Types.INTEGER);
-                } else if (coworking instanceof ConferenceRoom) {
-                    statement.setNull(5, Types.VARCHAR);
-                    statement.setInt(6, ((ConferenceRoom) coworking).getCapacity());
-                } else {
-                    throw new RepositoryException("Неизвестный тип коворкинга");
-                }
+                coworkingToStatement(coworking, statement);
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows == 0) {
                     connection.rollback();
@@ -178,19 +166,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                     throw new CoworkingConflictException("Имя коворкинга уже занято");
                 }
 
-                statement.setString(1, coworking.getName());
-                statement.setString(2, coworking.getDescription());
-                statement.setBoolean(3, coworking.isAvailable());
-                statement.setString(4, coworking.getClass().getSimpleName());
-                if (coworking instanceof Workplace) {
-                    statement.setString(5, ((Workplace) coworking).getType());
-                    statement.setNull(6, Types.INTEGER);
-                } else if (coworking instanceof ConferenceRoom) {
-                    statement.setNull(5, Types.VARCHAR);
-                    statement.setInt(6, ((ConferenceRoom) coworking).getCapacity());
-                } else {
-                    throw new RepositoryException("Неизвестный тип коворкинга");
-                }
+                coworkingToStatement(coworking, statement);
                 statement.setLong(7, coworking.getId());
 
                 int affectedRows = statement.executeUpdate();
@@ -263,6 +239,22 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
             return new ConferenceRoom(id, name, description, available, conferenceRoomCapacity);
         } else {
             throw new SQLException("Неизвестный тип коворкинга в базе данных: " + type);
+        }
+    }
+
+    private void coworkingToStatement(Coworking coworking, PreparedStatement statement) throws SQLException, RepositoryException {
+        statement.setString(1, coworking.getName());
+        statement.setString(2, coworking.getDescription());
+        statement.setBoolean(3, coworking.isAvailable());
+        statement.setString(4, coworking.getClass().getSimpleName());
+        if (coworking instanceof Workplace) {
+            statement.setString(5, ((Workplace) coworking).getType());
+            statement.setNull(6, Types.INTEGER);
+        } else if (coworking instanceof ConferenceRoom) {
+            statement.setNull(5, Types.VARCHAR);
+            statement.setInt(6, ((ConferenceRoom) coworking).getCapacity());
+        } else {
+            throw new RepositoryException("Неизвестный тип коворкинга");
         }
     }
 }

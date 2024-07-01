@@ -70,7 +70,8 @@ public class AdministrationServiceImpl implements AdministrationService {
         long id = userDTO.id();
         Optional<User> byId = userRepository.findById(id);
         User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID " + id));
-        User userChanged = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), userDTO.email(), userFromRep.password(), userDTO.role());
+        User userChanged = userMapper.toUserWithPassword(userDTO,userFromRep.password());
+//        User userChanged = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), userDTO.email(), userFromRep.password(), userDTO.role());
         Optional<User> updatedUser = userRepository.updateUser(userChanged);
         if (updatedUser.isPresent()) {
             return userMapper.toUserDTO(userChanged);
@@ -86,7 +87,8 @@ public class AdministrationServiceImpl implements AdministrationService {
     public void editUserPasswordByAdministrator(long userId, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException {
         Optional<User> byId = userRepository.findById(userId);
         User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID  " + userId));
-        User userChanged = new User(userFromRep.id(), userFromRep.firstName(), userFromRep.lastName(), userFromRep.email(), newHashPassword, userFromRep.role());
+
+        User userChanged = userMapper.toUserWithPassword(userFromRep,newHashPassword);
         if (userRepository.updateUser(userChanged).isEmpty()) {
             throw new RepositoryException("Не удалось обновить пароль с ID " + userId);
         }

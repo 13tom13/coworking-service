@@ -1,5 +1,6 @@
 package io.ylab.tom13.coworkingservice.in.entity.model.coworking;
 
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

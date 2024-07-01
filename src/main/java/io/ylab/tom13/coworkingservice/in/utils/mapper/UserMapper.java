@@ -31,6 +31,7 @@ public interface UserMapper {
      * @param userDTO объект UserDTO для преобразования.
      * @return соответствующий объект User.
      */
+    @Mapping(target = "password", ignore = true)
     User toUser(UserDTO userDTO);
 
     /**
@@ -40,12 +41,8 @@ public interface UserMapper {
      * @param id      идентификатор пользователя.
      * @return соответствующий объект User с заданным идентификатором.
      */
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "userDTO.firstName", target = "firstName")
-    @Mapping(source = "userDTO.lastName", target = "lastName")
-    @Mapping(source = "userDTO.email", target = "email")
     @Mapping(target = "password", ignore = true)
-    @Mapping(source = "userDTO.role", target = "role")
+    @Mapping(source = "id", target = "id")
     User toUser(UserDTO userDTO, long id);
 
     /**
@@ -55,13 +52,11 @@ public interface UserMapper {
      * @param password пароль пользователя.
      * @return соответствующий объект User с заданным паролем.
      */
+    User toUserWithPassword(UserDTO userDTO, String password);
+
     @Mapping(source = "password", target = "password")
-    @Mapping(source = "userDTO.id", target = "id")
-    @Mapping(source = "userDTO.firstName", target = "firstName")
-    @Mapping(source = "userDTO.lastName", target = "lastName")
-    @Mapping(source = "userDTO.email", target = "email")
-    @Mapping(source = "userDTO.role", target = "role")
-    User toUser(UserDTO userDTO, String password);
+    @Mapping(source = "email", target = "email")
+    User toUserWithEmailAndPassword(UserDTO userDTO, String email, String password);
 
     /**
      * Преобразует объект User в User с указанным паролем.
@@ -71,11 +66,6 @@ public interface UserMapper {
      * @return соответствующий объект User с заданным паролем.
      */
     @Mapping(source = "password", target = "password")
-    @Mapping(source = "user.id", target = "id")
-    @Mapping(source = "user.firstName", target = "firstName")
-    @Mapping(source = "user.lastName", target = "lastName")
-    @Mapping(source = "user.email", target = "email")
-    @Mapping(source = "user.role", target = "role")
-    User toUser(User user, String password);
+    User toUserWithPassword(User user, String password);
 }
 

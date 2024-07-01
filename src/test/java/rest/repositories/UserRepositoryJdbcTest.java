@@ -1,6 +1,6 @@
 package rest.repositories;
 
-import database.TestcontainersConnectorTest;
+import database.TestcontainersConnector;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 @DisplayName("Тесты репозитория пользователей")
-class UserRepositoryJdbcTest extends TestcontainersConnectorTest {
+class UserRepositoryJdbcTest extends TestcontainersConnector {
 
     private UserRepositoryJdbc userRepository;
 

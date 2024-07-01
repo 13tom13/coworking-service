@@ -46,8 +46,7 @@ public class BookingServiceImpl implements BookingService {
         if (bookingDTO.date().isBefore(LocalDate.now())) {
             throw new BookingConflictException("Время бронирования не может быть в прошлом");
         }
-
-        Booking newBooking = new Booking(0, bookingDTO.userId(), bookingDTO.coworkingId(), bookingDTO.date(), bookingDTO.timeSlots());
+        Booking newBooking = bookingMapper.toBooking(bookingDTO);
         Optional<Booking> bookingFromRepository = bookingRepository.createBooking(newBooking);
 
         if (bookingFromRepository.isEmpty()) {
