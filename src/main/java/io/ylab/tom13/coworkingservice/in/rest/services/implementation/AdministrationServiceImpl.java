@@ -71,7 +71,6 @@ public class AdministrationServiceImpl implements AdministrationService {
         Optional<User> byId = userRepository.findById(id);
         User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID " + id));
         User userChanged = userMapper.toUserWithPassword(userDTO,userFromRep.password());
-//        User userChanged = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), userDTO.email(), userFromRep.password(), userDTO.role());
         Optional<User> updatedUser = userRepository.updateUser(userChanged);
         if (updatedUser.isPresent()) {
             return userMapper.toUserDTO(userChanged);

@@ -17,16 +17,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static io.ylab.tom13.coworkingservice.in.config.ApplicationConfig.getLiquibaseTestChangelog;
+import static io.ylab.tom13.coworkingservice.in.config.ApplicationConfig.*;
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class TestcontainersConnector {
 
-    private final static String TEST_CHANGELOG = getLiquibaseTestChangelog();
-    private final static String TEST_DATABASE = "testdb";
-    private final static String TEST_USER = "testuser";
-    private final static String TEST_PASSWORD = "testpass";
+    private final static String TEST_CHANGELOG = getLiquibaseChangelog();
+    private final static String TEST_DATABASE = getTestDatabaseName();
+    private final static String TEST_USER = getTestDatabaseUsername();
+    private final static String TEST_PASSWORD = getTestDatabasePassword();
 
     private Connection connection;
 

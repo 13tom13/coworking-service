@@ -39,10 +39,8 @@ public class CoworkingMapperTest {
     @Test
     @DisplayName("Преобразование ConferenceRoom в ConferenceRoomDTO")
     void shouldMapConferenceRoomToConferenceRoomDTO() {
-        // when
         ConferenceRoomDTO conferenceRoomDTO = coworkingMapper.toConferenceRoomDTO(conferenceRoom);
 
-        // then
         assertThat(conferenceRoomDTO).isNotNull();
         assertThat(conferenceRoomDTO.getId()).isEqualTo(ID);
         assertThat(conferenceRoomDTO.getName()).isEqualTo(NAME);
@@ -54,10 +52,8 @@ public class CoworkingMapperTest {
     @Test
     @DisplayName("Преобразование ConferenceRoomDTO в ConferenceRoom")
     void shouldMapConferenceRoomDTOToConferenceRoom() {
-        // when
         ConferenceRoom conferenceRoom = coworkingMapper.toConferenceRoom(conferenceRoomDTO);
 
-        // then
         assertThat(conferenceRoom).isNotNull();
         assertThat(conferenceRoom.getId()).isEqualTo(ID);
         assertThat(conferenceRoom.getName()).isEqualTo(NAME);
@@ -69,10 +65,8 @@ public class CoworkingMapperTest {
     @Test
     @DisplayName("Преобразование Workplace в WorkplaceDTO")
     void shouldMapWorkplaceToWorkplaceDTO() {
-        // when
         WorkplaceDTO workplaceDTO = coworkingMapper.toWorkplaceDTO(workplace);
 
-        // then
         assertThat(workplaceDTO).isNotNull();
         assertThat(workplaceDTO.getId()).isEqualTo(ID);
         assertThat(workplaceDTO.getName()).isEqualTo(NAME);
@@ -84,9 +78,9 @@ public class CoworkingMapperTest {
     @Test
     @DisplayName("Преобразование WorkplaceDTO в Workplace")
     void shouldMapWorkplaceDTOToWorkplace() {
-        // when
+
         Workplace workplace = coworkingMapper.toWorkplace(workplaceDTO);
-        // then
+
         assertThat(workplace).isNotNull();
         assertThat(workplace.getId()).isEqualTo(ID);
         assertThat(workplace.getName()).isEqualTo(NAME);

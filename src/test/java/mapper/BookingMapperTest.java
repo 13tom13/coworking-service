@@ -38,11 +38,9 @@ public class BookingMapperTest {
     @Test
     @DisplayName("Тест маппинга объекта BookingDTO из объекта Booking")
     void shouldMapBookingToBookingDTO() {
-        // when
         BookingDTO bookingDTO = bookingMapper.toBookingDTO(booking);
         System.out.println(bookingDTO);
 
-        // then
         assertThat(bookingDTO).isNotNull();
         assertThat(bookingDTO.id()).isEqualTo(BOOKING_ID);
         assertThat(bookingDTO.userId()).isEqualTo(USER_ID);
@@ -55,10 +53,8 @@ public class BookingMapperTest {
     @Test
     @DisplayName("Тест маппинга объекта Booking из объекта BookingDTO")
     void shouldMapBookingDTOToBooking() {
-        // when
         Booking booking = bookingMapper.toBooking(bookingDTO);
 
-        // then
         assertThat(booking).isNotNull();
         assertThat(booking.id()).isEqualTo(BOOKING_ID);
         assertThat(booking.userId()).isEqualTo(USER_ID);
@@ -71,13 +67,10 @@ public class BookingMapperTest {
     @Test
     @DisplayName("Тест маппинга объекта Booking из объекта BookingDTO и вставка нового ID")
     void shouldMapBookingDTOToBookingWithId() {
-        // given
         long id = 5L;
 
-        // when
         Booking booking = bookingMapper.toBooking(bookingDTO, id);
 
-        // then
         assertThat(booking).isNotNull();
         assertThat(booking.id()).isEqualTo(id);
         assertThat(booking.userId()).isEqualTo(USER_ID);

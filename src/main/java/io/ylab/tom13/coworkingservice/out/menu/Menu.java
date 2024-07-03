@@ -34,7 +34,7 @@ public abstract class Menu {
         String input;
         do {
             System.out.println(prompt);
-            input = scanner.nextLine().trim(); // Удаляем лишние пробелы по краям
+            input = scanner.nextLine().trim();
             if (input.isEmpty()) {
                 System.err.println("Неверный ввод. Ввод не должен быть пустым.");
             }

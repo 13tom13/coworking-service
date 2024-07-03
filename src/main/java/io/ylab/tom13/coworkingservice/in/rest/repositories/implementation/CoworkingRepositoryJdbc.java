@@ -19,6 +19,7 @@ import java.util.Optional;
  */
 public class CoworkingRepositoryJdbc implements CoworkingRepository {
 
+    public static final String UNIQUE_VIOLATION = "23505";
     private final Connection connection;
 
     public CoworkingRepositoryJdbc(Connection connection) {
@@ -31,7 +32,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
     @Override
     public Collection<Coworking> getAllCoworking() throws RepositoryException {
         String sql = """
-                SELECT id, name, description, available, type, workplace_type, conference_room_capacity
+                SELECT *
                 FROM main.coworkings
                 """;
         try (PreparedStatement statement = connection.prepareStatement(sql);
@@ -52,7 +53,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
     @Override
     public Optional<Coworking> getCoworkingById(long coworkingId) throws RepositoryException {
         String sql = """
-                SELECT id, name, description, available, type, workplace_type, conference_room_capacity
+                SELECT *
                 FROM main.coworkings
                 WHERE id = ?
                 """;
@@ -74,9 +75,6 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
      */
     @Override
     public Optional<Coworking> createCoworking(Coworking coworking) throws CoworkingConflictException, RepositoryException {
-        if (!isCoworkingNameUnique(coworking.getName())) {
-            throw new CoworkingConflictException("Имя коворкинга уже занято");
-        }
         String sql = """
                 INSERT INTO main.coworkings (name, description, available, type, workplace_type, conference_room_capacity)
                 VALUES (?, ?, ?, ?, ?, ?)
@@ -94,7 +92,8 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                     if (generatedKeys.next()) {
                         long id = generatedKeys.getLong(1);
                         connection.commit();
-                        return getCoworkingById(id);
+                        Coworking newCoworking = getCoworking(coworking, id);
+                        return Optional.of(newCoworking);
                     } else {
                         connection.rollback();
                         throw new RepositoryException("Создание коворкинга не удалось, ID не был получен.");
@@ -102,7 +101,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 }
             } catch (SQLException e) {
                 connection.rollback();
-                if (e.getSQLState().equals("23505")) { // unique_violation
+                if (e.getSQLState().equals(UNIQUE_VIOLATION)) {
                     throw new CoworkingConflictException("Имя коворкинга уже занято");
                 } else {
                     throw new RepositoryException("Ошибка при создании коворкинга: " + e.getMessage());
@@ -113,6 +112,18 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
         } catch (SQLException e) {
             throw new RepositoryException("Ошибка при соединении с базой данных: " + e.getMessage());
         }
+    }
+
+    private static Coworking getCoworking(Coworking coworking, long id) throws RepositoryException {
+        Coworking newCoworking;
+        if (coworking instanceof Workplace) {
+            newCoworking = new Workplace(id, coworking.getName(), coworking.getDescription(), coworking.isAvailable(), ((Workplace) coworking).getType());
+        } else if (coworking instanceof ConferenceRoom) {
+            newCoworking = new ConferenceRoom(id, coworking.getName(), coworking.getDescription(), coworking.isAvailable(), ((ConferenceRoom) coworking).getCapacity());
+        } else {
+            throw new RepositoryException("Неизвестный тип коворкинга");
+        }
+        return newCoworking;
     }
 
     /**
@@ -155,19 +166,14 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 SET name = ?, description = ?, available = ?, type = ?, workplace_type = ?, conference_room_capacity = ?
                 WHERE id = ?
                 """;
+        long coworkingId  = coworking.getId();
+
         try {
             connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                Coworking existingCoworking = getCoworkingById(coworking.getId()).orElseThrow(() ->
-                        new CoworkingNotFoundException("Коворкинг с указанным ID не найден"));
-
-                if (!existingCoworking.getName().equals(coworking.getName()) &&
-                    !isCoworkingNameUnique(coworking.getName())) {
-                    throw new CoworkingConflictException("Имя коворкинга уже занято");
-                }
 
                 coworkingToStatement(coworking, statement);
-                statement.setLong(7, coworking.getId());
+                statement.setLong(7, coworkingId);
 
                 int affectedRows = statement.executeUpdate();
                 if (affectedRows == 0) {
@@ -179,7 +185,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 return getCoworkingById(coworking.getId());
             } catch (SQLException e) {
                 connection.rollback();
-                if (e.getSQLState().equals("23505")) { // unique_violation
+                if (e.getSQLState().equals(UNIQUE_VIOLATION)) {
                     throw new CoworkingConflictException("Имя коворкинга уже занято");
                 } else {
                     throw new RepositoryException("Ошибка при обновлении коворкинга: " + e.getMessage());
@@ -189,32 +195,6 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
             }
         } catch (SQLException e) {
             throw new RepositoryException("Ошибка при соединении с базой данных: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Проверяет уникальность имени коворкинга
-     *
-     * @param name имя коворкинга для проверки
-     */
-    private boolean isCoworkingNameUnique(String name) throws RepositoryException {
-        String sql = """
-                SELECT COUNT(*)
-                FROM main.coworkings
-                WHERE name = ?
-                """;
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, name);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt(1) == 0;
-                }
-                return false;
-            }
-        } catch (SQLException e
-
-        ) {
-            throw new RepositoryException("Ошибка при проверке уникальности имени коворкинга: " + e.getMessage());
         }
     }
 

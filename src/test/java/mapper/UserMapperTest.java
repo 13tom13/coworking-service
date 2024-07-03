@@ -35,10 +35,9 @@ public class UserMapperTest {
     @Test
     @DisplayName("Тест маппинга объекта UserDTO из объекта User")
     void shouldMapUserToUserDTO() {
-        // when
+
         UserDTO userDTO = userMapper.toUserDTO(user);
 
-        // then
         assertThat(userDTO).isNotNull();
         assertThat(userDTO.id()).isEqualTo(USER_ID);
         assertThat(userDTO.firstName()).isEqualTo(FIRST_NAME);
@@ -50,10 +49,9 @@ public class UserMapperTest {
     @Test
     @DisplayName("Тест маппинга объекта User из объекта UserDTO")
     void shouldMapUserDTOToUser() {
-        // when
+
         User user = userMapper.toUser(userDTO);
 
-        // then
         assertThat(user).isNotNull();
         assertThat(user.id()).isEqualTo(USER_ID);
         assertThat(user.firstName()).isEqualTo(FIRST_NAME);
@@ -66,13 +64,10 @@ public class UserMapperTest {
     @Test
     @DisplayName("Тест маппинга объекта User из объекта UserDTO и вставка нового ID")
     void shouldMapUserDTOToUserWithId() {
-        // given
         long id = 2L;
 
-        // when
         User user = userMapper.toUser(userDTO, id);
 
-        // then
         assertThat(user).isNotNull();
         assertThat(user.id()).isEqualTo(id);
         assertThat(user.firstName()).isEqualTo(FIRST_NAME);
@@ -86,10 +81,9 @@ public class UserMapperTest {
     @DisplayName("Тест маппинга объекта User из объекта UserDTO и вставка нового пароля")
     void shouldMapUserDTOToUserWithPassword() {
         String newPassword =  "newPassword";
-        // when
+
         User user = userMapper.toUserWithPassword(userDTO, newPassword);
 
-        // then
         assertThat(user).isNotNull();
         assertThat(user.id()).isEqualTo(USER_ID);
         assertThat(user.firstName()).isEqualTo(FIRST_NAME);
@@ -102,12 +96,10 @@ public class UserMapperTest {
     @Test
     @DisplayName("Тест маппинга объекта User в объект User с новым паролем")
     void shouldMapUserToUserWithPassword() {
-        // given
         String newPassword = "newPassword";
-        // when
+
         User userWithNewPassword = userMapper.toUserWithPassword(user, newPassword);
 
-        // then
         assertThat(userWithNewPassword).isNotNull();
         assertThat(userWithNewPassword.id()).isEqualTo(USER_ID);
         assertThat(userWithNewPassword.firstName()).isEqualTo(FIRST_NAME);
@@ -122,10 +114,9 @@ public class UserMapperTest {
     void shouldMapUserDTOToUserWithPasswordAndEmail() {
         String newPassword =  "newPassword";
         String newEmail =  "newEmail";
-        // when
+
         User user = userMapper.toUserWithEmailAndPassword(userDTO, newEmail, newPassword);
 
-        // then
         assertThat(user).isNotNull();
         assertThat(user.id()).isEqualTo(USER_ID);
         assertThat(user.firstName()).isEqualTo(FIRST_NAME);

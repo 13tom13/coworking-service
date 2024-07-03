@@ -168,7 +168,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
     @Override
     public Collection<Booking> getBookingsByUser(long userId) throws BookingNotFoundException, RepositoryException {
         String query = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
+                SELECT *
                 FROM main.bookings b
                 JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
                 WHERE b.user_id = ?
@@ -196,7 +196,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
     @Override
     public Collection<Booking> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException, RepositoryException {
         String query = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
+                SELECT *
                 FROM main.bookings b
                 JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
                 WHERE b.user_id = ? AND b.date = ?
@@ -224,7 +224,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
     @Override
     public Collection<Booking> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException, RepositoryException {
         String query = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
+                SELECT *
                 FROM main.bookings b
                 JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
                 WHERE b.user_id = ? AND b.coworking_id = ?
@@ -253,7 +253,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
     @Override
     public Collection<Booking> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date) throws RepositoryException {
         String query = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
+                SELECT *
                 FROM main.bookings b
                 JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
                 WHERE b.coworking_id = ? AND b.date = ?
@@ -276,7 +276,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
     @Override
     public Optional<Booking> getBookingById(long bookingId) throws BookingNotFoundException, RepositoryException {
         String query = """
-                SELECT b.id, b.user_id, b.coworking_id, b.date, bts.time_slot_id
+                SELECT *
                 FROM main.bookings b
                 JOIN relations.booking_time_slots bts ON b.id = bts.booking_id
                 WHERE b.id = ?
