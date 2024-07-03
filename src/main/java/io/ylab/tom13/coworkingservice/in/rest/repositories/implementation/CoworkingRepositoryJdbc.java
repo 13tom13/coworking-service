@@ -166,12 +166,11 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 SET name = ?, description = ?, available = ?, type = ?, workplace_type = ?, conference_room_capacity = ?
                 WHERE id = ?
                 """;
-        long coworkingId  = coworking.getId();
+        long coworkingId = coworking.getId();
 
         try {
             connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-
                 coworkingToStatement(coworking, statement);
                 statement.setLong(7, coworkingId);
 
