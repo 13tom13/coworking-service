@@ -2,11 +2,9 @@ package io.ylab.tom13.coworkingservice.out.menu.registration;
 
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.client.RegistrationClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.RegistrationException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Меню регистрации пользователя.
@@ -29,7 +27,7 @@ public class RegistrationMenu extends Menu {
      */
     @Override
     public void display() {
-            registration();
+        registration();
     }
 
     /**
@@ -40,7 +38,7 @@ public class RegistrationMenu extends Menu {
         String firstName = readString("Введите имя пользователя:");
         String lastName = readString("Введите фамилию:");
         String email = readString("Введите email:");
-        String hashPassword  = readPassword("Введите пароль:");
+        String hashPassword = readPassword("Введите пароль:");
         RegistrationDTO registrationDTO = new RegistrationDTO(firstName, lastName, email, hashPassword);
         try {
             registrationClient.registration(registrationDTO);

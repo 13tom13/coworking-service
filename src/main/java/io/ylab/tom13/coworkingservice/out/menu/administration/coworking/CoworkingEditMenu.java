@@ -82,8 +82,7 @@ public class CoworkingEditMenu extends Menu {
     private void editingType(WorkplaceDTO workplaceDTO) {
         System.out.println(workplaceDTO);
         String newType = readString("Введите новый тип коворкинга: ");
-        workplaceDTO.setType(newType);
-        updateCoworking(workplaceDTO);
+        updateCoworking(new WorkplaceDTO(workplaceDTO.getId(),workplaceDTO.getName(),workplaceDTO.getDescription(), workplaceDTO.isAvailable(), newType));
     }
 
     private void editCapacity(ConferenceRoomDTO conferenceRoomDTO) {

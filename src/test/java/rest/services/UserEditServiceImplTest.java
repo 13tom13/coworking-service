@@ -5,6 +5,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mindrot.jbcrypt.BCrypt;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+import static io.ylab.tom13.coworkingservice.in.utils.security.PasswordUtil.hashPassword;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
@@ -43,7 +44,7 @@ class UserEditServiceImplTest {
     @BeforeEach
     void setUp() throws Exception {
         password = "password";
-        String hashedPassword = BCrypt.hashpw("password", BCrypt.gensalt());
+        String hashedPassword = hashPassword("password");
         user = new User(1L, "John", "Doe", "john.new@example.com", hashedPassword, Role.USER);
         userDTO = UserMapper.INSTANCE.toUserDTO(user);
         Field UserEditServiceField = UserEditServiceImpl.class.getDeclaredField("userRepository");
@@ -53,7 +54,7 @@ class UserEditServiceImplTest {
 
     @Test
     @DisplayName("Успешное редактирование пользователя")
-    void testEditUserSuccess() throws RepositoryException {
+    void testEditUserSuccess() throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
         when(userRepository.updateUser(user)).thenReturn(Optional.ofNullable(user));
         when(userRepository.findByEmail(user.email())).thenReturn(Optional.ofNullable(user));
         when(userRepository.findById(user.id())).thenReturn(Optional.ofNullable(user));
@@ -71,7 +72,7 @@ class UserEditServiceImplTest {
 
     @Test
     @DisplayName("Успешное изменение пароля")
-    void testEditPasswordSuccess() throws UnauthorizedException, RepositoryException, UserNotFoundException {
+    void testEditPasswordSuccess() throws UnauthorizedException, RepositoryException, UserNotFoundException, UserAlreadyExistsException {
         when(userRepository.findByEmail(user.email())).thenReturn(Optional.ofNullable(user));
 
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), password, "newPassword");

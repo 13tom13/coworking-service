@@ -13,8 +13,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryExcepti
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.CoworkingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.CoworkingServiceImpl;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.ConferenceRoomMapper;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.WorkplaceMapper;
+import io.ylab.tom13.coworkingservice.in.utils.mapper.CoworkingMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,6 +45,8 @@ class CoworkingServiceImplTest {
 
     private CoworkingDTO coworkingDTO;
 
+    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
+
     @BeforeEach
     void setUp() throws IllegalAccessException, NoSuchFieldException {
         Field coworkingServiceField = CoworkingServiceImpl.class.getDeclaredField("coworkingRepository");
@@ -62,7 +63,7 @@ class CoworkingServiceImplTest {
     @Test
     @DisplayName("Тест успешного создания коворкинга")
     void testCreateCoworking() throws CoworkingConflictException, RepositoryException {
-        Workplace workplace = WorkplaceMapper.INSTANCE.toWorkplace((WorkplaceDTO) coworkingDTO);
+        Workplace workplace = coworkingMapper.toWorkplace((WorkplaceDTO) coworkingDTO);
 
         when(coworkingRepository.createCoworking(any(Coworking.class))).thenReturn(Optional.ofNullable(workplace));
 
@@ -74,8 +75,8 @@ class CoworkingServiceImplTest {
 
     @Test
     @DisplayName("Тест успешного изменения рабочего места")
-    void testUpdateWorkplace() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException {
-        Coworking workplace = WorkplaceMapper.INSTANCE.toWorkplace((WorkplaceDTO) coworkingDTO);
+    void testUpdateWorkplace() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException, RepositoryException {
+        Coworking workplace = coworkingMapper.toWorkplace((WorkplaceDTO) coworkingDTO);
 
         when(coworkingRepository.updateCoworking(any(Coworking.class))).thenReturn(Optional.ofNullable(workplace));
 
@@ -87,10 +88,10 @@ class CoworkingServiceImplTest {
 
     @Test
     @DisplayName("Тест успешного изменения конференц-зала")
-    void testUpdateConferenceRoom() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException {
+    void testUpdateConferenceRoom() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException, RepositoryException {
         coworkingDTO = new ConferenceRoomDTO(3L, "Conference Room", "Description", true, 10);
 
-        ConferenceRoom conferenceRoom = ConferenceRoomMapper.INSTANCE.toConferenceRoom((ConferenceRoomDTO) coworkingDTO);
+        ConferenceRoom conferenceRoom = CoworkingMapper.INSTANCE.toConferenceRoom((ConferenceRoomDTO) coworkingDTO);
 
         doReturn(Optional.ofNullable(conferenceRoom)).when(coworkingRepository).updateCoworking(any(ConferenceRoom.class));
 
@@ -103,7 +104,7 @@ class CoworkingServiceImplTest {
 
     @Test
     @DisplayName("Тест ошибки при попытке удалить коворкинг с несуществующим ID")
-    void testDeleteCoworking() throws CoworkingNotFoundException {
+    void testDeleteCoworking() throws CoworkingNotFoundException, RepositoryException {
         long coworkingId = 5L;
         doThrow(CoworkingNotFoundException.class).when(coworkingRepository).deleteCoworking(coworkingId);
 

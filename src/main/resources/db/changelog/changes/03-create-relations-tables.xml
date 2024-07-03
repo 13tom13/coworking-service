@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="create_booking_time_slots_table" author="13tom13">
+        <createTable tableName="booking_time_slots" schemaName="relations">
+            <column name="booking_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_slot_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="relations"
+                                 baseTableName="booking_time_slots"
+                                 baseColumnNames="booking_id"
+                                 constraintName="fk_booking_time_slot_booking"
+                                 referencedTableSchemaName="main"
+                                 referencedTableName="bookings"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableSchemaName="relations"
+                                 baseTableName="booking_time_slots"
+                                 baseColumnNames="time_slot_id"
+                                 constraintName="fk_booking_time_slot_time_slot"
+                                 referencedTableSchemaName="main"
+                                 referencedTableName="time_slots"
+                                 referencedColumnNames="id"/>
+
+        <setTableRemarks tableName="booking_time_slots" schemaName="relations" remarks="Описание таблицы booking_time_slots"/>
+        <setColumnRemarks tableName="booking_time_slots" schemaName="relations" columnName="booking_id" remarks="Идентификатор бронирования"/>
+        <setColumnRemarks tableName="booking_time_slots" schemaName="relations" columnName="time_slot_id" remarks="Идентификатор временного слота"/>
+    </changeSet>
+
+</databaseChangeLog>

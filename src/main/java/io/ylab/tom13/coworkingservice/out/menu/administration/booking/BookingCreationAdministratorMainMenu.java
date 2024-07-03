@@ -9,14 +9,14 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.out.client.AdministrationClient;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
-import io.ylab.tom13.coworkingservice.out.menu.Menu;
+import io.ylab.tom13.coworkingservice.out.menu.booking.BookingMenu;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class BookingCreationAdministratorMainMenu extends Menu {
+public class BookingCreationAdministratorMainMenu extends BookingMenu {
 
     private final AdministrationClient administrationClient;
     private final BookingClient bookingClient;

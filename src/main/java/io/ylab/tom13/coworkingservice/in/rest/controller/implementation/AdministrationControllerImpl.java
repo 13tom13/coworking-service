@@ -5,12 +5,13 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.NoAccessException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.AdministrationController;
 import io.ylab.tom13.coworkingservice.in.rest.services.AdministrationService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.AdministrationServiceImpl;
-import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
+import io.ylab.tom13.coworkingservice.in.utils.security.SecurityController;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class AdministrationControllerImpl extends SecurityController implements 
         try {
             UserDTO user = administrationService.editUserByAdministrator(userDTO);
             return ResponseDTO.success(user);
-        } catch (UserNotFoundException | RepositoryException e) {
+        } catch (UserNotFoundException | RepositoryException | UserAlreadyExistsException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -84,7 +85,7 @@ public class AdministrationControllerImpl extends SecurityController implements 
         try {
             administrationService.editUserPasswordByAdministrator(userId, newHashPassword);
             return ResponseDTO.success("Пароль успешно изменен");
-        } catch (RepositoryException | UserNotFoundException e) {
+        } catch (RepositoryException | UserNotFoundException | UserAlreadyExistsException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -100,7 +101,7 @@ public class AdministrationControllerImpl extends SecurityController implements 
         try {
             administrationService.registrationUser(registrationDTO, role);
             return ResponseDTO.success("Пользователь успешно создан");
-        } catch (RepositoryException e) {
+        } catch (RepositoryException | UserAlreadyExistsException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }

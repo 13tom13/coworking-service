@@ -1,7 +1,6 @@
 package io.ylab.tom13.coworkingservice.out.menu.administration.user;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.client.AdministrationClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;

@@ -1,25 +1,24 @@
 package io.ylab.tom13.coworkingservice.in.rest.services.implementation;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.coworking.ConferenceRoom;
 import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Coworking;
-import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Workplace;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingUpdatingExceptions;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.CoworkingRepository;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryCollection;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryJdbc;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
-import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.ConferenceRoomMapper;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.WorkplaceMapper;
+import io.ylab.tom13.coworkingservice.in.utils.mapper.CoworkingMapper;
+import io.ylab.tom13.coworkingservice.in.utils.security.SecurityController;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
+
+import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
 
 
 /**
@@ -30,23 +29,27 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
 
     private final CoworkingRepository coworkingRepository;
     private final BookingRepository bookingRepository;
-    private final WorkplaceMapper workplaceMapper = WorkplaceMapper.INSTANCE;
-    private final ConferenceRoomMapper conferenceRoomMapper = ConferenceRoomMapper.INSTANCE;
+    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
 
     /**
      * Конструктор по умолчанию.
      * Инициализирует репозитории для работы с данными коворкингов и бронирований.
      */
     public CoworkingServiceImpl() {
-        coworkingRepository = CoworkingRepositoryCollection.getInstance();
-        bookingRepository = BookingRepositoryCollection.getInstance();
+        try {
+            Connection connection = getConnection();
+            coworkingRepository = new CoworkingRepositoryJdbc(connection);
+            bookingRepository = new BookingRepositoryJdbc(connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Map<String, CoworkingDTO> getAllCoworking() {
+    public Map<String, CoworkingDTO> getAllCoworking() throws RepositoryException {
         Collection<Coworking> allCoworking = coworkingRepository.getAllCoworking();
         return getCoworkingByNameHashMap(allCoworking);
     }
@@ -55,11 +58,9 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      * {@inheritDoc}
      */
     @Override
-    public Map<String, CoworkingDTO> getAllAvailableCoworkings() {
+    public Map<String, CoworkingDTO> getAllAvailableCoworkings() throws RepositoryException {
         Collection<Coworking> allCoworking = coworkingRepository.getAllCoworking();
-        List<Coworking> availableCoworking = allCoworking.stream()
-                .filter(Coworking::isAvailable)
-                .toList();
+        List<Coworking> availableCoworking = allCoworking.stream().filter(Coworking::isAvailable).toList();
         return getCoworkingByNameHashMap(availableCoworking);
     }
 
@@ -68,10 +69,10 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      */
     @Override
     public CoworkingDTO createCoworking(CoworkingDTO coworkingDTO) throws CoworkingConflictException, RepositoryException {
-        Coworking coworking = convertToEntity(coworkingDTO);
+        Coworking coworking = coworkingMapper.toCoworking(coworkingDTO);
         Optional<Coworking> coworkingFromRepository = coworkingRepository.createCoworking(coworking);
         if (coworkingFromRepository.isPresent()) {
-            return convertToDTO(coworkingFromRepository.get());
+            return coworkingMapper.toCoworkingDTO(coworkingFromRepository.get());
         } else {
             throw new RepositoryException("Не удалось создать коворкинг");
         }
@@ -81,11 +82,11 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      * {@inheritDoc}
      */
     @Override
-    public CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException {
-        Coworking coworking = convertToEntity(coworkingDTO);
+    public CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException, RepositoryException {
+        Coworking coworking = coworkingMapper.toCoworking(coworkingDTO);
         Optional<Coworking> coworkingFromRepository = coworkingRepository.updateCoworking(coworking);
         if (coworkingFromRepository.isPresent()) {
-            return convertToDTO(coworkingFromRepository.get());
+            return coworkingMapper.toCoworkingDTO(coworkingFromRepository.get());
         } else {
             throw new CoworkingUpdatingExceptions("Не удалось обновить коворкинг");
         }
@@ -95,9 +96,9 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
      * {@inheritDoc}
      */
     @Override
-    public void deleteCoworking(long coworkingId) throws CoworkingNotFoundException {
-        coworkingRepository.deleteCoworking(coworkingId);
+    public void deleteCoworking(long coworkingId) throws CoworkingNotFoundException, RepositoryException {
         bookingRepository.deleteAllCoworkingBookings(coworkingId);
+        coworkingRepository.deleteCoworking(coworkingId);
     }
 
     /**
@@ -109,46 +110,9 @@ public class CoworkingServiceImpl extends SecurityController implements Coworkin
     private Map<String, CoworkingDTO> getCoworkingByNameHashMap(Collection<Coworking> allCoworking) {
         Map<String, CoworkingDTO> allCoworkingDTO = new HashMap<>();
         for (Coworking coworking : allCoworking) {
-            try {
-                allCoworkingDTO.put(coworking.getName(), convertToDTO(coworking));
-            } catch (CoworkingConflictException ignored) {
-                // Handle mapping exception if needed
-            }
+            allCoworkingDTO.put(coworking.getName(), coworkingMapper.toCoworkingDTO(coworking));
         }
         return allCoworkingDTO;
     }
 
-    /**
-     * Преобразует DTO коворкинга в соответствующую сущность.
-     *
-     * @param coworkingDTO DTO коворкинга для преобразования.
-     * @return соответствующая сущность коворкинга.
-     * @throws CoworkingConflictException если возникает конфликт при преобразовании.
-     */
-    private Coworking convertToEntity(CoworkingDTO coworkingDTO) throws CoworkingConflictException {
-        if (coworkingDTO instanceof WorkplaceDTO) {
-            return workplaceMapper.toWorkplace((WorkplaceDTO) coworkingDTO);
-        } else if (coworkingDTO instanceof ConferenceRoomDTO) {
-            return conferenceRoomMapper.toConferenceRoom((ConferenceRoomDTO) coworkingDTO);
-        } else {
-            throw new CoworkingConflictException("Не известный тип коворкинга");
-        }
-    }
-
-    /**
-     * Преобразует сущность коворкинга в соответствующий DTO.
-     *
-     * @param coworking сущность коворкинга для преобразования.
-     * @return соответствующий DTO коворкинга.
-     * @throws CoworkingConflictException если возникает конфликт при преобразовании.
-     */
-    private CoworkingDTO convertToDTO(Coworking coworking) throws CoworkingConflictException {
-        if (coworking instanceof Workplace) {
-            return workplaceMapper.toWorkplaceDTO((Workplace) coworking);
-        } else if (coworking instanceof ConferenceRoom) {
-            return conferenceRoomMapper.toConferenceRoomDTO((ConferenceRoom) coworking);
-        } else {
-            throw new CoworkingConflictException("Не известный тип коворкинга");
-        }
-    }
 }

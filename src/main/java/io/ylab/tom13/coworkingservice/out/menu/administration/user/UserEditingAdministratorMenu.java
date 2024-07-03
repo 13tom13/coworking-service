@@ -20,7 +20,6 @@ public class UserEditingAdministratorMenu extends Menu {
 
     @Override
     public void display() {
-        ;
         try {
             UserDTO user = getUserForEdit();
             localSession.setAttribute("userForEdit", user);
@@ -72,7 +71,7 @@ public class UserEditingAdministratorMenu extends Menu {
         editUser(userDTO);
     }
 
-    private void editLastName( UserDTO user) throws EditException {
+    private void editLastName(UserDTO user) throws EditException {
         String newLastName = readString("Введите новую фамилию:");
         UserDTO userDTO = new UserDTO(user.id(), user.firstName(), newLastName, user.email(), user.role());
         editUser(userDTO);
@@ -84,14 +83,14 @@ public class UserEditingAdministratorMenu extends Menu {
         editUser(userDTO);
     }
 
-    private void editPassword( UserDTO user) throws EditException {
+    private void editPassword(UserDTO user) throws EditException {
         String hashPassword = readPassword("Введите новый пароль:");
         long userId = user.id();
         String response = administrationClient.editPasswordByAdministrator(userId, hashPassword);
         System.out.println(response);
     }
 
-    private void editRoles( UserDTO user) throws EditException {
+    private void editRoles(UserDTO user) throws EditException {
         Role[] roles = Role.values();
         System.out.println("Роль пользователя: " + user.role());
         System.out.println("Возможные роли:");
@@ -112,7 +111,7 @@ public class UserEditingAdministratorMenu extends Menu {
         editUser(userDTO);
     }
 
-    private void editUser( UserDTO user) throws EditException {
+    private void editUser(UserDTO user) throws EditException {
         UserDTO userDTO = administrationClient.editUserByAdministrator(user);
         localSession.setAttribute("userForEdit", userDTO);
         System.out.println("Пользователь успешно изменен ");

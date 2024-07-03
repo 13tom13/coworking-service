@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import rest.security.SecurityControllerTest;
+import security.SecurityControllerTest;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -55,7 +55,7 @@ class CoworkingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест получения списка коворкингов")
-    void getAllCoworking_success() {
+    void getAllCoworking_success() throws RepositoryException {
         Map<String, CoworkingDTO> coworkings = Map.of(
                 "1", new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A"),
                 "2", new ConferenceRoomDTO(2L, "Conference Room 1", "Description 2", true, 10)
@@ -72,7 +72,7 @@ class CoworkingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест получения списка доступных коворкингов")
-    void getAllAvailableCoworkings_success() {
+    void getAllAvailableCoworkings_success() throws RepositoryException {
         Map<String, CoworkingDTO> availableCoworkings = Map.of(
                 "1", new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A"),
                 "2", new ConferenceRoomDTO(2L, "Conference Room 1", "Description 2", true, 10)
@@ -114,7 +114,7 @@ class CoworkingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест изменения коворкинга")
-    void updateCoworking_success() throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException {
+    void updateCoworking_success() throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException, RepositoryException {
         CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
         when(coworkingService.updateCoworking(any(CoworkingDTO.class))).thenReturn(coworkingDTO);
 
@@ -127,7 +127,7 @@ class CoworkingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест ошибки при изменении коворкинга")
-    void updateCoworking_conflict() throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException {
+    void updateCoworking_conflict() throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException, RepositoryException {
         CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
         when(coworkingService.updateCoworking(any(CoworkingDTO.class))).thenThrow(new CoworkingUpdatingExceptions("Conflict"));
 
@@ -140,7 +140,7 @@ class CoworkingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест удаления коворкинга")
-    void deleteCoworking_success() throws CoworkingNotFoundException {
+    void deleteCoworking_success() throws CoworkingNotFoundException, RepositoryException {
         doNothing().when(coworkingService).deleteCoworking(1);
 
         ResponseDTO<Void> response = coworkingController.deleteCoworking(1L);
@@ -152,7 +152,7 @@ class CoworkingControllerImplTest extends SecurityControllerTest {
 
     @Test
     @DisplayName("Тест ошибки при удалении коворкинга")
-    void deleteCoworking_notFound() throws CoworkingNotFoundException {
+    void deleteCoworking_notFound() throws CoworkingNotFoundException, RepositoryException {
         doThrow(new CoworkingNotFoundException("Not Found")).when(coworkingService).deleteCoworking(1L);
 
         ResponseDTO<Void> response = coworkingController.deleteCoworking(1L);

@@ -1,0 +1,22 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="add-admin_and_moderator" author="13tom13">
+        <insert tableName="users" schemaName="main">
+            <column name="first_name" value="Admin"/>
+            <column name="last_name" value="Admin"/>
+            <column name="email" value="admin"/>
+            <column name="password" value="sxeF+9gEj7w5qfCHI6alOw==:wryVMirEiEMntdrjFzToY5QWpsZxf4GwSovXMXUDFqs="/>
+            <column name="role" value="ADMINISTRATOR"/>
+        </insert>
+        <insert tableName="users" schemaName="main">
+            <column name="first_name" value="Moderator"/>
+            <column name="last_name" value="Moderator"/>
+            <column name="email" value="moderator"/>
+            <column name="password" value="ZEerGBORbNbJc1gG+xqUVA==:hSquBxuFNux0+s4gH7nwdxbydtwiiKPs3ycM6kyCx7c="/>
+            <column name="role" value="MODERATOR"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

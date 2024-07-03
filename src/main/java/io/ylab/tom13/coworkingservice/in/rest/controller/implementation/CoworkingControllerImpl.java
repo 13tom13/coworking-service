@@ -12,7 +12,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedExcepti
 import io.ylab.tom13.coworkingservice.in.rest.controller.CoworkingController;
 import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.CoworkingServiceImpl;
-import io.ylab.tom13.coworkingservice.in.utils.SecurityController;
+import io.ylab.tom13.coworkingservice.in.utils.security.SecurityController;
 
 import java.util.Map;
 
@@ -39,8 +39,12 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
         if (!hasRole(Role.ADMINISTRATOR, Role.MODERATOR)) {
             return ResponseDTO.failure(new NoAccessException().getMessage());
         }
-        Map<String, CoworkingDTO> allCoworking = coworkingService.getAllCoworking();
-        return ResponseDTO.success(allCoworking);
+        try {
+            Map<String, CoworkingDTO> allCoworking = coworkingService.getAllCoworking();
+            return ResponseDTO.success(allCoworking);
+        } catch (RepositoryException e) {
+            return ResponseDTO.failure(e.getMessage());
+        }
     }
 
     /**
@@ -51,8 +55,12 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
         if (!hasAuthenticated()) {
             return ResponseDTO.failure(new UnauthorizedException().getMessage());
         }
-        Map<String, CoworkingDTO> allCoworking = coworkingService.getAllAvailableCoworkings();
-        return ResponseDTO.success(allCoworking);
+        try {
+            Map<String, CoworkingDTO> allCoworking = coworkingService.getAllAvailableCoworkings();
+            return ResponseDTO.success(allCoworking);
+        } catch (RepositoryException e) {
+            return ResponseDTO.failure(e.getMessage());
+        }
     }
 
     /**
@@ -82,7 +90,8 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
         try {
             CoworkingDTO coworking = coworkingService.updateCoworking(coworkingDTO);
             return ResponseDTO.success(coworking);
-        } catch (CoworkingUpdatingExceptions | CoworkingNotFoundException | CoworkingConflictException e) {
+        } catch (CoworkingUpdatingExceptions | CoworkingNotFoundException | CoworkingConflictException |
+                 RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }
@@ -98,7 +107,7 @@ public class CoworkingControllerImpl extends SecurityController implements Cowor
         try {
             coworkingService.deleteCoworking(coworkingId);
             return ResponseDTO.success(null);
-        } catch (CoworkingNotFoundException e) {
+        } catch (CoworkingNotFoundException | RepositoryException e) {
             return ResponseDTO.failure(e.getMessage());
         }
     }

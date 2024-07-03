@@ -1,6 +1,5 @@
 package io.ylab.tom13.coworkingservice.in.rest.repositories;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
@@ -8,7 +7,6 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryExcepti
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public interface BookingRepository {
@@ -24,17 +22,17 @@ public interface BookingRepository {
     /**
      * Обновляет существующее бронирование.
      *
-     * @param booking объект Booking, представляющий бронирование с обновленными данными
+     * @param updatedBooking объект Booking, представляющий бронирование с обновленными данными
      * @return обновленное бронирование
      */
-    Optional<Booking>  updateBooking(Booking updatedBooking) throws BookingNotFoundException, BookingConflictException, RepositoryException;
+    Optional<Booking> updateBooking(Booking updatedBooking) throws BookingNotFoundException, BookingConflictException, RepositoryException;
 
     /**
      * Удаляет бронирование по идентификатору.
      *
      * @param bookingId идентификатор бронирования
      */
-    void deleteBooking(long bookingId) throws BookingNotFoundException;
+    void deleteBooking(long bookingId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает бронирования по идентификатору пользователя.
@@ -42,7 +40,7 @@ public interface BookingRepository {
      * @param userId идентификатор пользователя
      * @return список бронирований, связанных с пользователем
      */
-    Collection<Booking> getBookingsByUser(long userId) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUser(long userId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает бронирования по идентификатору пользователя и дате
@@ -51,16 +49,16 @@ public interface BookingRepository {
      * @param date   дата бронирования
      * @return список бронирований, связанных с пользователем
      */
-    Collection<Booking> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает бронирования по идентификатору пользователя и дате
      *
-     * @param userId идентификатор пользователя
+     * @param userId      идентификатор пользователя
      * @param coworkingId идентификатор коворкинга для фильтрации
      * @return список бронирований, связанных с пользователем
      */
-    Collection<Booking> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException;
+    Collection<Booking> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException, RepositoryException;
 
     /**
      * Получает бронирования по идентификатору коворкинга и дате.
@@ -69,7 +67,7 @@ public interface BookingRepository {
      * @param date        дата бронирования
      * @return список бронирований, связанных с коворкингом и датой
      */
-    Collection<Booking> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date);
+    Collection<Booking> getBookingsByCoworkingAndDate(long coworkingId, LocalDate date) throws RepositoryException;
 
     /**
      * Получает бронирования по ID.
@@ -77,8 +75,8 @@ public interface BookingRepository {
      * @param bookingId ID бронирования
      * @return список бронирований, связанных с коворкингом и датой
      */
-    Optional<Booking> getBookingById(long bookingId) throws BookingNotFoundException;
+    Optional<Booking> getBookingById(long bookingId) throws BookingNotFoundException, RepositoryException;
 
-    void deleteAllCoworkingBookings(long coworkingID);
+    void deleteAllCoworkingBookings(long coworkingID) throws RepositoryException;
 
 }

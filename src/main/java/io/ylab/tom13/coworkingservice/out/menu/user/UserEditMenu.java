@@ -5,7 +5,6 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.client.UserEditClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.EditException;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class UserEditMenu extends Menu {
 
@@ -76,7 +75,7 @@ public class UserEditMenu extends Menu {
 
     private void editPassword(UserDTO user) throws EditException {
         String oldPassword = readString("Введите старый пароль:");
-        String newHashPassword = readPassword("Введите новый пароль:");
+        String newHashPassword = readPassword("Введите пароль:");
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), oldPassword, newHashPassword);
         String response = userEditClient.editPassword(passwordChangeDTO);
         System.out.println(response);

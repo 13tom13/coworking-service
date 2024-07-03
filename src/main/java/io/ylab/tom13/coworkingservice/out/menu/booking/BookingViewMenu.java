@@ -6,13 +6,12 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
-import io.ylab.tom13.coworkingservice.out.menu.Menu;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class BookingViewMenu extends Menu {
+public class BookingViewMenu extends BookingMenu {
 
     private final BookingClient bookingClient;
 
@@ -83,16 +82,6 @@ public class BookingViewMenu extends Menu {
             viewBookingsList(coworkings, userBookingsByCoworking);
         } catch (BookingException e) {
             System.err.println(e.getMessage());
-        }
-    }
-
-
-    private void viewBookingsList(Map<String, CoworkingDTO> coworkings, List<BookingDTO> allUserBookings) {
-        for (BookingDTO booking : allUserBookings) {
-            String coworkingName = getCoworkingNameById(coworkings, booking.coworkingId());
-            System.out.printf("(ID:%s)%n%s (%s):%n", booking.id(), coworkingName, booking.date().toString());
-            booking.timeSlots().forEach(System.out::println);
-            System.out.println();
         }
     }
 

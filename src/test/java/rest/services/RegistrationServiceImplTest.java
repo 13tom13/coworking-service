@@ -62,7 +62,7 @@ public class RegistrationServiceImplTest {
 
     @Test
     @DisplayName("Тест ошибка репозитория при создании пользователя")
-    void testExceptionRepository() throws RepositoryException {
+    void testExceptionRepository() throws RepositoryException, UserAlreadyExistsException {
         when(userRepository.createUser(any(User.class))).thenReturn(Optional.empty());
 
         assertThrows(RepositoryException.class, () -> registrationService.createUser(registrationDTO));

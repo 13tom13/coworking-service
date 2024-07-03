@@ -8,12 +8,15 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExists
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryCollection;
+import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
-import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.SQLException;
 import java.util.Optional;
+
+import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
+import static io.ylab.tom13.coworkingservice.in.utils.security.PasswordUtil.verifyPassword;
 
 /**
  * Реализация интерфейса {@link UserEditService}.
@@ -28,7 +31,11 @@ public class UserEditServiceImpl implements UserEditService {
      * Конструктор для инициализации сервиса редактирования пользователей.
      */
     public UserEditServiceImpl() {
-        this.userRepository = UserRepositoryCollection.getInstance();
+        try {
+            userRepository = new UserRepositoryJdbc(getConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -45,12 +52,11 @@ public class UserEditServiceImpl implements UserEditService {
             throw new UserAlreadyExistsException(newEmail);
         }
 
-        User userToUpdate = new User(userDTO.id(), userDTO.firstName(), userDTO.lastName(), newEmail, existingUser.password(), userDTO.role());
+        User userToUpdate = userMapper.toUserWithEmailAndPassword(userDTO, newEmail, existingUser.password());
 
         Optional<User> updatedUser = userRepository.updateUser(userToUpdate);
 
-        if (userRepository.findById(userToUpdate.id()).isEmpty()
-            || userRepository.findByEmail(userToUpdate.email()).isEmpty() || updatedUser.isEmpty()) {
+        if (userRepository.findById(userToUpdate.id()).isEmpty() || userRepository.findByEmail(userToUpdate.email()).isEmpty() || updatedUser.isEmpty()) {
             throw new RepositoryException("Не удалось обновить пользователя с ID " + userDTO.id());
         }
 
@@ -61,7 +67,7 @@ public class UserEditServiceImpl implements UserEditService {
      * {@inheritDoc}
      */
     @Override
-    public void editPassword(PasswordChangeDTO passwordChangeDTO) throws UnauthorizedException, RepositoryException, UserNotFoundException {
+    public void editPassword(PasswordChangeDTO passwordChangeDTO) throws UnauthorizedException, RepositoryException, UserNotFoundException, UserAlreadyExistsException {
 
         String email = passwordChangeDTO.email();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("с email " + email));
@@ -69,7 +75,7 @@ public class UserEditServiceImpl implements UserEditService {
         checkPassword(passwordChangeDTO.oldPassword(), user.password());
 
         String newPassword = passwordChangeDTO.newPassword();
-        User updatedUser = new User(user.id(), user.firstName(), user.lastName(), user.email(), newPassword, user.role());
+        User updatedUser = userMapper.toUserWithPassword(user, newPassword);
         userRepository.updateUser(updatedUser);
     }
 
@@ -81,9 +87,10 @@ public class UserEditServiceImpl implements UserEditService {
      * @throws UnauthorizedException если старый пароль не совпадает с паролем пользователя.
      */
     private void checkPassword(String passwordFromDTO, String passwordFromRep) throws UnauthorizedException {
-        if (!BCrypt.checkpw(passwordFromDTO, passwordFromRep)) {
+        if (!verifyPassword(passwordFromDTO, passwordFromRep)) {
             throw new UnauthorizedException("Старый пароль не совпадает");
         }
+
     }
 }
 

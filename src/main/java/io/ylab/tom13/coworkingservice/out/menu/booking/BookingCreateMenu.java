@@ -7,8 +7,6 @@ import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
-import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class BookingCreateMenu extends Menu {
+public class BookingCreateMenu extends BookingMenu {
 
     private final BookingClient bookingClient;
 

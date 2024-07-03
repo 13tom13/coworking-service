@@ -1,12 +1,15 @@
 package io.ylab.tom13.coworkingservice.in.entity.model.coworking;
 
+
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Класс Workplace представляет рабочее место как тип коворкинга.
  * Наследуется от абстрактного класса Coworking и добавляет атрибут типа рабочего места.
  */
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class Workplace extends Coworking {
 
     /** Тип рабочего места */

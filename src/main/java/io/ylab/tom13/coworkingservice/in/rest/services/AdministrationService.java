@@ -4,6 +4,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public interface AdministrationService {
      * @throws UserNotFoundException если пользователь не найден.
      * @throws RepositoryException   если произошла ошибка репозитория при сохранении данных.
      */
-    UserDTO editUserByAdministrator(UserDTO userDTO) throws UserNotFoundException, RepositoryException;
+    UserDTO editUserByAdministrator(UserDTO userDTO) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException;
 
     /**
      * Изменение пароля пользователя администратором.
@@ -47,7 +48,7 @@ public interface AdministrationService {
      * @throws UserNotFoundException если пользователь не найден.
      * @throws RepositoryException   если произошла ошибка репозитория при сохранении данных.
      */
-    void editUserPasswordByAdministrator(long userId, String newHashPassword) throws UserNotFoundException, RepositoryException;
+    void editUserPasswordByAdministrator(long userId, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException;
 
     /**
      * Регистрация нового пользователя администратором.
@@ -56,5 +57,5 @@ public interface AdministrationService {
      * @param role            роль, которую получит новый пользователь.
      * @throws RepositoryException если произошла ошибка репозитория при сохранении данных.
      */
-    void registrationUser(RegistrationDTO registrationDTO, Role role) throws RepositoryException;
+    void registrationUser(RegistrationDTO registrationDTO, Role role) throws RepositoryException, UserAlreadyExistsException;
 }

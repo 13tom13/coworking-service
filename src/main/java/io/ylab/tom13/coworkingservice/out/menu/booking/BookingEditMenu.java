@@ -7,7 +7,6 @@ import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
-import io.ylab.tom13.coworkingservice.out.menu.Menu;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
 
 import java.time.LocalDate;
@@ -17,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class BookingEditMenu extends Menu {
+public class BookingEditMenu extends BookingMenu {
 
     private final BookingClient bookingClient;
 
@@ -69,15 +68,6 @@ public class BookingEditMenu extends Menu {
                 }
                 default -> System.err.println("Неверный выбор. Попробуйте еще раз.");
             }
-        }
-    }
-
-    private void viewBookingsList(Map<String, CoworkingDTO> coworkings, List<BookingDTO> allUserBookings) {
-        for (BookingDTO booking : allUserBookings) {
-            String coworkingName = getCoworkingNameById(coworkings, booking.coworkingId());
-            System.out.printf("(ID:%s)%n%s (%s):%n", booking.id(), coworkingName, booking.date().toString());
-            booking.timeSlots().forEach(System.out::println);
-            System.out.println();
         }
     }
 

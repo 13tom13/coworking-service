@@ -23,6 +23,7 @@ public interface BookingMapper {
      * @param booking объект Booking для преобразования.
      * @return соответствующий объект BookingDTO.
      */
+    @Mapping(target = "timeSlot", ignore = true)
     BookingDTO toBookingDTO(Booking booking);
 
     /**
@@ -41,9 +42,5 @@ public interface BookingMapper {
      * @return соответствующий объект Booking с заданным идентификатором.
      */
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "bookingDTO.userId", target = "userId")
-    @Mapping(source = "bookingDTO.coworkingId", target = "coworkingId")
-    @Mapping(source = "bookingDTO.date", target = "date")
-    @Mapping(source = "bookingDTO.timeSlots", target = "timeSlots")
     Booking toBooking(BookingDTO bookingDTO, long id);
 }

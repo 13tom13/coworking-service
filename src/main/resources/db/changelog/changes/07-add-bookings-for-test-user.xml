@@ -1,0 +1,36 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet id="add_bookings_for_test_user" author="13tom13">
+        <insert tableName="bookings" schemaName="main">
+            <column name="user_id" valueComputed="(SELECT id FROM main.users WHERE email = 'test@mail.ru')"/>
+            <column name="coworking_id" valueComputed="(SELECT id FROM main.coworkings WHERE name = 'Зал 1')"/>
+            <column name="date" valueComputed="CURRENT_DATE + INTERVAL '1 day'"/>
+        </insert>
+        <insert tableName="booking_time_slots" schemaName="relations">
+            <column name="booking_id" valueComputed="(SELECT id FROM main.bookings WHERE user_id = (SELECT id FROM main.users WHERE email = 'test@mail.ru') AND coworking_id = (SELECT id FROM main.coworkings WHERE name = 'Зал 1') AND date = CURRENT_DATE + INTERVAL '1 day')"/>
+            <column name="time_slot_id" value="1"/>
+        </insert>
+        <insert tableName="booking_time_slots" schemaName="relations">
+            <column name="booking_id" valueComputed="(SELECT id FROM main.bookings WHERE user_id = (SELECT id FROM main.users WHERE email = 'test@mail.ru') AND coworking_id = (SELECT id FROM main.coworkings WHERE name = 'Зал 1') AND date = CURRENT_DATE + INTERVAL '1 day')"/>
+            <column name="time_slot_id" value="2"/>
+        </insert>
+
+
+        <insert tableName="bookings" schemaName="main">
+            <column name="user_id" valueComputed="(SELECT id FROM main.users WHERE email = 'test@mail.ru')"/>
+            <column name="coworking_id" valueComputed="(SELECT id FROM main.coworkings WHERE name = 'Офис 3')"/>
+            <column name="date" valueComputed="CURRENT_DATE + INTERVAL '3 day'"/>
+        </insert>
+        <insert tableName="booking_time_slots" schemaName="relations">
+            <column name="booking_id" valueComputed="(SELECT id FROM main.bookings WHERE user_id = (SELECT id FROM main.users WHERE email = 'test@mail.ru') AND coworking_id = (SELECT id FROM main.coworkings WHERE name = 'Офис 3') AND date = CURRENT_DATE + INTERVAL '3 day')"/>
+            <column name="time_slot_id" value="2"/>
+        </insert>
+        <insert tableName="booking_time_slots" schemaName="relations">
+            <column name="booking_id" valueComputed="(SELECT id FROM main.bookings WHERE user_id = (SELECT id FROM main.users WHERE email = 'test@mail.ru') AND coworking_id = (SELECT id FROM main.coworkings WHERE name = 'Офис 3') AND date = CURRENT_DATE + INTERVAL '3 day')"/>
+            <column name="time_slot_id" value="3"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

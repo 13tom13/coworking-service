@@ -2,15 +2,15 @@ package io.ylab.tom13.coworkingservice.out.menu.user;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.menu.Menu;
-import io.ylab.tom13.coworkingservice.out.menu.booking.BookingMenu;
+import io.ylab.tom13.coworkingservice.out.menu.booking.BookingMainMenu;
 
 public class UserMenu extends Menu {
 
     private final UserEditMenu userEditMenu;
-    private final BookingMenu bookingMenu;
+    private final BookingMainMenu bookingMainMenu;
 
     public UserMenu() {
-        bookingMenu = new BookingMenu();
+        bookingMainMenu = new BookingMainMenu();
         userEditMenu = new UserEditMenu();
     }
 
@@ -28,7 +28,7 @@ public class UserMenu extends Menu {
             int choice = readInt("Введите номер действия: ");
             switch (choice) {
                 case 1 -> userEditMenu.display();
-                case 2 -> bookingMenu.display();
+                case 2 -> bookingMainMenu.display();
                 case 0 -> {
                     System.err.println("До свидания " + user.firstName());
                     localSession.removeAttribute("user");

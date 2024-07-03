@@ -18,14 +18,14 @@ public interface CoworkingService {
      *
      * @return Map с информацией о всех коворкингах.
      */
-    Map<String, CoworkingDTO> getAllCoworking();
+    Map<String, CoworkingDTO> getAllCoworking() throws RepositoryException;
 
     /**
      * Получает все доступные коворкинги.
      *
      * @return Map с информацией о всех доступных коворкингах.
      */
-    Map<String, CoworkingDTO> getAllAvailableCoworkings();
+    Map<String, CoworkingDTO> getAllAvailableCoworkings() throws RepositoryException;
 
     /**
      * Создает новый коворкинг.
@@ -46,7 +46,7 @@ public interface CoworkingService {
      * @throws CoworkingNotFoundException  если коворкинг с указанным ID не найден.
      * @throws CoworkingConflictException  если возникает конфликт при обновлении коворкинга.
      */
-    CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException;
+    CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException, RepositoryException;
 
     /**
      * Удаляет коворкинг по ID.
@@ -54,5 +54,5 @@ public interface CoworkingService {
      * @param coworkingId ID коворкинга для удаления.
      * @throws CoworkingNotFoundException если коворкинг с указанным ID не найден.
      */
-    void deleteCoworking(long coworkingId) throws CoworkingNotFoundException;
+    void deleteCoworking(long coworkingId) throws CoworkingNotFoundException, RepositoryException;
 }

@@ -3,10 +3,10 @@ package io.ylab.tom13.coworkingservice.out.menu.administration.booking;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.client.AdministrationClient;
-import io.ylab.tom13.coworkingservice.out.menu.Menu;
+import io.ylab.tom13.coworkingservice.out.menu.booking.BookingMenu;
 import io.ylab.tom13.coworkingservice.out.menu.booking.BookingViewMenu;
 
-public class BookingAdministrationMenu extends Menu {
+public class BookingAdministrationMenu extends BookingMenu {
 
     private final BookingCreationAdministratorMainMenu bookingCreationAdministratorMenu;
     private final BookingEditingAdministratorMenu bookingEditingAdministratorMenu;
