@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 public class UserRepositoryJdbc implements UserRepository {
 
-    private final String unique_violation = "23505";
+    private static final String UNIQUE_VIOLATION = "23505";
 
     private final Connection connection;
 
@@ -61,7 +61,7 @@ public class UserRepositoryJdbc implements UserRepository {
                 }
             } catch (SQLException e) {
                 connection.rollback();
-                if (e.getSQLState().equals(unique_violation)) {
+                if (e.getSQLState().equals(UNIQUE_VIOLATION)) {
                     throw new UserAlreadyExistsException("Пользователь с таким email уже существует");
                 } else {
                     throw new RepositoryException("Ошибка при создании пользователя: " + e.getMessage());
@@ -81,7 +81,7 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public Collection<User> getAllUsers() {
         String sql = """
-                SELECT id, first_name, last_name, email, password, role
+                SELECT *
                 FROM main.users
                 """;
         List<User> users = new ArrayList<>();
@@ -107,7 +107,7 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         String sql = """
-                SELECT id, first_name, last_name, email, password, role
+                SELECT *
                 FROM main.users WHERE email = ?
                 """;
 
@@ -133,7 +133,7 @@ public class UserRepositoryJdbc implements UserRepository {
     @Override
     public Optional<User> findById(long id) {
         String sql = """
-                SELECT id, first_name, last_name, email, password, role
+                SELECT *
                 FROM main.users WHERE id = ?
                 """;
 
@@ -147,7 +147,7 @@ public class UserRepositoryJdbc implements UserRepository {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Ошибка при поиске пользователя по ID: " + e.getMessage());
+            System.err.println("Ошибка получения пользователя по ID: " + e.getMessage());
             return Optional.empty();
         }
         return Optional.empty();
@@ -192,23 +192,23 @@ public class UserRepositoryJdbc implements UserRepository {
                 SET first_name = ?, last_name = ?, email = ?, password = ?, role = ?
                 WHERE id = ?
                 """;
-
+        long userId  = user.id();
         try {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 userToStatement(user, preparedStatement);
-                preparedStatement.setLong(6, user.id());
+                preparedStatement.setLong(6, userId);
 
                 int affectedRows = preparedStatement.executeUpdate();
                 if (affectedRows == 0) {
-                    throw new UserNotFoundException("с ID " + user.id());
+                    throw new UserNotFoundException("с ID " + userId);
                 }
 
                 connection.commit();
-                return findById(user.id());
+                return findById(userId);
             } catch (SQLException e) {
                 connection.rollback();
-                if (e.getSQLState().equals(unique_violation)) {
+                if (e.getSQLState().equals(UNIQUE_VIOLATION)) {
                     throw new UserAlreadyExistsException(user.email());
                 }
                 throw new RepositoryException("Ошибка при обновлении пользователя: " + e.getMessage());
