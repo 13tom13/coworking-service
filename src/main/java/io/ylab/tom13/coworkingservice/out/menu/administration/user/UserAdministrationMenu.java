@@ -8,7 +8,7 @@ import io.ylab.tom13.coworkingservice.out.menu.Menu;
 import java.util.List;
 
 public class UserAdministrationMenu extends Menu {
-    ;
+
     private final AdministrationClient administrationClient;
 
     private final UserEditingAdministratorMenu userEditingAdministratorMenu;
@@ -24,7 +24,7 @@ public class UserAdministrationMenu extends Menu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO admin = localSession.getUser();
+            UserDTO admin = localSession.getUser().get();
             if (!admin.role().equals(Role.ADMINISTRATOR)) {
                 System.err.println("Редактирование пользователя вам не доступно.");
                 startMenu = false;

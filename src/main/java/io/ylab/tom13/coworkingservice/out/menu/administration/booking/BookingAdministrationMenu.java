@@ -48,7 +48,7 @@ public class BookingAdministrationMenu extends BookingMenu {
     }
 
     private void viewUserBookingsMenu() {
-        UserDTO admin = localSession.getUser();
+        UserDTO admin = localSession.getUser().get();
         String email = readString("Введите email пользователя: ");
         try {
             UserDTO user = administrationClient.getUserByEmail(email);

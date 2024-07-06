@@ -12,8 +12,8 @@ import java.io.IOException;
 public class LogoutServlet extends CoworkingServiceServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (localSession.getUser() != null) {
-            UserDTO user = localSession.getUser();
+        if (localSession.getUser().isPresent()) {
+            UserDTO user = localSession.getUser().get();
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);

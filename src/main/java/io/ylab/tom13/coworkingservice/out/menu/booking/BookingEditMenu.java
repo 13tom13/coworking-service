@@ -26,7 +26,7 @@ public class BookingEditMenu extends BookingMenu {
 
     @Override
     public void display() {
-        UserDTO user = localSession.getUser();
+        UserDTO user = localSession.getUser().get();
         boolean editMenu = true;
         BookingDTO booking;
         Map<String, CoworkingDTO> allAvailableCoworkings;

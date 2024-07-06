@@ -35,7 +35,7 @@ public class AuthorizationMenu extends Menu {
     public void display() {
         try {
             login();
-            UserDTO userDTO = localSession.getUser();
+            UserDTO userDTO = localSession.getUser().get();
             switch (userDTO.role()) {
                 case USER -> userMenu.display();
                 case ADMINISTRATOR, MODERATOR -> adminMenu.display();

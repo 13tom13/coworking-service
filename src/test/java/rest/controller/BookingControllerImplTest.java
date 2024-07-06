@@ -52,7 +52,7 @@ class BookingControllerImplTest extends SecurityControllerTest {
         UserDTO userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com", Role.ADMINISTRATOR);
         Optional<User> user = Optional.ofNullable(UserMapper.INSTANCE.toUser(userDTO));
 
-        when(session.getUser()).thenReturn(userDTO);
+        when(session.getUser()).thenReturn(Optional.of(userDTO));
         lenient().doReturn(user).when(userRepository).findById(anyLong());
 
         bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));

@@ -19,7 +19,7 @@ public class BookingMainMenu extends BookingMenu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO user = localSession.getUser();
+            UserDTO user = localSession.getUser().get();
             System.out.printf("Пользователь: %s %n", user);
             System.out.println("Меню бронирования");
             System.out.println("Выберите действие:");

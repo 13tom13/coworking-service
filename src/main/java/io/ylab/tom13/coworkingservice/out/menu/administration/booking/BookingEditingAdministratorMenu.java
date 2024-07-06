@@ -20,7 +20,7 @@ public class BookingEditingAdministratorMenu extends BookingMenu {
     @Override
     public void display() {
         try {
-            UserDTO admin = localSession.getUser();
+            UserDTO admin = localSession.getUser().get();
             UserDTO user = getUserToEditBooking();
             localSession.setUser(user);
             bookingEditingMenu.display();

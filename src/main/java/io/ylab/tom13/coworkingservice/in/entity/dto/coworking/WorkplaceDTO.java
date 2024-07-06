@@ -1,5 +1,7 @@
 package io.ylab.tom13.coworkingservice.in.entity.dto.coworking;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,32 +12,21 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class WorkplaceDTO extends CoworkingDTO {
-    /**
-     * Тип рабочего места
-     */
-    private String type;
+    private String type = "workplace";
+    private String workplaceType;
 
-    /**
-     * Конструктор для инициализации объекта рабочего места.
-     *
-     * @param id          уникальный идентификатор
-     * @param name        название
-     * @param description описание
-     * @param available   доступность
-     * @param type        тип рабочего места
-     */
-    public WorkplaceDTO(long id, String name, String description, boolean available, String type) {
+    @JsonCreator
+    public WorkplaceDTO(@JsonProperty("id") long id,
+                        @JsonProperty("name") String name,
+                        @JsonProperty("description") String description,
+                        @JsonProperty("available") boolean available,
+                        @JsonProperty("workplaceType") String workplaceType) {
         super(id, name, description, available);
-        this.type = type;
+        this.workplaceType = workplaceType;
     }
 
-    /**
-     * Представление объекта в виде строки.
-     *
-     * @return строковое представление объекта в формате "Название: {name} | Описание: {description} | Тип: {type}"
-     */
     @Override
     public String toString() {
-        return super.toString() + "Тип: " + type;
+        return super.toString() + "Тип: " + workplaceType;
     }
 }

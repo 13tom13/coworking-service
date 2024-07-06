@@ -4,9 +4,6 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
-import io.ylab.tom13.coworkingservice.in.rest.services.BookingService;
-import io.ylab.tom13.coworkingservice.in.rest.services.implementation.BookingServiceImpl;
-import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServiceServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,13 +15,7 @@ import java.util.List;
 import static io.ylab.tom13.coworkingservice.in.utils.security.SecurityController.hasAuthenticated;
 
 @WebServlet("/booking/user/date")
-public class BookingsByUserAndDateServlet extends CoworkingServiceServlet {
-
-    private final BookingService bookingService;
-
-    public BookingsByUserAndDateServlet() {
-        this.bookingService = new BookingServiceImpl();
-    }
+public class BookingsByUserAndDateServlet extends BookingServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

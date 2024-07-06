@@ -23,7 +23,7 @@ public class AdminMenu extends Menu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO user = localSession.getUser();
+            UserDTO user = localSession.getUser().get();
             String name = "Пользователь";
             if (user.role().equals(Role.ADMINISTRATOR)) {
                 name = "Администратор";

@@ -28,7 +28,7 @@ public class BookingViewMenu extends BookingMenu {
             System.out.println(e.getMessage());
             return;
         }
-        UserDTO user = localSession.getUser();
+        UserDTO user = localSession.getUser().get();
         boolean viewMenu = true;
         while (viewMenu) {
             System.out.println("Меню просмотра бронирований пользователя");

@@ -26,14 +26,14 @@ public class CoworkingMapperTest {
     private final String DESCRIPTION = "Description";
     private final boolean AVAILABLE = true;
     private final int CAPACITY = 50;
-    private final String TYPE = "Open Space";
+    private final String workplaceType = "Open Space";
 
     @BeforeEach
     void setUp() {
         conferenceRoom = new ConferenceRoom(ID, NAME, DESCRIPTION, AVAILABLE, CAPACITY);
         conferenceRoomDTO = new ConferenceRoomDTO(ID, NAME, DESCRIPTION, AVAILABLE, CAPACITY);
-        workplace = new Workplace(ID, NAME, DESCRIPTION, AVAILABLE, TYPE);
-        workplaceDTO = new WorkplaceDTO(ID, NAME, DESCRIPTION, AVAILABLE, TYPE);
+        workplace = new Workplace(ID, NAME, DESCRIPTION, AVAILABLE, workplaceType);
+        workplaceDTO = new WorkplaceDTO(ID, NAME, DESCRIPTION, AVAILABLE, workplaceType);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class CoworkingMapperTest {
         assertThat(workplaceDTO.getName()).isEqualTo(NAME);
         assertThat(workplaceDTO.getDescription()).isEqualTo(DESCRIPTION);
         assertThat(workplaceDTO.isAvailable()).isEqualTo(AVAILABLE);
-        assertThat(workplaceDTO.getType()).isEqualTo(TYPE);
+        assertThat(workplaceDTO.getType()).isEqualTo(workplaceType);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class CoworkingMapperTest {
         assertThat(workplace.getName()).isEqualTo(NAME);
         assertThat(workplace.getDescription()).isEqualTo(DESCRIPTION);
         assertThat(workplace.isAvailable()).isEqualTo(AVAILABLE);
-        assertThat(workplace.getType()).isEqualTo(TYPE);
+        assertThat(workplace.getType()).isEqualTo(workplaceType);
     }
 
 }

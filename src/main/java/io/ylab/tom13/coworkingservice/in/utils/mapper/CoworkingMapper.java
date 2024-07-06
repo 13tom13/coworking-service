@@ -8,6 +8,7 @@ import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Coworking;
 import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Workplace;
 import io.ylab.tom13.coworkingservice.in.exceptions.mapper.CoworkingMappingException;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -19,14 +20,15 @@ public interface CoworkingMapper {
 
     CoworkingMapper INSTANCE = Mappers.getMapper(CoworkingMapper.class);
 
-
+    @Mapping(target = "type", ignore = true)
     ConferenceRoomDTO toConferenceRoomDTO(ConferenceRoom conferenceRoom);
-
 
     ConferenceRoom toConferenceRoom(ConferenceRoomDTO conferenceRoomDTO);
 
+    @Mapping(target = "workplaceType", source = "type")
     WorkplaceDTO toWorkplaceDTO(Workplace workplace);
 
+    @Mapping(target = "type", source = "workplaceType")
     Workplace toWorkplace(WorkplaceDTO workplaceDTO);
 
     default CoworkingDTO toCoworkingDTO(Coworking coworking) {
@@ -35,7 +37,7 @@ public interface CoworkingMapper {
         } else if (coworking instanceof Workplace) {
             return toWorkplaceDTO((Workplace) coworking);
         } else {
-            throw new CoworkingMappingException(coworking.getClass().getSimpleName());
+            throw new CoworkingMappingException("Unsupported type of Coworking: " + coworking.getClass().getSimpleName());
         }
     }
 
@@ -45,7 +47,7 @@ public interface CoworkingMapper {
         } else if (coworkingDTO instanceof WorkplaceDTO) {
             return toWorkplace((WorkplaceDTO) coworkingDTO);
         } else {
-            throw new CoworkingMappingException(coworkingDTO.getClass().getSimpleName());
+            throw new CoworkingMappingException("Unsupported type of CoworkingDTO: " + coworkingDTO.getClass().getSimpleName());
         }
     }
 }

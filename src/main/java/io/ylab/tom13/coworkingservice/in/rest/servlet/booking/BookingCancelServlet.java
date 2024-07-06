@@ -3,9 +3,6 @@ package io.ylab.tom13.coworkingservice.in.rest.servlet.booking;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
-import io.ylab.tom13.coworkingservice.in.rest.services.BookingService;
-import io.ylab.tom13.coworkingservice.in.rest.services.implementation.BookingServiceImpl;
-import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServiceServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,13 +13,8 @@ import static io.ylab.tom13.coworkingservice.in.utils.security.SecurityControlle
 
 
 @WebServlet("/booking/cancel")
-public class BookingCancelServlet extends CoworkingServiceServlet {
+public class BookingCancelServlet extends BookingServlet {
 
-    private final BookingService bookingService;
-
-    public BookingCancelServlet() {
-        this.bookingService = new BookingServiceImpl();
-    }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -33,7 +25,7 @@ public class BookingCancelServlet extends CoworkingServiceServlet {
 
         String bookingIdStr = request.getParameter("bookingId");
         if (bookingIdStr == null || bookingIdStr.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parameter 'bookingId' is missing or empty");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Параметр 'bookingId' пуст или отсутствует");
             return;
         }
 
@@ -42,7 +34,7 @@ public class BookingCancelServlet extends CoworkingServiceServlet {
             bookingId = Long.parseLong(bookingIdStr);
             System.out.println(bookingId);
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid 'bookingId' parameter");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Не верный 'bookingId' параметр");
             return;
         }
 

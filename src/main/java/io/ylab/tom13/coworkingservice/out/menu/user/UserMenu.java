@@ -18,7 +18,7 @@ public class UserMenu extends Menu {
     public void display() {
         boolean startMenu = true;
         while (startMenu) {
-            UserDTO user = localSession.getUser();
+            UserDTO user = localSession.getUser().get();
             System.out.printf("Добро пожаловать %s %n", user);
             System.out.println("Выберите действие:");
             System.out.println("1. Редактирование профиля");

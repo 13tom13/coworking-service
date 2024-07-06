@@ -161,17 +161,45 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
      */
     @Override
     public Optional<Coworking> updateCoworking(Coworking coworking) throws CoworkingConflictException, CoworkingNotFoundException, RepositoryException {
+        String getCurrentNameSql = "SELECT name FROM main.coworkings WHERE id = ?";
         String sql = """
-                UPDATE main.coworkings
-                SET name = ?, description = ?, available = ?, type = ?, workplace_type = ?, conference_room_capacity = ?
-                WHERE id = ?
-                """;
+            UPDATE main.coworkings
+            SET name = ?, description = ?, available = ?, type = ?, workplace_type = ?, conference_room_capacity = ?
+            WHERE id = ?
+            """;
         long coworkingId = coworking.getId();
 
         try {
             connection.setAutoCommit(false);
+
+            String currentName;
+            try (PreparedStatement getCurrentNameStmt = connection.prepareStatement(getCurrentNameSql)) {
+                getCurrentNameStmt.setLong(1, coworkingId);
+                try (ResultSet rs = getCurrentNameStmt.executeQuery()) {
+                    if (rs.next()) {
+                        currentName = rs.getString("name");
+                    } else {
+                        connection.rollback();
+                        throw new CoworkingNotFoundException("Коворкинг с ID " + coworkingId + " не найден");
+                    }
+                }
+            }
+
+            if (!coworking.getName().equals(currentName)) {
+                String checkUniqueSql = "SELECT COUNT(*) FROM main.coworkings WHERE name = ?";
+                try (PreparedStatement checkUniqueStmt = connection.prepareStatement(checkUniqueSql)) {
+                    checkUniqueStmt.setString(1, coworking.getName());
+                    try (ResultSet rs = checkUniqueStmt.executeQuery()) {
+                        if (rs.next() && rs.getInt(1) > 0) {
+                            connection.rollback();
+                            throw new CoworkingConflictException("Имя коворкинга уже занято");
+                        }
+                    }
+                }
+            }
+
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                coworkingToStatement(coworking, statement);
+                coworkingToStatement(coworking,statement);
                 statement.setLong(7, coworkingId);
 
                 int affectedRows = statement.executeUpdate();
@@ -181,14 +209,10 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 }
 
                 connection.commit();
-                return getCoworkingById(coworking.getId());
+                return Optional.of(coworking);
             } catch (SQLException e) {
                 connection.rollback();
-                if (e.getSQLState().equals(UNIQUE_VIOLATION)) {
-                    throw new CoworkingConflictException("Имя коворкинга уже занято");
-                } else {
-                    throw new RepositoryException("Ошибка при обновлении коворкинга: " + e.getMessage());
-                }
+                throw new RepositoryException("Ошибка при обновлении коворкинга: " + e.getMessage());
             } finally {
                 connection.setAutoCommit(true);
             }

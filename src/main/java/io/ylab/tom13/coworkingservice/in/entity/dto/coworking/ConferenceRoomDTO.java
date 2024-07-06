@@ -1,5 +1,7 @@
 package io.ylab.tom13.coworkingservice.in.entity.dto.coworking;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,30 +10,21 @@ import lombok.EqualsAndHashCode;
  * Содержит дополнительный атрибут - вместимость зала.
  */
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class ConferenceRoomDTO extends CoworkingDTO {
-    /** Вместимость конференц-зала */
+    private String type = "conferenceRoom";
     private int capacity;
 
-    /**
-     * Конструктор для инициализации объекта конференц-зала.
-     *
-     * @param id уникальный идентификатор
-     * @param name название
-     * @param description описание
-     * @param available доступность
-     * @param capacity вместимость зала
-     */
-    public ConferenceRoomDTO(long id, String name, String description, boolean available, int capacity) {
+    @JsonCreator
+    public ConferenceRoomDTO(@JsonProperty("id") long id,
+                             @JsonProperty("name") String name,
+                             @JsonProperty("description") String description,
+                             @JsonProperty("available") boolean available,
+                             @JsonProperty("capacity") int capacity) {
         super(id, name, description, available);
         this.capacity = capacity;
     }
 
-    /**
-     * Представление объекта в виде строки.
-     *
-     * @return строковое представление объекта в формате "Название: {name} | Описание: {description} | Количество мест: {capacity}"
-     */
     @Override
     public String toString() {
         return super.toString() + "Количество мест: " + capacity;

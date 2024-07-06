@@ -26,7 +26,7 @@ public class UserEditMenu extends Menu {
     private void editUser() throws EditException {
         boolean userManagementMenu = true;
         while (userManagementMenu) {
-            UserDTO user = localSession.getUser();
+            UserDTO user = localSession.getUser().get();
             System.out.printf("Редактировать пользователя: %s %n", user);
             System.out.println("1. Изменить имя пользователя");
             System.out.println("2. Изменить фамилию пользователя");

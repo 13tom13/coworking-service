@@ -1,7 +1,6 @@
-package io.ylab.tom13.coworkingservice.in.rest.servlet.booking;
+package io.ylab.tom13.coworkingservice.in.rest.servlet.coworking;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
-import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
+import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,12 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 import static io.ylab.tom13.coworkingservice.in.utils.security.SecurityController.hasAuthenticated;
 
-@WebServlet("/booking/user")
-public class BookingsByUserServlet extends BookingServlet {
+@WebServlet("/coworking/available")
+public class GetAllAvailableCoworkingsServlet extends CoworkingServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -22,17 +21,13 @@ public class BookingsByUserServlet extends BookingServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, new UnauthorizedException().getMessage());
             return;
         }
-        String userIdStr = request.getParameter("userId");
-        long userId = Long.parseLong(userIdStr);
         try {
-            List<BookingDTO> bookingsByUser = bookingService.getBookingsByUser(userId);
+            Map<String, CoworkingDTO> availableCoworkings = coworkingService.getAllAvailableCoworkings();
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(bookingsByUser));
+            response.getWriter().write(objectMapper.writeValueAsString(availableCoworkings));
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        } catch (BookingNotFoundException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         }
     }
 }

@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import security.SecurityControllerTest;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -44,7 +45,7 @@ public class UserEditControllerImplTest extends SecurityControllerTest {
 
         userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com", Role.USER);
 
-        when(session.getUser()).thenReturn(userDTO);
+        when(session.getUser()).thenReturn(Optional.of(userDTO));
     }
 
     @Test

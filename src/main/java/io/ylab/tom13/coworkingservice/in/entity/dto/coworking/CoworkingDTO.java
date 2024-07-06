@@ -1,5 +1,7 @@
 package io.ylab.tom13.coworkingservice.in.entity.dto.coworking;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -9,29 +11,21 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = WorkplaceDTO.class, name = "workplace"),
+        @JsonSubTypes.Type(value = ConferenceRoomDTO.class, name = "conferenceRoom")
+})
 public abstract class CoworkingDTO {
-    /**
-     * Уникальный идентификатор коворкинга
-     */
     private long id;
-    /**
-     * Название коворкинга
-     */
     private String name;
-    /**
-     * Описание коворкинга
-     */
     private String description;
-    /**
-     * Доступность коворкинга
-     */
     private boolean available;
 
-    /**
-     * Представление объекта в виде строки.
-     *
-     * @return строковое представление объекта в формате "Название: {name} | Описание: {description} |"
-     */
     @Override
     public String toString() {
         return String.format("Название: %s | Описание: %s |", name, description);

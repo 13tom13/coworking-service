@@ -64,11 +64,11 @@ class CoworkingRepositoryJdbcTest extends TestcontainersConnector {
     void updateCoworking_ShouldUpdateCoworking_WhenCoworkingExists() throws RepositoryException, CoworkingConflictException, CoworkingNotFoundException {
         Coworking createdCoworking = coworkingRepository.createCoworking(coworking).get();
 
-        Coworking updatedCoworking = new ConferenceRoom(createdCoworking.getId(), "Conference Room", "Spacious room", true, 20);
+        Coworking updatedCoworking = new ConferenceRoom(createdCoworking.getId(), "Open Space", "Spacious room", true, 20);
         Optional<Coworking> result = coworkingRepository.updateCoworking(updatedCoworking);
 
         Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get().getName()).isEqualTo("Conference Room");
+        Assertions.assertThat(result.get().getName()).isEqualTo("Open Space");
         Assertions.assertThat(result.get().getDescription()).isEqualTo("Spacious room");
     }
 

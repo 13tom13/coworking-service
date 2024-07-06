@@ -32,7 +32,7 @@ public class BookingCreateMenu extends BookingMenu {
             System.err.println(e.getMessage());
             return;
         }
-        UserDTO user = localSession.getUser();
+        UserDTO user = localSession.getUser().get();
         while (createMenu) {
             System.out.println("Меню создания бронирования");
             System.out.println("Выберите действие:");

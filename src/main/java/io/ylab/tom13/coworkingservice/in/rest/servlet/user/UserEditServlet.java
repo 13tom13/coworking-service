@@ -5,9 +5,6 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
-import io.ylab.tom13.coworkingservice.in.rest.services.implementation.UserEditServiceImpl;
-import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServiceServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,18 +14,11 @@ import java.io.IOException;
 import static io.ylab.tom13.coworkingservice.in.utils.security.SecurityController.hasAuthenticated;
 
 @WebServlet("/user/edit")
-public class UserEditServlet extends CoworkingServiceServlet {
-
-    private final UserEditService userEditService;
-
-    public UserEditServlet() {
-
-        userEditService = new UserEditServiceImpl();
-    }
+public class UserEditServlet extends UserServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (!hasAuthenticated()){
+        if (!hasAuthenticated()) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }

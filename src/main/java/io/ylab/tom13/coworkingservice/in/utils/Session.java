@@ -1,12 +1,11 @@
 package io.ylab.tom13.coworkingservice.in.utils;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Optional;
 
 
 /**
@@ -20,7 +19,6 @@ public final class Session {
     private static Session instance;
 
     @Setter
-    @Getter
     private UserDTO user;
 
     /**
@@ -29,6 +27,10 @@ public final class Session {
      */
     private Session() {
         attributes = new HashMap<>();
+    }
+
+    public Optional<UserDTO> getUser() {
+        return Optional.ofNullable(user);
     }
 
     /**

@@ -1,6 +1,5 @@
 package io.ylab.tom13.coworkingservice.in.utils.security;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
@@ -8,7 +7,7 @@ import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRe
 import io.ylab.tom13.coworkingservice.in.utils.Session;
 
 import java.sql.SQLException;
-import java.util.Optional;
+import java.util.Arrays;
 
 import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getConnection;
 
@@ -39,22 +38,11 @@ public abstract class SecurityController {
      * @return true, если пользователь имеет хотя бы одну из указанных ролей; в противном случае false.
      */
     public static boolean hasRole(Role... roles) {
-        UserDTO user = session.getUser();
-        Optional<User> userOptional = userRepository.findById(user.id());
-
-        if (userOptional.isEmpty()) {
-            return false;
-        }
-
-        Role userRole = userOptional.get().role();
-
-        for (Role role : roles) {
-            if (userRole.equals(role)) {
-                return true;
-            }
-        }
-
-        return false;
+        return session.getUser()
+                .flatMap(userDTO -> userRepository.findById(userDTO.id()))
+                .map(User::role)
+                .map(userRole -> Arrays.asList(roles).contains(userRole))
+                .orElse(false);
     }
 
     /**
@@ -63,7 +51,7 @@ public abstract class SecurityController {
      * @return true, если есть аутентифицированная пользовательская сессия; в противном случае false.
      */
     public static boolean hasAuthenticated() {
-        return session.getUser() != null;
+        return session.getUser().isPresent();
     }
 
 }

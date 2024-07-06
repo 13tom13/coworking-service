@@ -5,9 +5,6 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryExcepti
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
-import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
-import io.ylab.tom13.coworkingservice.in.rest.services.implementation.UserEditServiceImpl;
-import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServiceServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,16 +19,7 @@ import static io.ylab.tom13.coworkingservice.in.utils.security.SecurityControlle
  * URL: /user/edit/password
  */
 @WebServlet("/user/edit/password")
-public class UserEditPasswordServlet extends CoworkingServiceServlet {
-
-    private final UserEditService userEditService;
-
-    /**
-     * Конструктор сервлета, инициализирующий сервис для редактирования пользователя.
-     */
-    public UserEditPasswordServlet() {
-        userEditService = new UserEditServiceImpl();
-    }
+public class UserEditPasswordServlet extends UserServlet {
 
     /**
      * Обрабатывает POST запрос для изменения пароля пользователя.
