@@ -24,7 +24,7 @@ class BookingRepositoryJdbcTest extends TestcontainersConnector {
 
     @BeforeEach
     void setUp() {
-        bookingRepository = new BookingRepositoryJdbc(getConnection());
+        bookingRepository = new BookingRepositoryJdbc(getTestConnection());
         long coworkingId = 1L;
         long userId = 1L;
         booking = new Booking(0L, userId, coworkingId, LocalDate.now(), List.of(TimeSlot.MORNING));

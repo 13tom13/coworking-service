@@ -24,7 +24,7 @@ class UserRepositoryJdbcTest extends TestcontainersConnector {
 
     @BeforeEach
     void setUp() {
-        userRepository = new UserRepositoryJdbc(getConnection());
+        userRepository = new UserRepositoryJdbc(getTestConnection());
         user = new User(1L, "John", "Doe", "john.new@example.com", "password", Role.USER);
     }
 

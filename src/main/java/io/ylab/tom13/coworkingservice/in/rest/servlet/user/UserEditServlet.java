@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.servlet.user;
+package io.ylab.tom13.coworkingservice.in.rest.servlet.user;
 
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
@@ -7,13 +7,14 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExists
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.UserEditServiceImpl;
-import io.ylab.tom13.coworkingservice.out.servlet.CoworkingServiceServlet;
-import jakarta.servlet.ServletException;
+import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServiceServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+
+import static io.ylab.tom13.coworkingservice.in.utils.security.SecurityController.hasAuthenticated;
 
 @WebServlet("/user/edit")
 public class UserEditServlet extends CoworkingServiceServlet {
@@ -26,7 +27,11 @@ public class UserEditServlet extends CoworkingServiceServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (!hasAuthenticated()){
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
         String jsonRequest = getJsonRequest(request);
         UserDTO userFromRequest = objectMapper.readValue(jsonRequest, UserDTO.class);
 

@@ -5,7 +5,7 @@ import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
+import io.ylab.tom13.coworkingservice.in.utils.Session;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -17,19 +17,19 @@ import static io.ylab.tom13.coworkingservice.in.database.DatabaseConnection.getC
  */
 public abstract class SecurityController {
 
-    private UserRepository userRepository;
-    private Session session;
+    private static UserRepository userRepository;
+    private static Session session;
 
     /**
-     * Конструктор инициализирует экземпляры UserRepository и Session.
+     * Статический блок инициализирует экземпляры UserRepository и Session.
      */
-    protected SecurityController() {
+    static {
         try {
             userRepository = new UserRepositoryJdbc(getConnection());
+            session = Session.getInstance();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        session = Session.getInstance();
     }
 
     /**
@@ -38,7 +38,7 @@ public abstract class SecurityController {
      * @param roles Роли для проверки у текущего пользователя.
      * @return true, если пользователь имеет хотя бы одну из указанных ролей; в противном случае false.
      */
-    public boolean hasRole(Role... roles) {
+    public static boolean hasRole(Role... roles) {
         UserDTO user = session.getUser();
         Optional<User> userOptional = userRepository.findById(user.id());
 
@@ -62,7 +62,7 @@ public abstract class SecurityController {
      *
      * @return true, если есть аутентифицированная пользовательская сессия; в противном случае false.
      */
-    public boolean hasAuthenticated() {
+    public static boolean hasAuthenticated() {
         return session.getUser() != null;
     }
 

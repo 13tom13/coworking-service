@@ -1,9 +1,7 @@
 package io.ylab.tom13.coworkingservice.out;
 
+import io.ylab.tom13.coworkingservice.in.utils.Session;
 import io.ylab.tom13.coworkingservice.out.menu.MainMenu;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
-
-import static io.ylab.tom13.coworkingservice.in.config.ApplicationConfig.liquibaseMigrations;
 
 /**
  * Основной класс приложения CoworkingServiceApplication.
@@ -17,7 +15,6 @@ public class CoworkingServiceApplication {
      */
     public CoworkingServiceApplication() {
         Session.getInstance();
-        liquibaseMigrations();
     }
 
     /**

@@ -7,7 +7,7 @@ import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.client.BookingClient;
 import io.ylab.tom13.coworkingservice.out.exceptions.BookingException;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
+import io.ylab.tom13.coworkingservice.in.utils.Session;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

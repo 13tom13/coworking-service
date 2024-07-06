@@ -1,6 +1,6 @@
 package io.ylab.tom13.coworkingservice.out.menu;
 
-import io.ylab.tom13.coworkingservice.out.utils.Session;
+import io.ylab.tom13.coworkingservice.in.utils.Session;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

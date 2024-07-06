@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.utils;
+package io.ylab.tom13.coworkingservice.in.utils;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
 import lombok.Getter;

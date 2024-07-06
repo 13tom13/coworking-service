@@ -13,5 +13,3 @@ database:
 liquibase:
   schema: service
   changelog: db/changelog/changelog.xml
-  test:
-    changelog: db/changelog/changelog_test.xml

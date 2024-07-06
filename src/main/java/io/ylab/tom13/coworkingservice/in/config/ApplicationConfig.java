@@ -1,5 +1,7 @@
 package io.ylab.tom13.coworkingservice.in.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.ylab.tom13.coworkingservice.in.database.LiquibaseConnector;
 import org.yaml.snakeyaml.Yaml;
 
@@ -19,6 +21,13 @@ public class ApplicationConfig {
         } catch (Exception e) {
             System.err.println("Ошибка чтения конфигурационного файла: " + e.getMessage());
         }
+    }
+
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
+
+    public static ObjectMapper getObjectMapper() {
+        return objectMapper;
     }
 
     public static void liquibaseMigrations() {

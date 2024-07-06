@@ -30,7 +30,7 @@ public abstract class TestcontainersConnector {
 
     private Connection connection;
 
-    protected Connection getConnection() {
+    protected Connection getTestConnection() {
         return connection;
     }
 

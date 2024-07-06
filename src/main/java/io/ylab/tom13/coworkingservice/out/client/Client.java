@@ -1,6 +1,6 @@
 package io.ylab.tom13.coworkingservice.out.client;
 
-import io.ylab.tom13.coworkingservice.out.utils.Session;
+import io.ylab.tom13.coworkingservice.in.utils.Session;
 import lombok.Getter;
 
 /**

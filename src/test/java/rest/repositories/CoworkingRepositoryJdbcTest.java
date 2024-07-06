@@ -23,7 +23,7 @@ class CoworkingRepositoryJdbcTest extends TestcontainersConnector {
 
     @BeforeEach
     void setUp() {
-        coworkingRepository = new CoworkingRepositoryJdbc(getConnection());
+        coworkingRepository = new CoworkingRepositoryJdbc(getTestConnection());
         coworking = new Workplace(0L, "Open Space", "Comfortable workplace", true, "Shared");
     }
 
