@@ -12,7 +12,8 @@ public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Pointcut("execution(* io.ylab.tom13.coworkingservice..*(..))")
+
+    @Pointcut("execution(* io.ylab.tom13.coworkingservice.out.rest..*(..))")
     public void applicationPackagePointcut() {
     }
 
@@ -23,7 +24,11 @@ public class LoggingAspect {
         Object proceed = joinPoint.proceed();
 
         long executionTime = System.currentTimeMillis() - start;
-        logger.info("{} executed in {} ms", joinPoint.getSignature(), executionTime);
+
+        String className = joinPoint.getSignature().getDeclaringTypeName();
+        String methodName = joinPoint.getSignature().getName();
+        logger.info("{}.{} executed in {} ms", className, methodName, executionTime);
+
         return proceed;
     }
 }
