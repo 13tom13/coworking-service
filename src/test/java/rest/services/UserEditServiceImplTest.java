@@ -1,16 +1,16 @@
 package rest.services;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.in.entity.model.User;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.implementation.UserEditServiceImpl;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
+import io.ylab.tom13.coworkingservice.out.entity.dto.PasswordChangeDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.out.entity.model.User;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
+import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
+import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
+import io.ylab.tom13.coworkingservice.out.rest.services.implementation.UserEditServiceImpl;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-import static io.ylab.tom13.coworkingservice.in.utils.security.PasswordUtil.hashPassword;
+import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;

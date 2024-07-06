@@ -1,13 +1,13 @@
 package rest.repositories;
 
 import database.TestcontainersConnector;
-import io.ylab.tom13.coworkingservice.in.entity.model.coworking.ConferenceRoom;
-import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Coworking;
-import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Workplace;
-import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
-import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.CoworkingRepositoryJdbc;
+import io.ylab.tom13.coworkingservice.out.entity.model.coworking.ConferenceRoom;
+import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Coworking;
+import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Workplace;
+import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingConflictException;
+import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingNotFoundException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.CoworkingRepositoryJdbc;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

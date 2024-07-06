@@ -17,7 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static io.ylab.tom13.coworkingservice.in.config.ApplicationConfig.*;
+import static io.ylab.tom13.coworkingservice.out.config.ApplicationConfig.*;
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

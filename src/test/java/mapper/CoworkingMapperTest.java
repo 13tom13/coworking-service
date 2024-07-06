@@ -1,10 +1,10 @@
 package mapper;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
-import io.ylab.tom13.coworkingservice.in.entity.model.coworking.ConferenceRoom;
-import io.ylab.tom13.coworkingservice.in.entity.model.coworking.Workplace;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.CoworkingMapper;
+import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.ConferenceRoomDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.WorkplaceDTO;
+import io.ylab.tom13.coworkingservice.out.entity.model.coworking.ConferenceRoom;
+import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Workplace;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.CoworkingMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

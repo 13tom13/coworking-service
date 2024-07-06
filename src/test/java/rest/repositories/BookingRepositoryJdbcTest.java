@@ -1,12 +1,12 @@
 package rest.repositories;
 
 import database.TestcontainersConnector;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
-import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
-import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
-import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.BookingRepositoryJdbc;
+import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
+import io.ylab.tom13.coworkingservice.out.entity.model.Booking;
+import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictException;
+import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.BookingRepositoryJdbc;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

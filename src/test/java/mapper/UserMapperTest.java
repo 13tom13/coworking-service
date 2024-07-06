@@ -2,10 +2,10 @@ package mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.in.entity.model.User;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
+import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.out.entity.model.User;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
