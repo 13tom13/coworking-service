@@ -3,6 +3,7 @@ package io.ylab.tom13.coworkingservice.in.rest.servlet.booking;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
+import io.ylab.tom13.coworkingservice.in.rest.servlet.BookingServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,11 +29,7 @@ public class GetAvailableSlotsForBookingServlet extends BookingServlet {
         LocalDate date = LocalDate.parse(dateStr);
         try {
             List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(String.format("Свободные слоты для бронирования в коворкинге с id %s на дату %s",
-                    coworkingId, date));
-            response.getWriter().write(objectMapper.writeValueAsString(availableSlots));
+            setJsonResponse(response,availableSlots);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

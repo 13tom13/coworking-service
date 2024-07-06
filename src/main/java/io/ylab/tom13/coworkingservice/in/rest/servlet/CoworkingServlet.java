@@ -1,8 +1,7 @@
-package io.ylab.tom13.coworkingservice.in.rest.servlet.coworking;
+package io.ylab.tom13.coworkingservice.in.rest.servlet;
 
 import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.in.rest.services.implementation.CoworkingServiceImpl;
-import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServiceServlet;
 
 public abstract class CoworkingServlet extends CoworkingServiceServlet {
 

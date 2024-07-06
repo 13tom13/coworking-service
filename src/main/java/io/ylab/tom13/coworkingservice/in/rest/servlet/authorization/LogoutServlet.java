@@ -14,13 +14,11 @@ public class LogoutServlet extends CoworkingServiceServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (localSession.getUser().isPresent()) {
             UserDTO user = localSession.getUser().get();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.setStatus(HttpServletResponse.SC_OK);
             String responseSuccess = String.format("Пользователь с именем: %s %s и email: %s деавторизирован",
                     user.firstName(), user.lastName(), user.email());
             response.getWriter().write(objectMapper.writeValueAsString(responseSuccess));
             localSession.removeUser();
+            setJsonResponse(response, responseSuccess);
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь не авторизован");
         }

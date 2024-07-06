@@ -2,7 +2,6 @@ package io.ylab.tom13.coworkingservice.in.rest.services.implementation;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.entity.model.User;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
@@ -97,9 +96,9 @@ public class AdministrationServiceImpl implements AdministrationService {
      * {@inheritDoc}
      */
     @Override
-    public void registrationUser(RegistrationDTO registrationDTO, Role role) throws RepositoryException, UserAlreadyExistsException {
+    public void registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException {
         User newUser = new User(0, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(),
-                registrationDTO.password(), role);
+                registrationDTO.password(), registrationDTO.role());
         userRepository.createUser(newUser);
     }
 }

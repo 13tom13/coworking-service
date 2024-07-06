@@ -4,6 +4,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
+import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,9 +26,7 @@ public class GetAllCoworkingsServlet extends CoworkingServlet {
         }
         try {
             Map<String, CoworkingDTO> allCoworking = coworkingService.getAllCoworking();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(allCoworking));
+            setJsonResponse(response, allCoworking);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

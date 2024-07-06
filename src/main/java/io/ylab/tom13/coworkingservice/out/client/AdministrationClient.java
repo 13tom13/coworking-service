@@ -3,7 +3,6 @@ package io.ylab.tom13.coworkingservice.out.client;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.rest.controller.AdministrationController;
 import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.AdministrationControllerImpl;
@@ -38,7 +37,7 @@ public class AdministrationClient extends Client {
         ResponseDTO<UserDTO> user = administrationController.editUserByAdministrator(userDTO);
         if (user.success()) {
             return user.data();
-        } else  {
+        } else {
             throw new EditException(user.message());
         }
     }
@@ -52,8 +51,8 @@ public class AdministrationClient extends Client {
         }
     }
 
-    public void registrationUser(RegistrationDTO registrationDTO, Role role) throws EditException {
-        ResponseDTO<String> response = administrationController.registrationUser(registrationDTO, role);
+    public void registrationUser(RegistrationDTO registrationDTO) throws EditException {
+        ResponseDTO<String> response = administrationController.registrationUser(registrationDTO);
         if (!response.success()) {
             throw new EditException(response.message());
         }

@@ -5,6 +5,7 @@ import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryExcepti
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
+import io.ylab.tom13.coworkingservice.in.rest.servlet.UserServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -41,10 +42,9 @@ public class UserEditPasswordServlet extends UserServlet {
 
         try {
             userEditService.editPassword(changeDTO);
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            response.getWriter().write(String.format("Пароль пользователя с email: %s успешно изменен!",
-                    dtoFromRequest.email()));
+            String responseSuccess = String.format("Пароль пользователя с email: %s успешно изменен!",
+                    dtoFromRequest.email());
+            setJsonResponse(response,responseSuccess);
         } catch (UnauthorizedException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         } catch (RepositoryException e) {

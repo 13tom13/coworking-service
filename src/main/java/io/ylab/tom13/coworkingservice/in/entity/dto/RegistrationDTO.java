@@ -1,5 +1,7 @@
 package io.ylab.tom13.coworkingservice.in.entity.dto;
 
+import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
+
 /**
  * DTO для регистрации нового пользователя.
  */
@@ -7,7 +9,11 @@ public record RegistrationDTO(
         String firstName,
         String lastName,
         String email,
-        String password
+        String password,
+        Role role
 ) {
+    public RegistrationDTO(String firstName, String lastName, String email, String password) {
+        this(firstName, lastName, email, password, Role.USER);
+    }
 }
 

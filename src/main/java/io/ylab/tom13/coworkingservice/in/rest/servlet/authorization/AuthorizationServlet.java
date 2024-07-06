@@ -28,13 +28,10 @@ public class AuthorizationServlet extends CoworkingServiceServlet {
         AuthorizationDTO authorizationDTO = objectMapper.readValue(jsonRequest, AuthorizationDTO.class);
         try {
             UserDTO user = authorizationService.login(authorizationDTO);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.setStatus(HttpServletResponse.SC_OK);
             localSession.setUser(user);
             String responseSuccess = String.format("Пользователь с именем: %s %s и email: %s успешно авторизирован",
                     user.firstName(), user.lastName(), user.email());
-            response.getWriter().write(objectMapper.writeValueAsString(responseSuccess));
+            setJsonResponse(response, responseSuccess);
         } catch (UnauthorizedException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         }

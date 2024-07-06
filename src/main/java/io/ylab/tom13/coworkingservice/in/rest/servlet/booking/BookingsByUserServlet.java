@@ -4,6 +4,7 @@ import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
+import io.ylab.tom13.coworkingservice.in.rest.servlet.BookingServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,9 +27,7 @@ public class BookingsByUserServlet extends BookingServlet {
         long userId = Long.parseLong(userIdStr);
         try {
             List<BookingDTO> bookingsByUser = bookingService.getBookingsByUser(userId);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(bookingsByUser));
+            setJsonResponse(response, bookingsByUser);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (BookingNotFoundException e) {

@@ -2,7 +2,6 @@ package io.ylab.tom13.coworkingservice.in.rest.services;
 
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
@@ -54,8 +53,7 @@ public interface AdministrationService {
      * Регистрация нового пользователя администратором.
      *
      * @param registrationDTO DTO с данными для регистрации нового пользователя.
-     * @param role            роль, которую получит новый пользователь.
      * @throws RepositoryException если произошла ошибка репозитория при сохранении данных.
      */
-    void registrationUser(RegistrationDTO registrationDTO, Role role) throws RepositoryException, UserAlreadyExistsException;
+    void registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException;
 }

@@ -1,7 +1,6 @@
-package io.ylab.tom13.coworkingservice.in.rest.servlet.config;
+package io.ylab.tom13.coworkingservice.in.database;
 
 
-import io.ylab.tom13.coworkingservice.in.database.LiquibaseConnector;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;

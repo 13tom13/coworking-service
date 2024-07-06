@@ -94,12 +94,12 @@ public class AdministrationControllerImpl extends SecurityController implements 
      * {@inheritDoc}
      */
     @Override
-    public ResponseDTO<String> registrationUser(RegistrationDTO registrationDTO, Role role) {
+    public ResponseDTO<String> registrationUser(RegistrationDTO registrationDTO) {
         if (!hasRole(Role.ADMINISTRATOR)) {
             return ResponseDTO.failure(new NoAccessException().getMessage());
         }
         try {
-            administrationService.registrationUser(registrationDTO, role);
+            administrationService.registrationUser(registrationDTO);
             return ResponseDTO.success("Пользователь успешно создан");
         } catch (RepositoryException | UserAlreadyExistsException e) {
             return ResponseDTO.failure(e.getMessage());

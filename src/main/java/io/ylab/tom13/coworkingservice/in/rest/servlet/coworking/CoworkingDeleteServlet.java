@@ -4,6 +4,7 @@ import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
+import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,9 +39,8 @@ public class CoworkingDeleteServlet extends CoworkingServlet {
 
         try {
             coworkingService.deleteCoworking(coworkingId);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString("Коворкинг успешно удален"));
+            String responseSuccess= "Коворкинг успешно удален";
+            setJsonResponse(response, responseSuccess);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (CoworkingNotFoundException e) {

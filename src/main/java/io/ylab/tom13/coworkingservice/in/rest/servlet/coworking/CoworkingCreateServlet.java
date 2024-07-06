@@ -6,6 +6,7 @@ import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
 import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.in.exceptions.security.UnauthorizedException;
+import io.ylab.tom13.coworkingservice.in.rest.servlet.CoworkingServlet;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,10 +29,7 @@ public class CoworkingCreateServlet extends CoworkingServlet {
         try {
             CoworkingDTO coworkingDTO = objectMapper.readValue(jsonRequest, CoworkingDTO.class);
             CoworkingDTO coworking = coworkingService.createCoworking(coworkingDTO);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString("Коворкинг успешно создан: \n"));
-            response.getWriter().write(objectMapper.writeValueAsString(coworking));
+            setJsonResponse(response, coworking);
         } catch (InvalidTypeIdException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Не верный тип объекта: " + e.getTypeId());
         } catch (CoworkingConflictException e) {

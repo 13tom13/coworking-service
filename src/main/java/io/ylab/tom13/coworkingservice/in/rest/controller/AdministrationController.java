@@ -3,7 +3,6 @@ package io.ylab.tom13.coworkingservice.in.rest.controller;
 import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
 
 import java.util.List;
 
@@ -49,9 +48,8 @@ public interface AdministrationController {
      * Зарегистрировать нового пользователя администратором.
      *
      * @param registrationDTO данные нового пользователя для регистрации
-     * @param role            роль нового пользователя
      * @return объект ResponseDTO с сообщением об успешной регистрации или сообщением об ошибке
      */
-    ResponseDTO<String> registrationUser(RegistrationDTO registrationDTO, Role role);
+    ResponseDTO<String> registrationUser(RegistrationDTO registrationDTO);
 }
 

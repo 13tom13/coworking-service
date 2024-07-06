@@ -23,9 +23,9 @@ public class UserAdminRegistrationMenu extends Menu {
         String email = readString("Введите email:");
         String hashPassword = readPassword("Введите пароль:");
         Role role = readRole();
-        RegistrationDTO registrationDTO = new RegistrationDTO(firstName, lastName, email, hashPassword);
+        RegistrationDTO registrationDTO = new RegistrationDTO(firstName, lastName, email, hashPassword, role);
         try {
-            administrationClient.registrationUser(registrationDTO, role);
+            administrationClient.registrationUser(registrationDTO);
         } catch (EditException e) {
             System.err.println(e.getMessage());
         }
