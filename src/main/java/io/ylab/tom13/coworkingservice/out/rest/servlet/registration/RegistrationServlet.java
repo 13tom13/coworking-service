@@ -8,6 +8,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExist
 import io.ylab.tom13.coworkingservice.out.rest.services.RegistrationService;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.RegistrationServiceImpl;
 import io.ylab.tom13.coworkingservice.out.rest.servlet.CoworkingServiceServlet;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.RegistrationMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,8 +32,7 @@ public class RegistrationServlet extends CoworkingServiceServlet {
         String jsonRequest = getJsonRequest(request);
         RegistrationDTO registrationDTO = objectMapper.readValue(jsonRequest, RegistrationDTO.class);
         String hashPassword = hashPassword(registrationDTO.password());
-        RegistrationDTO registrationWithHashPassword = new RegistrationDTO(registrationDTO.firstName(), registrationDTO.lastName(),
-                registrationDTO.email(), hashPassword);
+        RegistrationDTO registrationWithHashPassword = RegistrationMapper.INSTANCE.withNewPassword(registrationDTO, hashPassword);
         try {
             UserDTO user = registrationService.createUser(registrationWithHashPassword);
             String responseSuccess = String.format("Пользователь с именем: %s %s и email: %s успешно зарегистрирован",

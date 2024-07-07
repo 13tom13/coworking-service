@@ -11,11 +11,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
 
 @WebServlet("/admin/user/edit/password")
 public class EditUserPasswordAdministratorServlet extends AdministrationServlet {
+
+    public static final String NEW_PASSWORD = "newPassword";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -23,31 +26,22 @@ public class EditUserPasswordAdministratorServlet extends AdministrationServlet 
             response.sendError(HttpServletResponse.SC_FORBIDDEN, new UnauthorizedException().getMessage());
             return;
         }
-
-        String userIdStr = request.getParameter("userId");
-        String newPassword = request.getParameter("newPassword");
-
-
-        if (userIdStr == null || newPassword == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Отсутствует параметр userId или newHashPassword");
+        String userIdStr = request.getParameter(USER_ID);
+        String newPassword = request.getParameter(NEW_PASSWORD);
+        Optional<Long> userIdOpt = getLongParam(userIdStr);
+        if (userIdOpt.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный формат параметра запроса");
             return;
         }
-
-
-        long userId;
-        try {
-            userId = Long.parseLong(userIdStr);
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный формат идентификатора пользователя");
+        if (newPassword == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("Отсутствует параметр %s", NEW_PASSWORD));
             return;
         }
-
         String hashPassword = hashPassword(newPassword);
-
         try {
-            administrationService.editUserPasswordByAdministrator(userId, hashPassword);
+            administrationService.editUserPasswordByAdministrator(userIdOpt.get(), hashPassword);
 
-            String responseSuccess = String.format("Пароль пользователя с ID: %s успешно изменен", userId);
+            String responseSuccess = String.format("Пароль пользователя с ID: %s успешно изменен", userIdOpt.get());
 
             setJsonResponse(response, responseSuccess);
 

@@ -25,10 +25,6 @@ public class BookingCreateServlet extends BookingServlet {
         BookingDTO bookingDTO = objectMapper.readValue(jsonRequest, BookingDTO.class);
         try {
             BookingDTO booking = bookingService.createBooking(bookingDTO);
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString("Бронирование успешно создана: \n"));
-            response.getWriter().write(objectMapper.writeValueAsString(booking));
             setJsonResponse(response, booking, HttpServletResponse.SC_CREATED);
         } catch (BookingConflictException e) {
             response.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());

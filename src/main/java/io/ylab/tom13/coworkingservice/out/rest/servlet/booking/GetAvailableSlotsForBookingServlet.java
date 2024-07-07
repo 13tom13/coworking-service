@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/booking/availableslots")
 public class GetAvailableSlotsForBookingServlet extends BookingServlet {
@@ -21,12 +22,16 @@ public class GetAvailableSlotsForBookingServlet extends BookingServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, new UnauthorizedException().getMessage());
             return;
         }
-        String coworkingIdStr = request.getParameter("coworkingId");
-        String dateStr = request.getParameter("date");
-        long coworkingId = Long.parseLong(coworkingIdStr);
+        String coworkingIdStr = request.getParameter(COWORKING_ID);
+        String dateStr = request.getParameter(DATE);
+        Optional<Long> coworkingIdOpt = getLongParam(coworkingIdStr);
+        if (coworkingIdOpt.isEmpty())  {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный формат параметра");
+            return;
+        }
         LocalDate date = LocalDate.parse(dateStr);
         try {
-            List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
+            List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingIdOpt.get(), date);
             setJsonResponse(response, availableSlots);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

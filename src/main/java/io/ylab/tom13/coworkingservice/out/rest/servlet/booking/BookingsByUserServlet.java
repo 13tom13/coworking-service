@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/booking/user")
 public class BookingsByUserServlet extends BookingServlet {
@@ -21,10 +22,14 @@ public class BookingsByUserServlet extends BookingServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, new UnauthorizedException().getMessage());
             return;
         }
-        String userIdStr = request.getParameter("userId");
-        long userId = Long.parseLong(userIdStr);
+        String userIdStr = request.getParameter(USER_ID);
+        Optional<Long> userIdOpt = getLongParam(userIdStr);
+        if (userIdOpt.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный формат параметра запроса");
+            return;
+        }
         try {
-            List<BookingDTO> bookingsByUser = bookingService.getBookingsByUser(userId);
+            List<BookingDTO> bookingsByUser = bookingService.getBookingsByUser(userIdOpt.get());
             setJsonResponse(response, bookingsByUser);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

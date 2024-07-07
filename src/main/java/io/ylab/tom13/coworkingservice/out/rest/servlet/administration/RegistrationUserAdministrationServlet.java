@@ -6,6 +6,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.security.NoAccessException;
 import io.ylab.tom13.coworkingservice.out.rest.servlet.AdministrationServlet;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.RegistrationMapper;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,17 +24,18 @@ public class RegistrationUserAdministrationServlet extends AdministrationServlet
             response.sendError(HttpServletResponse.SC_FORBIDDEN, new NoAccessException().getMessage());
             return;
         }
-
         String jsonRequest = getJsonRequest(request);
         RegistrationDTO registrationDTO = objectMapper.readValue(jsonRequest, RegistrationDTO.class);
         String hashPassword = hashPassword(registrationDTO.password());
-        RegistrationDTO registrationWithHashPassword = new RegistrationDTO(registrationDTO.firstName(), registrationDTO.lastName(),
-                registrationDTO.email(), hashPassword, registrationDTO.role());
+        RegistrationDTO registrationWithHashPassword = RegistrationMapper.INSTANCE.withNewPassword(registrationDTO, hashPassword);
+
         try {
             administrationService.registrationUser(registrationWithHashPassword);
             String responseSuccess = String.format("Пользователь с именем: %s %s и email: %s успешно зарегистрирован",
                     registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email());
+
             setJsonResponse(response, responseSuccess, HttpServletResponse.SC_CREATED);
+
         } catch (UserAlreadyExistsException e) {
             response.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
         } catch (RepositoryException e) {

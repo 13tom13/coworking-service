@@ -58,7 +58,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+									"raw": "{\r\n    \"email\": \"admin@mail.ru\",\r\n    \"password\": \"admin\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -97,7 +97,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"moderator\",\r\n    \"password\": \"moderator\"\r\n}",
+									"raw": "{\r\n    \"email\": \"moderator@mail.ru\",\r\n    \"password\": \"moderator\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -168,6 +168,42 @@
 							"path": [
 								"coworking-service",
 								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/coworking-service/authorization",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@mail.ru\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/coworking-service/authorization",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"coworking-service",
+								"authorization"
 							]
 						}
 					},

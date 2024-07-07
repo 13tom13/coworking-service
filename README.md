@@ -43,10 +43,10 @@ Coworking Service - это веб приложение для управлени
 - Пароль: pass
 
 ### Модератор (редактирование коворкингов, бронирований)
-- Email: moderator
+- Email: moderator@mail.ru
 - Пароль: moderator
 
 ### Администратор(плюс редактирование пользователей):
-- Email: admin
+- Email: admin@mail.ru
 - Пароль: admin
 

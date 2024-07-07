@@ -37,9 +37,9 @@ class BookingControllerImplTest extends SecurityHTTPControllerTest {
     @BeforeEach
     void setUp() throws NoSuchFieldException, IllegalAccessException {
 
-        Field bookingRepositoryField = BookingControllerImpl.class.getDeclaredField("bookingService");
-        bookingRepositoryField.setAccessible(true);
-        bookingRepositoryField.set(bookingController, bookingService);
+        Field bookingControllerField = BookingControllerImpl.class.getDeclaredField("bookingService");
+        bookingControllerField.setAccessible(true);
+        bookingControllerField.set(bookingController, bookingService);
 
         bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
     }

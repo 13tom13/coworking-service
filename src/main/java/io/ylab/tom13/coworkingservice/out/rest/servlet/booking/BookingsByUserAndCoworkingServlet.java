@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/booking/user/coworking")
 public class BookingsByUserAndCoworkingServlet extends BookingServlet {
@@ -21,12 +22,16 @@ public class BookingsByUserAndCoworkingServlet extends BookingServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, new UnauthorizedException().getMessage());
             return;
         }
-        String userIdStr = request.getParameter("userId");
-        String coworkingIdStr = request.getParameter("coworkingId");
-        long userId = Long.parseLong(userIdStr);
-        long coworkingId = Long.parseLong(coworkingIdStr);
+        String userIdStr = request.getParameter(USER_ID);
+        String coworkingIdStr = request.getParameter(COWORKING_ID);
+        Optional<Long> userIdOpt = getLongParam(userIdStr);
+        Optional<Long> coworkingIdOpt = getLongParam(coworkingIdStr);
+        if (userIdOpt.isEmpty() || coworkingIdOpt.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный формат параметра запроса");
+            return;
+        }
         try {
-            List<BookingDTO> bookingsByUserAndCoworking = bookingService.getBookingsByUserAndCoworking(userId, coworkingId);
+            List<BookingDTO> bookingsByUserAndCoworking = bookingService.getBookingsByUserAndCoworking(userIdOpt.get(), coworkingIdOpt.get());
             setJsonResponse(response, bookingsByUserAndCoworking);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

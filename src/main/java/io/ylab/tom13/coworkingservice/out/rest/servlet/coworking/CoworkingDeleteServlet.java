@@ -21,9 +21,9 @@ public class CoworkingDeleteServlet extends CoworkingServlet {
             return;
         }
 
-        String coworkingIdStr = request.getParameter("coworkingId");
+        String coworkingIdStr = request.getParameter(COWORKING_ID);
         if (coworkingIdStr == null || coworkingIdStr.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Параметр 'bookingId' пуст или отсутствует");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Параметр 'coworkingId' пуст или отсутствует");
             return;
         }
 

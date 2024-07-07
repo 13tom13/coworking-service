@@ -22,15 +22,13 @@ public class EditUserAdministrationServlet extends AdministrationServlet {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, new UnauthorizedException().getMessage());
             return;
         }
-
         String jsonRequest = getJsonRequest(request);
         UserDTO userFromRequest = objectMapper.readValue(jsonRequest, UserDTO.class);
+
         try {
             UserDTO user = administrationService.editUserByAdministrator(userFromRequest);
-
             String responseSuccess = String.format("Пользователь с именем: %s %s и email: %s успешно изменен",
                     user.firstName(), user.lastName(), user.email());
-
             setJsonResponse(response, responseSuccess);
 
         } catch (UserAlreadyExistsException e) {

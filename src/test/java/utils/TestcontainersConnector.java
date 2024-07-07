@@ -8,6 +8,7 @@ import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -21,6 +22,7 @@ import static io.ylab.tom13.coworkingservice.out.config.ApplicationConfig.*;
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DisplayName("Создание соединения с тестовой БД")
 public abstract class TestcontainersConnector {
 
     private final static String TEST_CHANGELOG = getLiquibaseChangelog();

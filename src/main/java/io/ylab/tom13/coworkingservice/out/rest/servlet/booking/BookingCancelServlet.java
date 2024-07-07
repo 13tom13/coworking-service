@@ -9,11 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Optional;
 
 
 @WebServlet("/booking/cancel")
 public class BookingCancelServlet extends BookingServlet {
 
+    public static final String RESPONSE_SUCCESS = "Бронирование успешно отменено";
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -22,25 +24,15 @@ public class BookingCancelServlet extends BookingServlet {
             return;
         }
 
-        String bookingIdStr = request.getParameter("bookingId");
-        if (bookingIdStr == null || bookingIdStr.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Параметр 'bookingId' пуст или отсутствует");
+        String bookingIdStr = request.getParameter(BOOKING_ID);
+        Optional<Long> bookingIdOpt = getLongParam(bookingIdStr);
+        if (bookingIdOpt.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный формат параметра запроса");
             return;
         }
-
-        long bookingId;
         try {
-            bookingId = Long.parseLong(bookingIdStr);
-            System.out.println(bookingId);
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Не верный 'bookingId' параметр");
-            return;
-        }
-
-        try {
-            bookingService.cancelBooking(bookingId);
-            String responseSuccess = "Бронирование успешно отменено";
-            setJsonResponse(response, responseSuccess);
+            bookingService.cancelBooking(bookingIdOpt.get());
+            setJsonResponse(response, RESPONSE_SUCCESS);
         } catch (BookingNotFoundException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
         } catch (RepositoryException e) {

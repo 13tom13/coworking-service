@@ -20,7 +20,11 @@ public class GetUserByEmailServlet extends AdministrationServlet {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, new UnauthorizedException().getMessage());
             return;
         }
-        String email = request.getParameter("email");
+        String email = request.getParameter(EMAIL);
+        if (email == null) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("Параметр '%s' пуст или отсутствует", EMAIL));
+            return;
+        }
 
         try {
             UserDTO user = administrationService.getUserByEmail(email);

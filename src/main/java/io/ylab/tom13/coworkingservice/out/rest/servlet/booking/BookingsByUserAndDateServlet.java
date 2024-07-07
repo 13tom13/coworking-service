@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/booking/user/date")
 public class BookingsByUserAndDateServlet extends BookingServlet {
@@ -22,12 +23,16 @@ public class BookingsByUserAndDateServlet extends BookingServlet {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, new UnauthorizedException().getMessage());
             return;
         }
-        String userIdStr = request.getParameter("userId");
-        String dateStr = request.getParameter("date");
-        long userId = Long.parseLong(userIdStr);
+        String userIdStr = request.getParameter(USER_ID);
+        String dateStr = request.getParameter(DATE);
+        Optional<Long> userIdOpt = getLongParam(userIdStr);
+        if (userIdOpt.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный формат параметра запроса");
+            return;
+        }
         LocalDate date = LocalDate.parse(dateStr);
         try {
-            List<BookingDTO> bookingsByUserAndDate = bookingService.getBookingsByUserAndDate(userId, date);
+            List<BookingDTO> bookingsByUserAndDate = bookingService.getBookingsByUserAndDate(userIdOpt.get(), date);
             setJsonResponse(response, bookingsByUserAndDate);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
