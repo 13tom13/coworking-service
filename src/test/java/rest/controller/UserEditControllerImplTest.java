@@ -16,10 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import security.SecurityHTTPControllerTest;
+import utils.SecurityHTTPControllerTest;
 
 import java.lang.reflect.Field;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -44,8 +43,6 @@ public class UserEditControllerImplTest extends SecurityHTTPControllerTest {
         userEditControllerField.set(userEditController, userEditService);
 
         userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com", Role.USER);
-
-        when(session.getUser()).thenReturn(Optional.of(userDTO));
     }
 
     @Test

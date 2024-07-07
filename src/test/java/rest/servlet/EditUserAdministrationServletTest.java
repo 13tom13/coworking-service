@@ -1,10 +1,6 @@
 package rest.servlet;
 
-import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.out.entity.model.User;
 import io.ylab.tom13.coworkingservice.out.rest.servlet.administration.EditUserAdministrationServlet;
-import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,17 +8,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import security.SecurityHTTPControllerTest;
+import utils.SecurityHTTPControllerTest;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class EditUserAdministrationServletTest extends SecurityHTTPControllerTest {
@@ -40,14 +35,8 @@ public class EditUserAdministrationServletTest extends SecurityHTTPControllerTes
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        super.getAccess();
         responseWriter = new StringWriter();
-
-        UserDTO userDTO = new UserDTO(3L, "John", "Doe", "john.doe@example.com", Role.ADMINISTRATOR);
-        Optional<User> user = Optional.ofNullable(UserMapper.INSTANCE.toUser(userDTO));
-
-        when(session.getUser()).thenReturn(Optional.of(userDTO));
-        lenient().doReturn(user).when(userRepository).findById(anyLong());
     }
 
     @Test

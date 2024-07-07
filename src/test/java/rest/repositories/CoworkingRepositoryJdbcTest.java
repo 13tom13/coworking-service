@@ -1,6 +1,6 @@
 package rest.repositories;
 
-import database.TestcontainersConnector;
+import utils.TestcontainersConnector;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.ConferenceRoom;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Coworking;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Workplace;

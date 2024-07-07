@@ -22,11 +22,12 @@ public class ValidationAspect {
         validator = factory.getValidator();
     }
 
-    @Pointcut("execution(* io.ylab.tom13.coworkingservice.out.rest.servlet.*Servlet.do*(..))")
-    public void servletMethods() {
+    // Уточняем pointcut для всех методов всех сервисов
+    @Pointcut("execution(* io.ylab.tom13.coworkingservice.out.rest.services..*.*(..))")
+    public void serviceMethods() {
     }
 
-    @Around("servletMethods()")
+    @Around("serviceMethods()")
     public Object validateObjects(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {

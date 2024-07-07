@@ -1,6 +1,6 @@
 package rest.repositories;
 
-import database.TestcontainersConnector;
+import utils.TestcontainersConnector;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.entity.model.Booking;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictException;

@@ -1,4 +1,4 @@
-package database;
+package utils;
 
 import liquibase.Liquibase;
 import liquibase.database.Database;
