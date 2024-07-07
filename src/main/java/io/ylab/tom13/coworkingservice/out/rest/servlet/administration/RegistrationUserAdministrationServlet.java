@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasRole;
 
 @WebServlet("/admin/user/registration")
 public class RegistrationUserAdministrationServlet extends AdministrationServlet {

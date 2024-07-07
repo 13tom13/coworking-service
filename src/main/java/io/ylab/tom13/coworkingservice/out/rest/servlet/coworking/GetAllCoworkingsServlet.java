@@ -12,8 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasRole;
-
 @WebServlet("/coworking/all")
 public class GetAllCoworkingsServlet extends CoworkingServlet {
 

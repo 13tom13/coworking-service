@@ -11,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasRole;
-
 @WebServlet("/coworking/delete")
 public class CoworkingDeleteServlet extends CoworkingServlet {
 
@@ -39,7 +37,7 @@ public class CoworkingDeleteServlet extends CoworkingServlet {
 
         try {
             coworkingService.deleteCoworking(coworkingId);
-            String responseSuccess= "Коворкинг успешно удален";
+            String responseSuccess = "Коворкинг успешно удален";
             setJsonResponse(response, responseSuccess);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

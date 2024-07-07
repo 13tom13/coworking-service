@@ -10,7 +10,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedExcept
 import io.ylab.tom13.coworkingservice.out.rest.controller.BookingController;
 import io.ylab.tom13.coworkingservice.out.rest.services.BookingService;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.BookingServiceImpl;
-import io.ylab.tom13.coworkingservice.out.utils.security.SecurityController;
+import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  * Реализация интерфейса {@link BookingController}.
  * Обрабатывает запросы, связанные с бронированием в системе.
  */
-public class BookingControllerImpl extends SecurityController implements BookingController {
+public class BookingControllerImpl extends SecurityHTTPController implements BookingController {
 
     private final BookingService bookingService;
 

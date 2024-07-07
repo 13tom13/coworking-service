@@ -12,7 +12,7 @@ import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.Booki
 import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.CoworkingRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.CoworkingMapper;
-import io.ylab.tom13.coworkingservice.out.utils.security.SecurityController;
+import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.get
  * Реализация интерфейса {@link CoworkingService}.
  * Сервиса управления коворкингами.
  */
-public class CoworkingServiceImpl extends SecurityController implements CoworkingService {
+public class CoworkingServiceImpl extends SecurityHTTPController implements CoworkingService {
 
     private final CoworkingRepository coworkingRepository;
     private final BookingRepository bookingRepository;

@@ -12,8 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasAuthenticated;
-
 @WebServlet("/booking/user")
 public class BookingsByUserServlet extends BookingServlet {
 

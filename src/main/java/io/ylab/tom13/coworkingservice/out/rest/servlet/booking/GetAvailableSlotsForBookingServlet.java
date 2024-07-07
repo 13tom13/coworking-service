@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasAuthenticated;
-
 @WebServlet("/booking/availableslots")
 public class GetAvailableSlotsForBookingServlet extends BookingServlet {
 
@@ -29,7 +27,7 @@ public class GetAvailableSlotsForBookingServlet extends BookingServlet {
         LocalDate date = LocalDate.parse(dateStr);
         try {
             List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
-            setJsonResponse(response,availableSlots);
+            setJsonResponse(response, availableSlots);
         } catch (RepositoryException e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }

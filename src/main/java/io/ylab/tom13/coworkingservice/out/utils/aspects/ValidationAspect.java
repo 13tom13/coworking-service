@@ -1,11 +1,11 @@
 package io.ylab.tom13.coworkingservice.out.utils.aspects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 
 import java.util.Set;
 
@@ -15,7 +15,10 @@ public class ValidationAspect {
     private final Validator validator;
 
     public ValidationAspect() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        ValidatorFactory factory = Validation.byDefaultProvider()
+                .configure()
+                .messageInterpolator(new ParameterMessageInterpolator())
+                .buildValidatorFactory();
         validator = factory.getValidator();
     }
 

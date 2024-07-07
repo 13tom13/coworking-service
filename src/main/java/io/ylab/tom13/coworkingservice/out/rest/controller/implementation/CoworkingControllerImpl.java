@@ -12,7 +12,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedExcept
 import io.ylab.tom13.coworkingservice.out.rest.controller.CoworkingController;
 import io.ylab.tom13.coworkingservice.out.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.CoworkingServiceImpl;
-import io.ylab.tom13.coworkingservice.out.utils.security.SecurityController;
+import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
 
 import java.util.Map;
 
@@ -20,7 +20,7 @@ import java.util.Map;
  * Реализация интерфейса {@link CoworkingControllerImpl}.
  * Обрабатывает запросы, связанные с управлением коворкингами.
  */
-public class CoworkingControllerImpl extends SecurityController implements CoworkingController {
+public class CoworkingControllerImpl extends SecurityHTTPController implements CoworkingController {
 
     private final CoworkingService coworkingService;
 

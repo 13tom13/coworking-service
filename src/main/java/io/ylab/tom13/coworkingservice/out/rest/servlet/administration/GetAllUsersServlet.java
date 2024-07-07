@@ -11,8 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasRole;
-
 @WebServlet("/admin/users")
 public class GetAllUsersServlet extends AdministrationServlet {
 

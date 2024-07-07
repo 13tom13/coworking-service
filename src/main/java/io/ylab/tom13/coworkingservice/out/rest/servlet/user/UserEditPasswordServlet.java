@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasAuthenticated;
 
 /**
  * Сервлет для изменения пароля пользователя.
@@ -44,7 +43,7 @@ public class UserEditPasswordServlet extends UserServlet {
             userEditService.editPassword(changeDTO);
             String responseSuccess = String.format("Пароль пользователя с email: %s успешно изменен!",
                     dtoFromRequest.email());
-            setJsonResponse(response,responseSuccess);
+            setJsonResponse(response, responseSuccess);
         } catch (UnauthorizedException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
         } catch (RepositoryException e) {

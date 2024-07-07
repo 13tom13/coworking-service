@@ -13,8 +13,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasAuthenticated;
-
 @WebServlet("/booking/user/date")
 public class BookingsByUserAndDateServlet extends BookingServlet {
 

@@ -13,8 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasRole;
-
 @WebServlet("/coworking/create")
 public class CoworkingCreateServlet extends CoworkingServlet {
 

@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import security.SecurityControllerTest;
+import security.SecurityHTTPControllerTest;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Тесты сервиса работы с коворкингами")
-class CoworkingControllerImplTest extends SecurityControllerTest {
+class CoworkingControllerImplTest extends SecurityHTTPControllerTest {
 
     @Mock
     private CoworkingService coworkingService;

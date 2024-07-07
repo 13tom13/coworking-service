@@ -10,13 +10,13 @@ import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedExcept
 import io.ylab.tom13.coworkingservice.out.rest.controller.UserEditController;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.UserEditServiceImpl;
-import io.ylab.tom13.coworkingservice.out.utils.security.SecurityController;
+import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
 
 /**
  * Реализация интерфейса {@link UserEditController}.
  * Обрабатывает запросы на редактирование пользователя.
  */
-public class UserEditControllerImpl extends SecurityController implements UserEditController {
+public class UserEditControllerImpl extends SecurityHTTPController implements UserEditController {
 
     private final UserEditService userEditService;
 

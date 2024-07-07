@@ -2,7 +2,7 @@ package io.ylab.tom13.coworkingservice.out.rest.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
-import jakarta.servlet.http.HttpServlet;
+import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import static io.ylab.tom13.coworkingservice.out.config.ApplicationConfig.getObjectMapper;
 
-public abstract class CoworkingServiceServlet extends HttpServlet {
+public abstract class CoworkingServiceServlet extends SecurityHTTPController {
 
     protected final ObjectMapper objectMapper;
 

@@ -12,8 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.SecurityController.hasAuthenticated;
-
 @WebServlet("/user/edit")
 public class UserEditServlet extends UserServlet {
 

@@ -11,7 +11,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.security.NoAccessException;
 import io.ylab.tom13.coworkingservice.out.rest.controller.AdministrationController;
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.AdministrationServiceImpl;
-import io.ylab.tom13.coworkingservice.out.utils.security.SecurityController;
+import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * Реализация интерфейса {@link AdministrationController}.
  * Этот класс обеспечивает выполнение административных функций для управления пользователями в системе.
  */
-public class AdministrationControllerImpl extends SecurityController implements AdministrationController {
+public class AdministrationControllerImpl extends SecurityHTTPController implements AdministrationController {
 
     private final AdministrationService administrationService;
 
