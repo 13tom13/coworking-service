@@ -17,16 +17,28 @@ import java.io.IOException;
 
 import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
 
+/**
+ * Сервлет для регистрации новых пользователей.
+ */
 @WebServlet("/registration")
 public class RegistrationServlet extends CoworkingServiceServlet {
 
     private final RegistrationService registrationService;
 
+    /**
+     * Инициализирует сервлет и устанавливает экземпляр сервиса регистрации.
+     */
     public RegistrationServlet() {
-
         registrationService = new RegistrationServiceImpl();
     }
 
+    /**
+     * Обрабатывает HTTP POST запрос для регистрации нового пользователя.
+     *
+     * @param request  HTTP запрос, содержащий данные пользователя в формате JSON
+     * @param response HTTP ответ, который будет содержать сообщение об успешной регистрации или ошибку
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String jsonRequest = getJsonRequest(request);

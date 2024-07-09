@@ -15,15 +15,26 @@ import java.io.IOException;
 
 import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
 
+/**
+ * Сервлет для регистрации пользователя администратором.
+ */
 @WebServlet("/admin/user/registration")
 public class RegistrationUserAdministrationServlet extends AdministrationServlet {
 
+    /**
+     * Обрабатывает HTTP POST запрос для регистрации нового пользователя.
+     *
+     * @param request  HTTP запрос, содержащий данные нового пользователя в формате JSON
+     * @param response HTTP ответ, который будет содержать результат регистрации в формате JSON
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasRole(Role.ADMINISTRATOR)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, new NoAccessException().getMessage());
             return;
         }
+
         String jsonRequest = getJsonRequest(request);
         RegistrationDTO registrationDTO = objectMapper.readValue(jsonRequest, RegistrationDTO.class);
         String hashPassword = hashPassword(registrationDTO.password());

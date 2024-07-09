@@ -8,8 +8,20 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Сервлет для выхода пользователя из системы (деавторизации).
+ */
 @WebServlet("/logout")
 public class LogoutServlet extends CoworkingServiceServlet {
+
+    /**
+     * Обрабатывает HTTP GET запрос для выхода пользователя из системы.
+     * Если пользователь авторизован, происходит его деавторизация.
+     *
+     * @param request  HTTP запрос
+     * @param response HTTP ответ, который будет содержать результат деавторизации в формате JSON
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (localSession.getUser().isPresent()) {

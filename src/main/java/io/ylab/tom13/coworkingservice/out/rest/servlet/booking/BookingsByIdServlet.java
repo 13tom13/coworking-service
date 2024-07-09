@@ -12,9 +12,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * Сервлет для получения информации о бронировании по идентификатору.
+ */
 @WebServlet("/booking")
 public class BookingsByIdServlet extends BookingServlet {
 
+    /**
+     * Обрабатывает HTTP GET запрос для получения информации о бронировании по его идентификатору.
+     *
+     * @param request  HTTP запрос, содержащий параметр идентификатора бронирования
+     * @param response HTTP ответ, который будет содержать информацию о бронировании в формате JSON
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasAuthenticated()) {

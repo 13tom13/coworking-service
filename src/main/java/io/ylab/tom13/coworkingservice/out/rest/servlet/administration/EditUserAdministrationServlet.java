@@ -13,9 +13,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Сервлет для редактирования информации о пользователе администратором.
+ */
 @WebServlet("/admin/user/edit")
 public class EditUserAdministrationServlet extends AdministrationServlet {
 
+    /**
+     * Обрабатывает HTTP POST запрос для редактирования информации о пользователе.
+     *
+     * @param request  HTTP запрос, содержащий информацию о пользователе в формате JSON
+     * @param response HTTP ответ, который будет отправлен клиенту
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasRole(Role.ADMINISTRATOR)) {

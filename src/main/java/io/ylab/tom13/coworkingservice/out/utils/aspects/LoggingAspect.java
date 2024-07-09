@@ -7,16 +7,28 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Аспект для логирования времени выполнения методов в приложении.
+ */
 @Aspect
 public class LoggingAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
-
+    /**
+     * Определяет pointcut для всех методов внутри пакета `io.ylab.tom13.coworkingservice.out.rest`.
+     */
     @Pointcut("execution(* io.ylab.tom13.coworkingservice.out.rest..*(..))")
     public void applicationPackagePointcut() {
     }
 
+    /**
+     * Аспект, который логирует время выполнения методов.
+     *
+     * @param joinPoint точка присоединения, представляющая вызываемый метод
+     * @return результат выполнения метода, возвращаемый после выполнения
+     * @throws Throwable любое исключение, выброшенное методом
+     */
     @Around("applicationPackagePointcut()")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();

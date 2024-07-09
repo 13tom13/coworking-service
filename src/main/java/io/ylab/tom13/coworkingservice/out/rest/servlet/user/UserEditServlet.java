@@ -12,9 +12,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Сервлет для редактирования информации о пользователе.
+ */
 @WebServlet("/user/edit")
 public class UserEditServlet extends UserServlet {
 
+    /**
+     * Обрабатывает HTTP POST запрос для редактирования информации о пользователе.
+     *
+     * @param request  HTTP запрос, содержащий данные пользователя в формате JSON
+     * @param response HTTP ответ, который будет содержать сообщение об успешном изменении или ошибку
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasAuthenticated()) {

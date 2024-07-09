@@ -13,9 +13,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Сервлет для создания нового рабочего пространства (coworking space).
+ */
 @WebServlet("/coworking/create")
 public class CoworkingCreateServlet extends CoworkingServlet {
 
+    /**
+     * Обрабатывает HTTP POST запрос для создания нового рабочего пространства.
+     *
+     * @param request  HTTP запрос, содержащий JSON представление данных о рабочем пространстве
+     * @param response HTTP ответ, который будет содержать созданное рабочее пространство в формате JSON
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasRole(Role.ADMINISTRATOR, Role.MODERATOR)) {
@@ -29,7 +39,7 @@ public class CoworkingCreateServlet extends CoworkingServlet {
             CoworkingDTO coworking = coworkingService.createCoworking(coworkingDTO);
             setJsonResponse(response, coworking, HttpServletResponse.SC_CREATED);
         } catch (InvalidTypeIdException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Не верный тип объекта: " + e.getTypeId());
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный тип объекта: " + e.getTypeId());
         } catch (CoworkingConflictException e) {
             response.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
         } catch (RepositoryException e) {
@@ -37,4 +47,3 @@ public class CoworkingCreateServlet extends CoworkingServlet {
         }
     }
 }
-

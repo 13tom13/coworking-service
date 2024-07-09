@@ -11,9 +11,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Сервлет для удаления рабочего пространства (coworking space).
+ */
 @WebServlet("/coworking/delete")
 public class CoworkingDeleteServlet extends CoworkingServlet {
 
+    /**
+     * Обрабатывает HTTP DELETE запрос для удаления рабочего пространства.
+     *
+     * @param request  HTTP запрос, содержащий параметр 'coworkingId', идентификатор рабочего пространства
+     * @param response HTTP ответ, который будет содержать сообщение об успешном удалении или ошибку
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasRole(Role.ADMINISTRATOR, Role.MODERATOR)) {
@@ -31,7 +41,7 @@ public class CoworkingDeleteServlet extends CoworkingServlet {
         try {
             coworkingId = Long.parseLong(coworkingIdStr);
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Не верный 'coworkingId' параметр");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный 'coworkingId' параметр");
             return;
         }
 

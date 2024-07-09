@@ -13,9 +13,19 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Сервлет для получения списка бронирований по идентификатору пользователя.
+ */
 @WebServlet("/booking/user")
 public class BookingsByUserServlet extends BookingServlet {
 
+    /**
+     * Обрабатывает HTTP GET запрос для получения списка бронирований по идентификатору пользователя.
+     *
+     * @param request  HTTP запрос, содержащий параметр идентификатора пользователя
+     * @param response HTTP ответ, который будет содержать список бронирований в формате JSON
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasAuthenticated()) {

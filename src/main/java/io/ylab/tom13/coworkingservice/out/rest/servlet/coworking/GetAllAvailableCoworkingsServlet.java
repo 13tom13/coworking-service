@@ -11,9 +11,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
 
+/**
+ * Сервлет для получения всех доступных рабочих пространств.
+ */
 @WebServlet("/coworking/available")
 public class GetAllAvailableCoworkingsServlet extends CoworkingServlet {
 
+    /**
+     * Обрабатывает HTTP GET запрос для получения всех доступных рабочих пространств.
+     *
+     * @param request  HTTP запрос, может содержать параметры для фильтрации или сортировки
+     * @param response HTTP ответ, который будет содержать список доступных рабочих пространств или ошибку
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasAuthenticated()) {

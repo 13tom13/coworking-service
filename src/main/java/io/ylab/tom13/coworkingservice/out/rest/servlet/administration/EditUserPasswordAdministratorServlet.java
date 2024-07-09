@@ -15,28 +15,42 @@ import java.util.Optional;
 
 import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
 
+/**
+ * Сервлет для изменения пароля пользователя администратором.
+ */
 @WebServlet("/admin/user/edit/password")
 public class EditUserPasswordAdministratorServlet extends AdministrationServlet {
 
     public static final String NEW_PASSWORD = "newPassword";
 
+    /**
+     * Обрабатывает HTTP POST запрос для изменения пароля пользователя.
+     *
+     * @param request  HTTP запрос, содержащий параметры изменения пароля
+     * @param response HTTP ответ, который будет отправлен клиенту
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasRole(Role.ADMINISTRATOR)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, new UnauthorizedException().getMessage());
             return;
         }
+
         String userIdStr = request.getParameter(USER_ID);
         String newPassword = request.getParameter(NEW_PASSWORD);
+
         Optional<Long> userIdOpt = getLongParam(userIdStr);
         if (userIdOpt.isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Неверный формат параметра запроса");
             return;
         }
+
         if (newPassword == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, String.format("Отсутствует параметр %s", NEW_PASSWORD));
             return;
         }
+
         String hashPassword = hashPassword(newPassword);
         try {
             administrationService.editUserPasswordByAdministrator(userIdOpt.get(), hashPassword);

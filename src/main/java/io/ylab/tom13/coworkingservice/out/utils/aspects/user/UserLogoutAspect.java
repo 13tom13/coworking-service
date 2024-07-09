@@ -8,13 +8,23 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import java.util.Optional;
 
+/**
+ * Аспект для логирования выхода пользователя из системы.
+ */
 @Aspect
 public class UserLogoutAspect extends UserAspect {
 
+    /**
+     * Точка входа для метода удаления пользователя из сессии.
+     */
     @Pointcut("execution(* io.ylab.tom13.coworkingservice.out.utils.Session.removeUser(..))")
     public void removeUserPointcut() {
     }
 
+    /**
+     * Перед выполнением метода удаления пользователя.
+     * Логирует выход пользователя из системы.
+     */
     @Before("removeUserPointcut()")
     public void afterRemoveUser() {
         Optional<UserDTO> user = Session.getInstance().getUser();

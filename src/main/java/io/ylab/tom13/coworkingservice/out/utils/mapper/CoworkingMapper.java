@@ -12,25 +12,60 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
- * Маппер для преобразования между объектами Coworking и их DTO.
+ * Маппер для преобразования объектов Coworking и его наследников в соответствующие DTO и наоборот.
  */
-
 @Mapper
 public interface CoworkingMapper {
 
+    /**
+     * Экземпляр маппера CoworkingMapper для использования в преобразованиях.
+     */
     CoworkingMapper INSTANCE = Mappers.getMapper(CoworkingMapper.class);
 
+    /**
+     * Преобразует объект ConferenceRoom в ConferenceRoomDTO.
+     *
+     * @param conferenceRoom объект ConferenceRoom
+     * @return соответствующий ConferenceRoomDTO
+     */
     @Mapping(target = "type", ignore = true)
     ConferenceRoomDTO toConferenceRoomDTO(ConferenceRoom conferenceRoom);
 
+    /**
+     * Преобразует объект ConferenceRoomDTO в ConferenceRoom.
+     *
+     * @param conferenceRoomDTO объект ConferenceRoomDTO
+     * @return соответствующий ConferenceRoom
+     */
     ConferenceRoom toConferenceRoom(ConferenceRoomDTO conferenceRoomDTO);
 
+    /**
+     * Преобразует объект Workplace в WorkplaceDTO.
+     *
+     * @param workplace объект Workplace
+     * @return соответствующий WorkplaceDTO
+     */
     @Mapping(target = "workplaceType", source = "type")
     WorkplaceDTO toWorkplaceDTO(Workplace workplace);
 
+    /**
+     * Преобразует объект WorkplaceDTO в Workplace.
+     *
+     * @param workplaceDTO объект WorkplaceDTO
+     * @return соответствующий Workplace
+     */
     @Mapping(target = "type", source = "workplaceType")
     Workplace toWorkplace(WorkplaceDTO workplaceDTO);
 
+    /**
+     * Преобразует объект Coworking в соответствующий DTO.
+     * Если объект Coworking является экземпляром ConferenceRoom, используется toConferenceRoomDTO.
+     * Если объект Coworking является экземпляром Workplace, используется toWorkplaceDTO.
+     *
+     * @param coworking объект Coworking для преобразования
+     * @return соответствующий DTO
+     * @throws CoworkingMappingException если тип Coworking не поддерживается
+     */
     default CoworkingDTO toCoworkingDTO(Coworking coworking) {
         if (coworking instanceof ConferenceRoom) {
             return toConferenceRoomDTO((ConferenceRoom) coworking);
@@ -41,6 +76,15 @@ public interface CoworkingMapper {
         }
     }
 
+    /**
+     * Преобразует объект CoworkingDTO в соответствующий Coworking.
+     * Если объект CoworkingDTO является экземпляром ConferenceRoomDTO, используется toConferenceRoom.
+     * Если объект CoworkingDTO является экземпляром WorkplaceDTO, используется toWorkplace.
+     *
+     * @param coworkingDTO объект CoworkingDTO для преобразования
+     * @return соответствующий Coworking
+     * @throws CoworkingMappingException если тип CoworkingDTO не поддерживается
+     */
     default Coworking toCoworking(CoworkingDTO coworkingDTO) {
         if (coworkingDTO instanceof ConferenceRoomDTO) {
             return toConferenceRoom((ConferenceRoomDTO) coworkingDTO);

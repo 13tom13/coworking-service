@@ -8,14 +8,25 @@ import org.aspectj.lang.annotation.Pointcut;
 
 import java.util.Optional;
 
+/**
+ * Аспект для логирования изменения пароля пользователей.
+ * Логирует действие изменения пароля после его успешного выполнения.
+ */
 @Aspect
 public class PasswordChangeAspect extends UserAspect {
 
-
+    /**
+     * Точка входа для метода изменения пароля в сервисе редактирования пользователя.
+     * Отслеживает выполнение метода editPassword в классе UserEditService.
+     */
     @Pointcut("execution(* io.ylab.tom13.coworkingservice.out.rest.services.UserEditService.editPassword(..))")
     public void editPasswordPointcut() {
     }
 
+    /**
+     * После успешного выполнения метода изменения пароля.
+     * Логирует действие изменения пароля пользователем.
+     */
     @After("editPasswordPointcut()")
     public void logPasswordChange() {
         Optional<UserDTO> user = Session.getInstance().getUser();

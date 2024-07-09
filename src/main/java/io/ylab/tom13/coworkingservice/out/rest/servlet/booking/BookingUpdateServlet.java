@@ -12,9 +12,19 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+/**
+ * Сервлет для обновления информации о бронировании.
+ */
 @WebServlet("/booking/update")
 public class BookingUpdateServlet extends BookingServlet {
 
+    /**
+     * Обрабатывает HTTP POST запрос для обновления информации о бронировании.
+     *
+     * @param request  HTTP запрос, содержащий информацию о бронировании в формате JSON
+     * @param response HTTP ответ, который будет содержать обновленную информацию о бронировании в формате JSON
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasAuthenticated()) {

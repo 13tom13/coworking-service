@@ -12,11 +12,24 @@ import java.io.IOException;
 import java.util.Optional;
 
 
+/**
+ * Сервлет для отмены бронирования.
+ */
 @WebServlet("/booking/cancel")
 public class BookingCancelServlet extends BookingServlet {
 
+    /**
+     * Сообщение об успешной отмене бронирования.
+     */
     public static final String RESPONSE_SUCCESS = "Бронирование успешно отменено";
 
+    /**
+     * Обрабатывает HTTP DELETE запрос для отмены бронирования.
+     *
+     * @param request  HTTP запрос, содержащий идентификатор бронирования в параметрах запроса
+     * @param response HTTP ответ, который будет содержать результат отмены бронирования в формате JSON
+     * @throws IOException если возникает ошибка при чтении или записи данных
+     */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!hasAuthenticated()) {
@@ -40,4 +53,3 @@ public class BookingCancelServlet extends BookingServlet {
         }
     }
 }
-

@@ -7,13 +7,23 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
+/**
+ * Утилита для хеширования и верификации паролей с использованием алгоритма PBKDF2 с HMAC SHA-256.
+ */
 public class PasswordUtil {
 
     private static final int ITERATIONS = 65536;
     private static final int KEY_LENGTH = 256;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
 
-    public static String hashPassword(String password)  {
+    /**
+     * Хеширует пароль с использованием случайной соли.
+     *
+     * @param password пароль для хеширования
+     * @return строка, содержащая хеш и соль в формате "salt:hash"
+     * @throws RuntimeException если возникает ошибка при шифровании пароля
+     */
+    public static String hashPassword(String password) {
         try {
             byte[] salt = getSalt();
             PBEKeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
@@ -27,6 +37,13 @@ public class PasswordUtil {
         }
     }
 
+    /**
+     * Верифицирует пароль по сохраненному хешу и соли.
+     *
+     * @param password пароль для верификации
+     * @param storedPassword хеш и соль пароля в формате "salt:hash"
+     * @return true, если пароль верифицирован, иначе false
+     */
     public static boolean verifyPassword(String password, String storedPassword) {
         try {
             String[] parts = storedPassword.split(":");
