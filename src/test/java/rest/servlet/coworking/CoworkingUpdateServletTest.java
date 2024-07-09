@@ -25,7 +25,7 @@ public class CoworkingUpdateServletTest extends CoworkingServletTest {
     private CoworkingUpdateServlet servlet;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setService() throws NoSuchFieldException, IllegalAccessException {
         injectMocksCoworkingServiceIntoServlet(servlet);
     }
 

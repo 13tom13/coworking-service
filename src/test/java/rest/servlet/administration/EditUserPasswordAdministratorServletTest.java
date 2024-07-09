@@ -19,7 +19,7 @@ public class EditUserPasswordAdministratorServletTest extends AdministrationServ
     private EditUserPasswordAdministratorServlet servlet;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setService() throws NoSuchFieldException, IllegalAccessException {
         injectMocksAdminServiceIntoServlet(servlet);
     }
 

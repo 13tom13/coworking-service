@@ -1,5 +1,6 @@
 package rest.servlet.authorization;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.ylab.tom13.coworkingservice.out.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.rest.services.AuthorizationService;
@@ -35,9 +36,9 @@ public class AuthorizationServletTest extends ServletTest {
 
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setServiceAndDTO() throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
         authorizationDTO = new AuthorizationDTO(email, password);
-        authorizationDTOJson = String.format("{\"email\":\"%s\",\"password\":\"%s\"}", email, password);
+        authorizationDTOJson = objectMapper.writeValueAsString(authorizationDTO);
 
         Field authorizationServletField = AuthorizationServlet.class.getDeclaredField("authorizationService");
         authorizationServletField.setAccessible(true);

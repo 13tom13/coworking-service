@@ -21,7 +21,7 @@ public class BookingsByIdServletTest extends BookingServletTest {
     private BookingsByIdServlet servlet;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setService() throws NoSuchFieldException, IllegalAccessException {
         injectMocksBookingServiceIntoServlet(servlet);
     }
 

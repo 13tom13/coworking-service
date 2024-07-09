@@ -22,7 +22,7 @@ public class RegistrationUserAdministrationServletTest extends AdministrationSer
     private RegistrationUserAdministrationServlet servlet;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setService() throws NoSuchFieldException, IllegalAccessException {
         injectMocksAdminServiceIntoServlet(servlet);
     }
 

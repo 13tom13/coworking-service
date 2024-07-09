@@ -22,7 +22,7 @@ public class BookingCancelServletTest extends BookingServletTest {
     private BookingCancelServlet servlet;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setService() throws NoSuchFieldException, IllegalAccessException {
         injectMocksBookingServiceIntoServlet(servlet);
     }
 

@@ -22,7 +22,7 @@ public class GetAllCoworkingsServletTest extends CoworkingServletTest {
     private GetAllCoworkingsServlet servlet;
 
     @BeforeEach
-    public void setUp() throws NoSuchFieldException, IllegalAccessException {
+    public void setService() throws NoSuchFieldException, IllegalAccessException {
         injectMocksCoworkingServiceIntoServlet(servlet);
     }
 
@@ -31,7 +31,7 @@ public class GetAllCoworkingsServletTest extends CoworkingServletTest {
     public void testDoGetSuccess() throws Exception {
         when(request.getMethod()).thenReturn(GET_METHOD);
 
-        Map<String, CoworkingDTO> allCoworking = Map.of("1", coworkingDTO);
+        Map<String, CoworkingDTO> allCoworking = Map.of(coworkingName, coworkingDTO);
         when(coworkingService.getAllCoworking()).thenReturn(allCoworking);
 
         servlet.service(request, response);
@@ -44,10 +44,10 @@ public class GetAllCoworkingsServletTest extends CoworkingServletTest {
     public void testDoGetRepositoryException() throws Exception {
         when(request.getMethod()).thenReturn(GET_METHOD);
 
-        when(coworkingService.getAllCoworking()).thenThrow(new RepositoryException("Internal error"));
+        when(coworkingService.getAllCoworking()).thenThrow(new RepositoryException(repositoryException));
 
         servlet.service(request, response);
 
-        verify(response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Ошибка репозитория: Internal error");
+        verify(response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Ошибка репозитория: " + repositoryException);
     }
 }
