@@ -30,7 +30,7 @@ public class EditUserAdministrationServletTest extends AdministrationServletTest
     @DisplayName("Успешное выполнение редактирования пользователя")
     public void testDoPostSuccess() throws Exception {
         when(request.getMethod()).thenReturn(POST_METHOD);
-        when(request.getReader()).thenReturn(new BufferedReader(new StringReader(UserDTOJson)));
+        when(request.getReader()).thenReturn(new BufferedReader(new StringReader(userDTOJson)));
 
         when(administrationService.editUserByAdministrator(userDTO)).thenReturn(userDTO);
 

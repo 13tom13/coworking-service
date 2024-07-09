@@ -1,4 +1,4 @@
-package rest.servlet;
+package rest.servlet.authorization;
 
 import io.ylab.tom13.coworkingservice.out.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;

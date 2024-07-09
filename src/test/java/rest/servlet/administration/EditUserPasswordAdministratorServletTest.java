@@ -26,7 +26,7 @@ public class EditUserPasswordAdministratorServletTest extends AdministrationServ
     @DisplayName("Успешное изменение пароля пользователя")
     public void testDoPostSuccess() throws Exception {
         when(request.getMethod()).thenReturn(POST_METHOD);
-        when(request.getParameter("userId")).thenReturn(String.valueOf(id));
+        when(request.getParameter("userId")).thenReturn(String.valueOf(userId));
         when(request.getParameter("newPassword")).thenReturn(password);
         doNothing().when(administrationService).editUserPasswordByAdministrator(anyLong(), anyString());
 
@@ -35,7 +35,7 @@ public class EditUserPasswordAdministratorServletTest extends AdministrationServ
         verify(administrationService).editUserPasswordByAdministrator(anyLong(), anyString());
         verify(response).setStatus(HttpServletResponse.SC_OK);
         String actualResponse = responseWriter.toString();
-        String expectedResponse = String.format("\"Пароль пользователя с ID: %s успешно изменен\"", id);
+        String expectedResponse = String.format("\"Пароль пользователя с ID: %s успешно изменен\"", userId);
         assertEquals(expectedResponse, actualResponse);
     }
 }
