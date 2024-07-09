@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import rest.servlet.AdministrationServletTest;
 
 import static io.ylab.tom13.coworkingservice.out.rest.servlet.CoworkingServiceServlet.EMAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;

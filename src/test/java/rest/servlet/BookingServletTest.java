@@ -1,4 +1,4 @@
-package rest.servlet.booking;
+package rest.servlet;
 
 import io.ylab.tom13.coworkingservice.out.rest.services.BookingService;
 import io.ylab.tom13.coworkingservice.out.rest.servlet.BookingServlet;

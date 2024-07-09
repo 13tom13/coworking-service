@@ -27,7 +27,7 @@ public class CoworkingCreateServlet extends CoworkingServlet {
         try {
             CoworkingDTO coworkingDTO = objectMapper.readValue(jsonRequest, CoworkingDTO.class);
             CoworkingDTO coworking = coworkingService.createCoworking(coworkingDTO);
-            setJsonResponse(response, coworking);
+            setJsonResponse(response, coworking, HttpServletResponse.SC_CREATED);
         } catch (InvalidTypeIdException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Не верный тип объекта: " + e.getTypeId());
         } catch (CoworkingConflictException e) {

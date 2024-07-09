@@ -1,4 +1,4 @@
-package rest.servlet.administration;
+package rest.servlet;
 
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
 import io.ylab.tom13.coworkingservice.out.rest.servlet.AdministrationServlet;

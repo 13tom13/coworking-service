@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import rest.servlet.BookingServletTest;
 
 import static io.ylab.tom13.coworkingservice.out.rest.servlet.CoworkingServiceServlet.BOOKING_ID;
 import static org.mockito.Mockito.verify;
