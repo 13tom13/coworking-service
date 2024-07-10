@@ -1,42 +1,23 @@
 package io.ylab.tom13.coworkingservice.out.database;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.stereotype.Component;
 
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
-import jakarta.servlet.annotation.WebListener;
+@Component
+public class LiquibaseInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
-/**
- * Класс для инициализации миграций Liquibase при запуске веб-приложения.
- */
-@WebListener
-public class LiquibaseInitializer implements ServletContextListener {
+    private final LiquibaseConnector liquibaseConnector;
 
-    /**
-     * Метод вызывается при инициализации контекста сервлета.
-     *
-     * @param sce событие, содержащее информацию о контексте сервлета
-     */
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-        liquibaseMigrations();
+    public LiquibaseInitializer(LiquibaseConnector liquibaseConnector) {
+        this.liquibaseConnector = liquibaseConnector;
     }
 
-    /**
-     * Метод вызывается при уничтожении контекста сервлета.
-     *
-     * @param sce событие, содержащее информацию о контексте сервлета
-     */
     @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-        System.out.println("goodbye");
-    }
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        liquibaseConnector.runMigrations();
+        ApplicationContext applicationContext = event.getApplicationContext();
 
-    /**
-     * Запуск миграций базы данных с использованием Liquibase.
-     */
-    public void liquibaseMigrations() {
-        LiquibaseConnector connector = new LiquibaseConnector();
-        connector.runMigrations();
     }
 }
-

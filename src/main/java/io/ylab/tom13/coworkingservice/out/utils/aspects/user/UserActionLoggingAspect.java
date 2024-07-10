@@ -1,6 +1,7 @@
 package io.ylab.tom13.coworkingservice.out.utils.aspects.user;
 
 
+import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
@@ -8,6 +9,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
@@ -16,7 +19,18 @@ import java.util.Optional;
  * Логирует операции создания, изменения и удаления бронирований, а также получение списков бронирований.
  */
 @Aspect
+@Component
 public class UserActionLoggingAspect extends UserAspect {
+
+    /**
+     * Конструктор, инициализирующий соединение с базой данных.
+     *
+     * @param databaseConnection
+     */
+    @Autowired
+    protected UserActionLoggingAspect(DatabaseConnection databaseConnection) {
+        super(databaseConnection);
+    }
 
     /**
      * Точка входа для методов репозитория бронирований.
@@ -35,7 +49,6 @@ public class UserActionLoggingAspect extends UserAspect {
     @AfterReturning(pointcut = "bookingRepositoryMethods()", returning = "result")
     public void logUserAction(JoinPoint joinPoint, Object result) {
         Optional<UserDTO> user = Session.getInstance().getUser();
-        System.out.println("тест изменений");
         if (user.isPresent() && user.get().role() == Role.USER) {
             String userEmail = user.get().email();
 
@@ -43,7 +56,6 @@ public class UserActionLoggingAspect extends UserAspect {
             String action = determineAction(methodName);
 
             logger.info("Пользователь с email {} {} ", userEmail, action);
-            System.out.println("test тест");
             logToDatabase(userEmail, action);
         }
     }

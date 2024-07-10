@@ -11,20 +11,24 @@ import io.ylab.tom13.coworkingservice.out.rest.controller.UserEditController;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.UserEditServiceImpl;
 import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 /**
  * Реализация интерфейса {@link UserEditController}.
  * Обрабатывает запросы на редактирование пользователя.
  */
-public class UserEditControllerImpl extends SecurityHTTPController implements UserEditController {
+@Controller
+public class UserEditControllerImpl implements UserEditController {
 
     private final UserEditService userEditService;
 
     /**
      * Конструктор для инициализации контроллера редактирования пользователей.
      */
-    public UserEditControllerImpl() {
-        userEditService = new UserEditServiceImpl();
+    @Autowired
+    public UserEditControllerImpl(UserEditService userEditService) {
+        this.userEditService = userEditService;
     }
 
     /**
@@ -32,9 +36,9 @@ public class UserEditControllerImpl extends SecurityHTTPController implements Us
      */
     @Override
     public ResponseDTO<UserDTO> editUser(UserDTO userDTO) {
-        if (!hasAuthenticated()) {
-            return ResponseDTO.failure(new UnauthorizedException().getMessage());
-        }
+//        if (!hasAuthenticated()) {
+//            return ResponseDTO.failure(new UnauthorizedException().getMessage());
+//        }
         try {
             UserDTO user = userEditService.editUser(userDTO);
             return ResponseDTO.success(user);
@@ -48,9 +52,9 @@ public class UserEditControllerImpl extends SecurityHTTPController implements Us
      */
     @Override
     public ResponseDTO<String> editPassword(PasswordChangeDTO passwordChangeDTO) {
-        if (!hasAuthenticated()) {
-            return ResponseDTO.failure(new UnauthorizedException().getMessage());
-        }
+//        if (!hasAuthenticated()) {
+//            return ResponseDTO.failure(new UnauthorizedException().getMessage());
+//        }
         try {
             userEditService.editPassword(passwordChangeDTO);
             return ResponseDTO.success("Пароль успешно изменен");

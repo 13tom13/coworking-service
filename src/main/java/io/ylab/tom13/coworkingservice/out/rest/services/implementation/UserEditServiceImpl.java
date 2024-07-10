@@ -8,20 +8,20 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExist
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
-import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.getConnection;
 import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.verifyPassword;
 
 /**
  * Реализация интерфейса {@link UserEditService}.
  * Сервиса для редактирования пользовательских данных.
  */
+@Service
 public class UserEditServiceImpl implements UserEditService {
 
     private final UserRepository userRepository;
@@ -30,12 +30,9 @@ public class UserEditServiceImpl implements UserEditService {
     /**
      * Конструктор для инициализации сервиса редактирования пользователей.
      */
-    public UserEditServiceImpl() {
-        try {
-            userRepository = new UserRepositoryJdbc(getConnection());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    @Autowired
+    public UserEditServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     /**

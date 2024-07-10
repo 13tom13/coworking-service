@@ -6,34 +6,36 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import static io.ylab.tom13.coworkingservice.out.config.ApplicationConfig.getLiquibaseChangelog;
-import static io.ylab.tom13.coworkingservice.out.config.ApplicationConfig.getLiquibaseSchema;
-import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.getConnection;
-
 /**
  * Класс для выполнения миграций базы данных с помощью Liquibase.
  */
+@Component
 public class LiquibaseConnector {
+    @Value("${liquibase.changelog}")
+    private String changelogFilePath;
+    @Value("${liquibase.schema}")
+    private String schema;
 
-    private final String changelogFilePath = getLiquibaseChangelog();
-    private final String schema = getLiquibaseSchema();
+    private final DatabaseConnection databaseConnection;
 
-    /**
-     * Конструктор по умолчанию.
-     */
-    public LiquibaseConnector() {
+    @Autowired
+    public LiquibaseConnector(DatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
     }
 
     /**
      * Запускает миграции базы данных с использованием конфигурации Liquibase.
      */
     public void runMigrations() {
-        try (Connection connection = getConnection()) {
+        try (Connection connection = databaseConnection.getConnection()) {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             createDefaultSchema(connection, schema);
             database.setLiquibaseSchemaName(schema);

@@ -12,6 +12,8 @@ import io.ylab.tom13.coworkingservice.out.rest.controller.AdministrationControll
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.AdministrationServiceImpl;
 import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
@@ -19,15 +21,17 @@ import java.util.List;
  * Реализация интерфейса {@link AdministrationController}.
  * Этот класс обеспечивает выполнение административных функций для управления пользователями в системе.
  */
-public class AdministrationControllerImpl extends SecurityHTTPController implements AdministrationController {
+@Controller
+public class AdministrationControllerImpl implements AdministrationController {
 
     private final AdministrationService administrationService;
 
     /**
      * Конструктор для инициализации объекта и подключения к службе администрирования.
      */
-    public AdministrationControllerImpl() {
-        administrationService = new AdministrationServiceImpl();
+    @Autowired
+    public AdministrationControllerImpl(AdministrationService administrationService) {
+        this.administrationService = administrationService;
     }
 
     /**
@@ -35,9 +39,9 @@ public class AdministrationControllerImpl extends SecurityHTTPController impleme
      */
     @Override
     public ResponseDTO<List<UserDTO>> getAllUsers() {
-        if (!hasRole(Role.ADMINISTRATOR)) {
-            return ResponseDTO.failure(new NoAccessException().getMessage());
-        }
+//        if (!hasRole(Role.ADMINISTRATOR)) {
+//            return ResponseDTO.failure(new NoAccessException().getMessage());
+//        }
         List<UserDTO> allUsers = administrationService.getAllUsers();
         return ResponseDTO.success(allUsers);
     }
@@ -47,9 +51,9 @@ public class AdministrationControllerImpl extends SecurityHTTPController impleme
      */
     @Override
     public ResponseDTO<UserDTO> getUserByEmail(String email) {
-        if (!hasRole(Role.ADMINISTRATOR)) {
-            return ResponseDTO.failure(new NoAccessException().getMessage());
-        }
+//        if (!hasRole(Role.ADMINISTRATOR)) {
+//            return ResponseDTO.failure(new NoAccessException().getMessage());
+//        }
         try {
             UserDTO user = administrationService.getUserByEmail(email);
             return ResponseDTO.success(user);
@@ -63,9 +67,9 @@ public class AdministrationControllerImpl extends SecurityHTTPController impleme
      */
     @Override
     public ResponseDTO<UserDTO> editUserByAdministrator(UserDTO userDTO) {
-        if (!hasRole(Role.ADMINISTRATOR)) {
-            return ResponseDTO.failure(new NoAccessException().getMessage());
-        }
+//        if (!hasRole(Role.ADMINISTRATOR)) {
+//            return ResponseDTO.failure(new NoAccessException().getMessage());
+//        }
         try {
             UserDTO user = administrationService.editUserByAdministrator(userDTO);
             return ResponseDTO.success(user);
@@ -79,9 +83,9 @@ public class AdministrationControllerImpl extends SecurityHTTPController impleme
      */
     @Override
     public ResponseDTO<String> editUserPasswordByAdministrator(long userId, String newHashPassword) {
-        if (!hasRole(Role.ADMINISTRATOR)) {
-            return ResponseDTO.failure(new NoAccessException().getMessage());
-        }
+//        if (!hasRole(Role.ADMINISTRATOR)) {
+//            return ResponseDTO.failure(new NoAccessException().getMessage());
+//        }
         try {
             administrationService.editUserPasswordByAdministrator(userId, newHashPassword);
             return ResponseDTO.success("Пароль успешно изменен");
@@ -95,9 +99,9 @@ public class AdministrationControllerImpl extends SecurityHTTPController impleme
      */
     @Override
     public ResponseDTO<String> registrationUser(RegistrationDTO registrationDTO) {
-        if (!hasRole(Role.ADMINISTRATOR)) {
-            return ResponseDTO.failure(new NoAccessException().getMessage());
-        }
+//        if (!hasRole(Role.ADMINISTRATOR)) {
+//            return ResponseDTO.failure(new NoAccessException().getMessage());
+//        }
         try {
             administrationService.registrationUser(registrationDTO);
             return ResponseDTO.success("Пользователь успешно создан");

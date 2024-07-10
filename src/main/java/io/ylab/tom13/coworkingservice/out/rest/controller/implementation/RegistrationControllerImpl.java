@@ -8,17 +8,21 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExist
 import io.ylab.tom13.coworkingservice.out.rest.controller.RegistrationController;
 import io.ylab.tom13.coworkingservice.out.rest.services.RegistrationService;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.RegistrationServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 /**
  * Реализация интерфейса {@link RegistrationController}.
  * Обрабатывает запросы на создание нового пользователя и возвращает соответствующие результаты.
  */
+@Controller
 public class RegistrationControllerImpl implements RegistrationController {
 
     private final RegistrationService registrationService;
 
-    public RegistrationControllerImpl() {
-        registrationService = new RegistrationServiceImpl();
+    @Autowired
+    public RegistrationControllerImpl(RegistrationService registrationService) {
+        this.registrationService = registrationService;
     }
 
     /**

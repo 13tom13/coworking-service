@@ -7,22 +7,22 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.getConnection;
 
 /**
  * Реализация интерфейса {@link AdministrationService}.
  * Сервис администрирования пользователей.
  */
+@Service
 public class AdministrationServiceImpl implements AdministrationService {
 
     private final UserRepository userRepository;
@@ -30,12 +30,9 @@ public class AdministrationServiceImpl implements AdministrationService {
     /**
      * Конструктор для инициализации сервиса администрирования пользователей.
      */
-    public AdministrationServiceImpl() {
-        try {
-            userRepository = new UserRepositoryJdbc(getConnection());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    @Autowired
+    public AdministrationServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     private final UserMapper userMapper = UserMapper.INSTANCE;
@@ -69,7 +66,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         long id = userDTO.id();
         Optional<User> byId = userRepository.findById(id);
         User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID " + id));
-        User userChanged = userMapper.toUserWithPassword(userDTO,userFromRep.password());
+        User userChanged = userMapper.toUserWithPassword(userDTO, userFromRep.password());
         Optional<User> updatedUser = userRepository.updateUser(userChanged);
         if (updatedUser.isPresent()) {
             return userMapper.toUserDTO(userChanged);
@@ -86,7 +83,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         Optional<User> byId = userRepository.findById(userId);
         User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID  " + userId));
 
-        User userChanged = userMapper.toUserWithPassword(userFromRep,newHashPassword);
+        User userChanged = userMapper.toUserWithPassword(userFromRep, newHashPassword);
         if (userRepository.updateUser(userChanged).isEmpty()) {
             throw new RepositoryException("Не удалось обновить пароль с ID " + userId);
         }

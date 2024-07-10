@@ -13,3 +13,6 @@ database:
 liquibase:
   schema: service
   changelog: db/changelog/changelog.xml
+
+jwt:
+  secret: twfT9yMPeBuSWBxkCXykXjPE93FUpcg3Kll4uNaejYk=

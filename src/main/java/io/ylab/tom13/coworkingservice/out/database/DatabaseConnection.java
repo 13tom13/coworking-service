@@ -1,6 +1,8 @@
 package io.ylab.tom13.coworkingservice.out.database;
 
-import io.ylab.tom13.coworkingservice.out.config.ApplicationConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import jakarta.annotation.PostConstruct;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,11 +11,21 @@ import java.sql.SQLException;
 /**
  * Класс для управления подключением к базе данных PostgreSQL.
  */
+@Component
 public class DatabaseConnection {
 
-    static {
+    @Value("${database.url}")
+    private String dbUrl;
+
+    @Value("${database.username}")
+    private String dbUsername;
+
+    @Value("${database.password}")
+    private String dbPassword;
+
+    @PostConstruct
+    private void loadDriver() {
         try {
-            // Загрузка драйвера PostgreSQL JDBC при загрузке класса
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Не удалось загрузить PostgreSQL JDBC драйвер", e);
@@ -26,10 +38,7 @@ public class DatabaseConnection {
      * @return объект Connection для подключения к базе данных
      * @throws SQLException если не удается подключиться к базе данных
      */
-    public static Connection getConnection() throws SQLException {
-        String url = ApplicationConfig.getDbUrl();
-        String username = ApplicationConfig.getDbUsername();
-        String password = ApplicationConfig.getDbPassword();
-        return DriverManager.getConnection(url, username, password);
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
     }
 }

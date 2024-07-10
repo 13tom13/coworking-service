@@ -1,11 +1,14 @@
 package io.ylab.tom13.coworkingservice.out.rest.repositories.implementation;
 
+import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.entity.model.User;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -18,14 +21,16 @@ import java.util.Optional;
  * Реализация интерфейса {@link UserRepository}.
  * CRUD операции с пользователями с использованием JDBC.
  */
+@Repository
 public class UserRepositoryJdbc implements UserRepository {
 
     private static final String UNIQUE_VIOLATION = "23505";
 
-    private final Connection connection;
+    private final DatabaseConnection databaseConnection;
 
-    public UserRepositoryJdbc(Connection connection) {
-        this.connection = connection;
+    @Autowired
+    public UserRepositoryJdbc(DatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
     }
 
     /**
@@ -37,7 +42,7 @@ public class UserRepositoryJdbc implements UserRepository {
                 INSERT INTO main.users (first_name, last_name, email, password,role)
                 VALUES (?, ?, ?, ?, ?)
                 """;
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
 
             try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -85,7 +90,8 @@ public class UserRepositoryJdbc implements UserRepository {
                 FROM main.users
                 """;
         List<User> users = new ArrayList<>();
-        try (PreparedStatement statement = connection.prepareStatement(sql);
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
@@ -111,7 +117,8 @@ public class UserRepositoryJdbc implements UserRepository {
                 FROM main.users WHERE email = ?
                 """;
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, email);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -137,7 +144,8 @@ public class UserRepositoryJdbc implements UserRepository {
                 FROM main.users WHERE id = ?
                 """;
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -162,7 +170,7 @@ public class UserRepositoryJdbc implements UserRepository {
                 DELETE FROM main.users
                 WHERE id = ?
                 """;
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setLong(1, id);
@@ -192,8 +200,8 @@ public class UserRepositoryJdbc implements UserRepository {
                 SET first_name = ?, last_name = ?, email = ?, password = ?, role = ?
                 WHERE id = ?
                 """;
-        long userId  = user.id();
-        try {
+        long userId = user.id();
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 userToStatement(user, preparedStatement);
@@ -223,7 +231,7 @@ public class UserRepositoryJdbc implements UserRepository {
     /**
      * Метод для получения объекта {@link User} из {@link ResultSet}
      */
-    private User resultSetToUser (ResultSet resultSet) throws SQLException {
+    private User resultSetToUser(ResultSet resultSet) throws SQLException {
         return new User(
                 resultSet.getLong("id"),
                 resultSet.getString("first_name"),
@@ -237,7 +245,7 @@ public class UserRepositoryJdbc implements UserRepository {
     /**
      * Метод для передачи объекта {@link User} в {@link PreparedStatement}
      */
-    private void userToStatement (User user, PreparedStatement statement) throws SQLException {
+    private void userToStatement(User user, PreparedStatement statement) throws SQLException {
         statement.setString(1, user.firstName());
         statement.setString(2, user.lastName());
         statement.setString(3, user.email());

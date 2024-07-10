@@ -3,32 +3,29 @@ package io.ylab.tom13.coworkingservice.out.utils.security;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.entity.model.User;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.utils.Session;
 import jakarta.servlet.http.HttpServlet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 
-import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.getConnection;
 
 /**
  * Абстрактный класс для управления безопасностью и доступом.
  */
+@Component
 public abstract class SecurityHTTPController extends HttpServlet {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Session session;
 
     /**
      * Конструктор инициализирует экземпляры UserRepository и Session.
      */
-    protected SecurityHTTPController() {
-        try {
-            userRepository = new UserRepositoryJdbc(getConnection());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    @Autowired
+    protected SecurityHTTPController(UserRepository userRepository) {
+        this.userRepository = userRepository;
         session = Session.getInstance();
     }
 
