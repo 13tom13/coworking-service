@@ -1,14 +1,14 @@
 package rest.controller;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.PasswordChangeDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.UserEditControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.services.UserEditService;
+import io.ylab.tom13.coworkingservice.out.entity.dto.PasswordChangeDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.ResponseDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
+import io.ylab.tom13.coworkingservice.out.rest.controller.implementation.UserEditControllerImpl;
+import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import security.SecurityControllerTest;
+import utils.SecurityHTTPControllerTest;
 
 import java.lang.reflect.Field;
 
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Тесты контроллера редактирования пользователя")
-public class UserEditControllerImplTest extends SecurityControllerTest {
+public class UserEditControllerImplTest extends SecurityHTTPControllerTest {
 
     @Mock
     private UserEditService userEditService;
@@ -43,8 +43,6 @@ public class UserEditControllerImplTest extends SecurityControllerTest {
         userEditControllerField.set(userEditController, userEditService);
 
         userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com", Role.USER);
-
-        when(session.getUser()).thenReturn(userDTO);
     }
 
     @Test

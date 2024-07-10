@@ -1,19 +1,15 @@
 package rest.controller;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.ConferenceRoomDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.CoworkingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.coworking.WorkplaceDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.in.entity.model.User;
-import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingConflictException;
-import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingNotFoundException;
-import io.ylab.tom13.coworkingservice.in.exceptions.coworking.CoworkingUpdatingExceptions;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.CoworkingControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.services.CoworkingService;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.UserMapper;
+import io.ylab.tom13.coworkingservice.out.entity.dto.ResponseDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.ConferenceRoomDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.CoworkingDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.WorkplaceDTO;
+import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingConflictException;
+import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingNotFoundException;
+import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingUpdatingExceptions;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.out.rest.controller.implementation.CoworkingControllerImpl;
+import io.ylab.tom13.coworkingservice.out.rest.services.CoworkingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,18 +17,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import security.SecurityControllerTest;
+import utils.SecurityHTTPControllerTest;
 
 import java.lang.reflect.Field;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Тесты сервиса работы с коворкингами")
-class CoworkingControllerImplTest extends SecurityControllerTest {
+class CoworkingControllerImplTest extends SecurityHTTPControllerTest {
 
     @Mock
     private CoworkingService coworkingService;
@@ -45,12 +40,6 @@ class CoworkingControllerImplTest extends SecurityControllerTest {
         Field coworkingControllerField = CoworkingControllerImpl.class.getDeclaredField("coworkingService");
         coworkingControllerField.setAccessible(true);
         coworkingControllerField.set(coworkingController, coworkingService);
-
-        UserDTO userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com", Role.ADMINISTRATOR);
-        Optional<User> user = Optional.ofNullable(UserMapper.INSTANCE.toUser(userDTO));
-
-        when(session.getUser()).thenReturn(userDTO);
-        lenient().doReturn(user).when(userRepository).findById(anyLong());
     }
 
     @Test

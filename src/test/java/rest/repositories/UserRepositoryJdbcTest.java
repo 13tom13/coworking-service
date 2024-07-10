@@ -1,12 +1,12 @@
 package rest.repositories;
 
-import database.TestcontainersConnector;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.in.entity.model.User;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.implementation.UserRepositoryJdbc;
+import utils.TestcontainersConnector;
+import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.out.entity.model.User;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
+import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.UserRepositoryJdbc;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +24,7 @@ class UserRepositoryJdbcTest extends TestcontainersConnector {
 
     @BeforeEach
     void setUp() {
-        userRepository = new UserRepositoryJdbc(getConnection());
+        userRepository = new UserRepositoryJdbc(getTestConnection());
         user = new User(1L, "John", "Doe", "john.new@example.com", "password", Role.USER);
     }
 

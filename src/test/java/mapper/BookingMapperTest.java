@@ -1,9 +1,9 @@
 package mapper;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
-import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.BookingMapper;
+import io.ylab.tom13.coworkingservice.out.entity.dto.BookingDTO;
+import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
+import io.ylab.tom13.coworkingservice.out.entity.model.Booking;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.BookingMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

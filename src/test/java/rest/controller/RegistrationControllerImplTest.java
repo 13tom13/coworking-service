@@ -1,13 +1,13 @@
 package rest.controller;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.RegistrationDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.ResponseDTO;
-import io.ylab.tom13.coworkingservice.in.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.in.rest.controller.implementation.RegistrationControllerImpl;
-import io.ylab.tom13.coworkingservice.in.rest.services.RegistrationService;
+import io.ylab.tom13.coworkingservice.out.entity.dto.RegistrationDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.ResponseDTO;
+import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
+import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
+import io.ylab.tom13.coworkingservice.out.rest.controller.implementation.RegistrationControllerImpl;
+import io.ylab.tom13.coworkingservice.out.rest.services.RegistrationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

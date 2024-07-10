@@ -13,9 +13,3 @@ database:
 liquibase:
   schema: service
   changelog: db/changelog/changelog.xml
-  test:
-    changelog: db/changelog/changelog_test.xml
-
-#hibernate:
-#  dialect: org.hibernate.dialect.PostgreSQLDialect
-

@@ -1,14 +1,14 @@
 package rest.services;
 
-import io.ylab.tom13.coworkingservice.in.entity.dto.BookingDTO;
-import io.ylab.tom13.coworkingservice.in.entity.enumeration.TimeSlot;
-import io.ylab.tom13.coworkingservice.in.entity.model.Booking;
-import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingConflictException;
-import io.ylab.tom13.coworkingservice.in.exceptions.booking.BookingNotFoundException;
-import io.ylab.tom13.coworkingservice.in.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.in.rest.repositories.BookingRepository;
-import io.ylab.tom13.coworkingservice.in.rest.services.implementation.BookingServiceImpl;
-import io.ylab.tom13.coworkingservice.in.utils.mapper.BookingMapper;
+import io.ylab.tom13.coworkingservice.out.entity.dto.BookingDTO;
+import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
+import io.ylab.tom13.coworkingservice.out.entity.model.Booking;
+import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictException;
+import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundException;
+import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
+import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
+import io.ylab.tom13.coworkingservice.out.rest.services.implementation.BookingServiceImpl;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.BookingMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
