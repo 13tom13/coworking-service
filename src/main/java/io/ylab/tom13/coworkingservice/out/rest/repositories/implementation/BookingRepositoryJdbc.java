@@ -37,9 +37,11 @@ public class BookingRepositoryJdbc implements BookingRepository {
         try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             checkBookingOverlap(newBooking);
+
             String insertBookingSQL = """
                     INSERT INTO main.bookings (user_id, coworking_id, date) VALUES (?, ?, ?)
                     """;
+
             try (PreparedStatement bookingStatement = connection.prepareStatement(insertBookingSQL, Statement.RETURN_GENERATED_KEYS)) {
                 bookingStatement.setLong(1, newBooking.userId());
                 bookingStatement.setLong(2, newBooking.coworkingId());
@@ -50,16 +52,22 @@ public class BookingRepositoryJdbc implements BookingRepository {
                     connection.rollback();
                     throw new RepositoryException("Создание бронирования не удалось, нет затронутых строк.");
                 }
+
                 try (ResultSet generatedKeys = bookingStatement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         long bookingId = generatedKeys.getLong(1);
-                        insertTimeSlots(bookingId, newBooking);
 
-                        connection.commit();
-                        return Optional.of(new Booking(bookingId, newBooking.userId(), newBooking.coworkingId(), newBooking.date(), newBooking.timeSlots()));
+                        try {
+                            insertTimeSlots(connection, bookingId, newBooking);
+                            connection.commit();
+                            return Optional.of(new Booking(bookingId, newBooking.userId(), newBooking.coworkingId(), newBooking.date(), newBooking.timeSlots()));
+                        } catch (SQLException e) {
+                            connection.rollback();
+                            throw new RepositoryException("Ошибка при вставке временных слотов: " + e.getMessage());
+                        }
                     } else {
                         connection.rollback();
-                        throw new RepositoryException("Создание пользователя не удалось, ID не был получен.");
+                        throw new RepositoryException("Создание бронирования не удалось, ID не был получен.");
                     }
                 }
             } catch (SQLException e) {
@@ -108,7 +116,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
 
                 deleteTimeSlots(bookingId);
 
-                insertTimeSlots(bookingId, updatedBooking);
+                insertTimeSlots(connection, bookingId, updatedBooking);
 
                 checkBookingOverlap(updatedBooking);
 
@@ -448,12 +456,11 @@ public class BookingRepositoryJdbc implements BookingRepository {
      * @param bookingId - ID бронирования
      * @param booking   - объект бронирования содержащий временные слоты
      */
-    private void insertTimeSlots(long bookingId, Booking booking) throws SQLException {
+    private void insertTimeSlots(Connection connection, long bookingId, Booking booking) throws SQLException {
         String insertTimeSlotSQL = """
                 INSERT INTO relations.booking_time_slots (booking_id, time_slot_id) VALUES (?, ?)
                 """;
-        try (Connection connection = databaseConnection.getConnection();
-             PreparedStatement timeSlotStatement = connection.prepareStatement(insertTimeSlotSQL)) {
+        try (PreparedStatement timeSlotStatement = connection.prepareStatement(insertTimeSlotSQL)) {
             for (TimeSlot timeSlot : booking.timeSlots()) {
                 timeSlotStatement.setLong(1, bookingId);
                 timeSlotStatement.setLong(2, timeSlot.getId());

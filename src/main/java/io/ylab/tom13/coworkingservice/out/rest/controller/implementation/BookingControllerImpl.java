@@ -118,7 +118,7 @@ public class BookingControllerImpl implements BookingController {
      */
     @Override
     @GetMapping("/availableslots")
-    public ResponseEntity<?> getAvailableSlots(long coworkingId, LocalDate date) {
+    public ResponseEntity<?> getAvailableSlots(@RequestParam(name = "coworkingId") long coworkingId,@RequestParam(name = "date") LocalDate date) {
         try {
             List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
             return ResponseEntity.ok(availableSlots);

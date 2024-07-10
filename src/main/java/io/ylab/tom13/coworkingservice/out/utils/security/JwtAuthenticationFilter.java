@@ -30,20 +30,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String path = request.getServletPath();
-        System.out.println("Request Path: " + path);  // Лог для отладки
-        String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Authorization: " + authorizationHeader);
 
+        String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            System.out.println("User is not authorized");  // Лог для отладки
+            System.out.println("User is not authorized");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь не авторизован");
             return;
         }
 
         String token = authorizationHeader.substring(7);
         try {
-            System.out.println("Token: " + token);  // Лог для отладки
             if (!jwtUtil.validJwt(token)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
@@ -54,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             request.setAttribute("id", idFromToken);
             request.setAttribute("role", roleFromToken);
         } catch (Exception e) {
-            e.printStackTrace();
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return;
         }
@@ -65,8 +60,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        boolean shouldNotFilter = PUBLIC_URLS.stream().anyMatch(path::equals);
-        System.out.println("Should not filter: " + shouldNotFilter + " for path: " + path);  // Лог для отладки
-        return shouldNotFilter;
+        return PUBLIC_URLS.stream().anyMatch(path::equals);
     }
 }
