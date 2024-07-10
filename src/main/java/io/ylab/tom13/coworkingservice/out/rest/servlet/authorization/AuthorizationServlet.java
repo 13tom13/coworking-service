@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Сервлет для авторизации пользователя.
  */
-@WebServlet("/authorization")
+//@WebServlet("/authorization")
 public class AuthorizationServlet extends CoworkingServiceServlet {
 
     private final AuthorizationService authorizationService;
@@ -42,7 +42,7 @@ public class AuthorizationServlet extends CoworkingServiceServlet {
 
         try {
             UserDTO user = authorizationService.login(authorizationDTO);
-            localSession.setUser(user);
+            response.setHeader("user", String.valueOf(user));
             String responseSuccess = String.format("Пользователь с именем: %s %s и email: %s успешно авторизирован",
                     user.firstName(), user.lastName(), user.email());
 

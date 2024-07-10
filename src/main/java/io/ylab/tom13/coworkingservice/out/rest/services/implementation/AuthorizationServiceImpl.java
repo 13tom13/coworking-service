@@ -8,6 +8,7 @@ import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.rest.services.AuthorizationService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.ver
  * Реализация интерфейса {@link AuthorizationService}.
  * Сервиса авторизации пользователей.
  */
+@Service
 public class AuthorizationServiceImpl implements AuthorizationService {
 
     private final UserRepository userRepository;

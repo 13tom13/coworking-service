@@ -3,6 +3,7 @@ package io.ylab.tom13.coworkingservice.out.rest.controller;
 import io.ylab.tom13.coworkingservice.out.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Интерфейс контроллера аутентификации пользователя.
@@ -15,6 +16,6 @@ public interface AuthorizationController {
      * @param authorizationDTO данные аутентификации пользователя (email и пароль)
      * @return объект ResponseDTO, содержащий результат операции входа
      */
-    ResponseDTO<UserDTO> login(AuthorizationDTO authorizationDTO);
+    ResponseEntity<?> login(AuthorizationDTO authorizationDTO);
 }
 
