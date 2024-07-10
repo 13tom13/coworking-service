@@ -3,6 +3,7 @@ package io.ylab.tom13.coworkingservice.out.rest.controller;
 import io.ylab.tom13.coworkingservice.out.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.ResponseDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
+import org.springframework.http.ResponseEntity;
 
 /**
  * Интерфейс для управления операциями редактирования пользователей.
@@ -15,7 +16,7 @@ public interface UserEditController {
      * @param userDTO DTO с информацией о пользователе для редактирования.
      * @return ResponseDTO с обновленным объектом UserDTO или сообщением об ошибке.
      */
-    ResponseDTO<UserDTO> editUser(UserDTO userDTO);
+    ResponseEntity<?> editUser(UserDTO userDTO);
 
     /**
      * Изменяет пароль пользователя на основе предоставленного объекта PasswordChangeDTO.
@@ -23,7 +24,7 @@ public interface UserEditController {
      * @param passwordChangeDTO DTO с новым паролем и идентификатором пользователя.
      * @return ResponseDTO с сообщением об успешном изменении пароля или сообщением об ошибке.
      */
-    ResponseDTO<String> editPassword(PasswordChangeDTO passwordChangeDTO);
+    ResponseEntity<?> editPassword(PasswordChangeDTO passwordChangeDTO);
 
 }
 

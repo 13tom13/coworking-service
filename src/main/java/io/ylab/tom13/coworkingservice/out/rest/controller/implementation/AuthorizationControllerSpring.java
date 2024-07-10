@@ -7,10 +7,9 @@ import io.ylab.tom13.coworkingservice.out.rest.controller.AuthorizationControlle
 import io.ylab.tom13.coworkingservice.out.rest.services.AuthorizationService;
 import io.ylab.tom13.coworkingservice.out.utils.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +45,12 @@ public class AuthorizationControllerSpring implements AuthorizationController {
         } catch (UnauthorizedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @Override
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout() {
+        return ResponseEntity.ok("До свидание");
     }
 }
 

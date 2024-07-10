@@ -17,5 +17,7 @@ public interface AuthorizationController {
      * @return объект ResponseDTO, содержащий результат операции входа
      */
     ResponseEntity<?> login(AuthorizationDTO authorizationDTO);
+
+    ResponseEntity<?> logout();
 }
 

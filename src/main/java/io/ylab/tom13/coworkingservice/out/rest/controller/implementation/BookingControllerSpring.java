@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/booking")
-public class BookingControllerImpl implements BookingController {
+public class BookingControllerSpring implements BookingController {
 
     private final BookingService bookingService;
 
@@ -29,7 +29,7 @@ public class BookingControllerImpl implements BookingController {
      * Конструктор для инициализации объекта контроллера бронирования.
      */
     @Autowired
-    public BookingControllerImpl(BookingService bookingService) {
+    public BookingControllerSpring(BookingService bookingService) {
         this.bookingService = bookingService;
     }
 
@@ -147,7 +147,7 @@ public class BookingControllerImpl implements BookingController {
      * {@inheritDoc}
      */
     @Override
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<?> updateBooking(@RequestBody BookingDTO booking) {
         try {
             BookingDTO updatedBooking = bookingService.updateBooking(booking);

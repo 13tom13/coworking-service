@@ -22,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private static final List<String> PUBLIC_URLS = List.of(
-            "/",
+            "/index.html",
             "/login",
             "/registration"
     );
@@ -33,7 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            System.out.println("User is not authorized");
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь не авторизован");
             return;
         }
@@ -44,7 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
-
             Long idFromToken = jwtUtil.getIdFromToken(token);
             String roleFromToken = jwtUtil.getRoleFromToken(token);
             request.setAttribute("id", idFromToken);
