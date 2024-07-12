@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.utils.security;
+package io.ylab.tom13.coworkingservice.out.security;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;

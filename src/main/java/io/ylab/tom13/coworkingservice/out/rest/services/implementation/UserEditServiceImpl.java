@@ -9,13 +9,13 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundExce
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
-import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
+import io.ylab.tom13.coworkingservice.out.util.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.verifyPassword;
+import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.verifyPassword;
 
 /**
  * Реализация интерфейса {@link UserEditService}.

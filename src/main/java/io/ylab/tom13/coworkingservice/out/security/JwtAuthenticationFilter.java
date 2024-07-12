@@ -1,10 +1,11 @@
-package io.ylab.tom13.coworkingservice.out.utils.security;
+package io.ylab.tom13.coworkingservice.out.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -14,12 +15,11 @@ import java.util.List;
 @Component("jwtAuthenticationFilter")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtUtil jwtUtil;
-
-    @Autowired
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
+    private static final String UNAUTHORIZED = "Пользователь не авторизован";
+    private static final String INVALID_AUTHORIZATION_TOKEN = "Неверный токен авторизации";
+    private static final String BEARER = "Bearer ";
+    private static final String ID = "id";
+    private static final String ROLE = "role";
 
     private static final List<String> PUBLIC_URLS = List.of(
             "/index.html",
@@ -27,13 +27,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/registration"
     );
 
+    private final JwtUtil jwtUtil;
+
+    @Autowired
+    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String authorizationHeader = request.getHeader("Authorization");
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Пользователь не авторизован");
+        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER)) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, UNAUTHORIZED);
             return;
         }
 
@@ -45,10 +52,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             Long idFromToken = jwtUtil.getIdFromToken(token);
             String roleFromToken = jwtUtil.getRoleFromToken(token);
-            request.setAttribute("id", idFromToken);
-            request.setAttribute("role", roleFromToken);
+            request.setAttribute(ID, idFromToken);
+            request.setAttribute(ROLE, roleFromToken);
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, INVALID_AUTHORIZATION_TOKEN);
             return;
         }
 

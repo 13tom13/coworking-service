@@ -1,17 +1,7 @@
 package io.ylab.tom13.coworkingservice.out.rest.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
-import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.Optional;
-
-import static io.ylab.tom13.coworkingservice.out.config.ApplicationConfig.getObjectMapper;
+import io.ylab.tom13.coworkingservice.out.security.SecurityHTTPController;
 
 /**
  * Абстрактный сервлет, предоставляющий общую функциональность и константы для сервлетов обслуживания коворкинга.

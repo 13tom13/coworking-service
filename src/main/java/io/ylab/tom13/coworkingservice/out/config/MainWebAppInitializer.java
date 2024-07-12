@@ -13,10 +13,15 @@ import org.springframework.web.servlet.DispatcherServlet;
 @Component
 public class MainWebAppInitializer implements WebApplicationInitializer {
 
+    private static final String COWORKINGSERVICE = "io.ylab.tom13.coworkingservice";
+    private static final String AUTHENTICATION_FILTER = "jwtAuthenticationFilter";
+    private static final String ADMIN_FILTER = "adminJwtAuthenticationFilter";
+    private static final String MODERATOR_FILTER = "moderatorJwtAuthenticationFilter";
+
     @Override
     public void onStartup(ServletContext container) {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
-        context.scan("io.ylab.tom13.coworkingservice");
+        context.scan(COWORKINGSERVICE);
         context.register(ApplicationConfig.class);
         container.addListener(new ContextLoaderListener(context));
 
@@ -24,16 +29,13 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/");
 
-        FilterRegistration.Dynamic jwtFilter = container.addFilter("jwtAuthenticationFilter", new DelegatingFilterProxy("jwtAuthenticationFilter"));
+        FilterRegistration.Dynamic jwtFilter = container.addFilter(AUTHENTICATION_FILTER, new DelegatingFilterProxy(AUTHENTICATION_FILTER));
         jwtFilter.addMappingForUrlPatterns(null, false, "/*");
 
-
-        FilterRegistration.Dynamic adminFilter = container.addFilter("adminJwtAuthenticationFilter", new DelegatingFilterProxy("adminJwtAuthenticationFilter"));
+        FilterRegistration.Dynamic adminFilter = container.addFilter(ADMIN_FILTER, new DelegatingFilterProxy(ADMIN_FILTER));
         adminFilter.addMappingForUrlPatterns(null, false, "/admin/*");
 
-
-        FilterRegistration.Dynamic coworkingFilter = container.addFilter("coworkingJwtAuthenticationFilter", new DelegatingFilterProxy("coworkingJwtAuthenticationFilter"));
+        FilterRegistration.Dynamic coworkingFilter = container.addFilter(MODERATOR_FILTER, new DelegatingFilterProxy(MODERATOR_FILTER));
         coworkingFilter.addMappingForUrlPatterns(null, false, "/coworking/*");
     }
-
 }

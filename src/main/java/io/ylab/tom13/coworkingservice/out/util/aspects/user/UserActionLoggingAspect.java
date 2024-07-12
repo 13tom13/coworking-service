@@ -1,18 +1,13 @@
-package io.ylab.tom13.coworkingservice.out.utils.aspects.user;
+package io.ylab.tom13.coworkingservice.out.util.aspects.user;
 
 
 import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
-import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.out.utils.Session;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 /**
  * Аспект для логирования действий пользователей в системе бронирования.
@@ -48,16 +43,16 @@ public class UserActionLoggingAspect extends UserAspect {
      */
     @AfterReturning(pointcut = "bookingRepositoryMethods()", returning = "result")
     public void logUserAction(JoinPoint joinPoint, Object result) {
-        Optional<UserDTO> user = Session.getInstance().getUser();
-        if (user.isPresent() && user.get().role() == Role.USER) {
-            String userEmail = user.get().email();
-
-            String methodName = joinPoint.getSignature().getName();
-            String action = determineAction(methodName);
-
-            logger.info("Пользователь с email {} {} ", userEmail, action);
-            logToDatabase(userEmail, action);
-        }
+//        Optional<UserDTO> user = Session.getInstance().getUser();
+//        if (user.isPresent() && user.get().role() == Role.USER) {
+//            String userEmail = user.get().email();
+//
+//            String methodName = joinPoint.getSignature().getName();
+//            String action = determineAction(methodName);
+//
+//            logger.info("Пользователь с email {} {} ", userEmail, action);
+//            logToDatabase(userEmail, action);
+//        }
     }
 
     /**

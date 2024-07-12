@@ -114,7 +114,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 }
 
 
-                deleteTimeSlots(bookingId);
+                deleteTimeSlots(connection,bookingId);
 
                 insertTimeSlots(connection, bookingId, updatedBooking);
 
@@ -148,7 +148,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 throw new BookingNotFoundException("Бронирование с указанным ID не найдено");
             }
 
-            deleteTimeSlots(bookingId);
+            deleteTimeSlots(connection, bookingId);
 
             String deleteBookingSQL = """
                     DELETE FROM main.bookings
@@ -338,7 +338,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 }
 
                 for (Long bookingId : bookingIds) {
-                    deleteTimeSlots(bookingId);
+                    deleteTimeSlots(connection, bookingId);
                 }
 
                 String deleteBookingsSQL = """
@@ -475,13 +475,12 @@ public class BookingRepositoryJdbc implements BookingRepository {
      *
      * @param bookingId - ID бронирования
      */
-    private void deleteTimeSlots(long bookingId) throws SQLException {
+    private void deleteTimeSlots(Connection connection, long bookingId) throws SQLException {
         String deleteTimeSlotsSQL = """
                 DELETE FROM relations.booking_time_slots
                 WHERE booking_id = ?
                 """;
-        try (Connection connection = databaseConnection.getConnection();
-             PreparedStatement deleteStatement = connection.prepareStatement(deleteTimeSlotsSQL)) {
+        try (PreparedStatement deleteStatement = connection.prepareStatement(deleteTimeSlotsSQL)) {
             deleteStatement.setLong(1, bookingId);
             deleteStatement.executeUpdate();
         }

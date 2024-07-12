@@ -5,7 +5,7 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.rest.controller.AuthorizationController;
 import io.ylab.tom13.coworkingservice.out.rest.services.AuthorizationService;
-import io.ylab.tom13.coworkingservice.out.utils.security.JwtUtil;
+import io.ylab.tom13.coworkingservice.out.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

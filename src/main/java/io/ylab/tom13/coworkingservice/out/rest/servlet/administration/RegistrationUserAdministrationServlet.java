@@ -1,20 +1,8 @@
 package io.ylab.tom13.coworkingservice.out.rest.servlet.administration;
 
-import io.ylab.tom13.coworkingservice.out.entity.dto.RegistrationDTO;
-import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.out.exceptions.security.NoAccessException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.servlet.AdministrationServlet;
-import io.ylab.tom13.coworkingservice.out.utils.mapper.RegistrationMapper;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-
-import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
 
 /**
  * Сервлет для регистрации пользователя администратором.

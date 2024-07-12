@@ -13,16 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
+import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
 
 /**
  * Реализация интерфейса {@link UserEditController}.
  * Обрабатывает запросы на редактирование пользователя.
  */
 @RestController
-public class UserEditControllerImpl implements UserEditController {
+@RequestMapping("/user")
+public class UserEditControllerSpring implements UserEditController {
 
     private final UserEditService userEditService;
 
@@ -30,7 +32,7 @@ public class UserEditControllerImpl implements UserEditController {
      * Конструктор для инициализации контроллера редактирования пользователей.
      */
     @Autowired
-    public UserEditControllerImpl(UserEditService userEditService) {
+    public UserEditControllerSpring(UserEditService userEditService) {
         this.userEditService = userEditService;
     }
 
@@ -38,7 +40,7 @@ public class UserEditControllerImpl implements UserEditController {
      * {@inheritDoc}
      */
     @Override
-    @PatchMapping("/user/edit")
+    @PatchMapping("/edit")
     public ResponseEntity<?> editUser(@RequestBody UserDTO userDTO) {
         try {
             UserDTO user = userEditService.editUser(userDTO);
@@ -56,7 +58,7 @@ public class UserEditControllerImpl implements UserEditController {
      * {@inheritDoc}
      */
     @Override
-    @PatchMapping("/user/edit/password")
+    @PatchMapping("/edit/password")
     public ResponseEntity<?> editPassword(@RequestBody PasswordChangeDTO passwordChangeDTO) {
         try {
             String success = "Пароль успешно изменен";

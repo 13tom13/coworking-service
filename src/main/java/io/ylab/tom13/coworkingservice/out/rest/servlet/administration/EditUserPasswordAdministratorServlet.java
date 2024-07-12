@@ -1,20 +1,8 @@
 package io.ylab.tom13.coworkingservice.out.rest.servlet.administration;
 
-import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.servlet.AdministrationServlet;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.Optional;
-
-import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
 
 /**
  * Сервлет для изменения пароля пользователя администратором.

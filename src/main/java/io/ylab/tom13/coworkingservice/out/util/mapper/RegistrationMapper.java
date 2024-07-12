@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.utils.mapper;
+package io.ylab.tom13.coworkingservice.out.util.mapper;
 
 
 import io.ylab.tom13.coworkingservice.out.entity.dto.RegistrationDTO;

@@ -8,7 +8,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundExce
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.BookingService;
-import io.ylab.tom13.coworkingservice.out.utils.mapper.BookingMapper;
+import io.ylab.tom13.coworkingservice.out.util.mapper.BookingMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

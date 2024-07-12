@@ -8,7 +8,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExist
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
-import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
+import io.ylab.tom13.coworkingservice.out.util.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

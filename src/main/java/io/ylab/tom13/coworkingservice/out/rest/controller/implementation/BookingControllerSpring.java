@@ -56,8 +56,9 @@ public class BookingControllerSpring implements BookingController {
     @DeleteMapping("/cancel")
     public ResponseEntity<?> cancelBooking(@RequestParam(name = "bookingId") long bookingId) {
         try {
+            String responseSuccess = "Бронирование отменено";
             bookingService.cancelBooking(bookingId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Бронирование отменено");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseSuccess);
         } catch (BookingNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (RepositoryException e) {

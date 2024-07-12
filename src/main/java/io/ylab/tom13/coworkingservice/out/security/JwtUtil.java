@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.utils.security;
+package io.ylab.tom13.coworkingservice.out.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -19,19 +19,23 @@ public class JwtUtil {
     private String secret;
 
     private SecretKey SECRET_KEY;
+
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
+    private static final String SECRET_IS_NOT_SET = "JWT secret is not set";
+    private static final String ID = "id";
+    private static final String ROLE = "role";
 
     @PostConstruct
     public void init() {
         if (secret == null || secret.isEmpty()) {
-            throw new IllegalArgumentException("JWT secret is not set");
+            throw new IllegalArgumentException(SECRET_IS_NOT_SET);
         }
         SECRET_KEY = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateJwt(long id, String role) {
         return Jwts.builder()
-                .setClaims(Map.of("id", id, "role", role))
+                .setClaims(Map.of(ID, id, ROLE, role))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .setSubject(String.valueOf(id))
@@ -58,7 +62,7 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return Long.valueOf(claims.get("id").toString());
+        return Long.valueOf(claims.get(ID).toString());
     }
 
     public String getRoleFromToken(String token) {
@@ -67,6 +71,6 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.get("role").toString();
+        return claims.get(ROLE).toString();
     }
 }

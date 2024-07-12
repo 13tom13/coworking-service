@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -19,12 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
  * Обрабатывает запросы на создание нового пользователя и возвращает соответствующие результаты.
  */
 @RestController
-public class RegistrationControllerImpl implements RegistrationController {
+@RequestMapping("/registration")
+public class RegistrationControllerSpring implements RegistrationController {
 
     private final RegistrationService registrationService;
 
     @Autowired
-    public RegistrationControllerImpl(RegistrationService registrationService) {
+    public RegistrationControllerSpring(RegistrationService registrationService) {
         this.registrationService = registrationService;
     }
 
@@ -32,7 +34,7 @@ public class RegistrationControllerImpl implements RegistrationController {
      * {@inheritDoc}
      */
     @Override
-    @PostMapping("/registration")
+    @PostMapping
     public ResponseEntity<?> createUser(@RequestBody final RegistrationDTO registrationDTO) {
         try {
             UserDTO user = registrationService.createUser(registrationDTO);

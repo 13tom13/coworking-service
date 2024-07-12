@@ -1,9 +1,8 @@
-package io.ylab.tom13.coworkingservice.out.utils.aspects.user;
+package io.ylab.tom13.coworkingservice.out.util.aspects.user;
 
 import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
 import io.ylab.tom13.coworkingservice.out.entity.dto.AuthorizationDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;

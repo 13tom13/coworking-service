@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.utils.aspects.user;
+package io.ylab.tom13.coworkingservice.out.util.aspects.user;
 
 import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
 import org.slf4j.Logger;
