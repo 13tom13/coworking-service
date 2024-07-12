@@ -79,23 +79,29 @@ public class AdministrationServiceImpl implements AdministrationService {
      * {@inheritDoc}
      */
     @Override
-    public void editUserPasswordByAdministrator(long userId, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException {
-        Optional<User> byId = userRepository.findById(userId);
-        User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID  " + userId));
+    public void editUserPasswordByAdministrator(String email, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException {
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        User userFromRep = byEmail.orElseThrow(() -> new UserNotFoundException("с email  " + email));
 
         User userChanged = userMapper.toUserWithPassword(userFromRep, newHashPassword);
         if (userRepository.updateUser(userChanged).isEmpty()) {
-            throw new RepositoryException("Не удалось обновить пароль с ID " + userId);
+            throw new RepositoryException("Не удалось обновить пароль с email " + email);
         }
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @return
      */
     @Override
-    public void registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException {
+    public UserDTO registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException {
         User newUser = new User(0, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(),
                 registrationDTO.password(), registrationDTO.role());
-        userRepository.createUser(newUser);
+        Optional<User> registeredUser = userRepository.createUser(newUser);
+        if (registeredUser.isEmpty()) {
+            throw new RepositoryException("Не удалось создать пользователя");
+        }
+        return UserMapper.INSTANCE.toUserDTO(registeredUser.get());
     }
 }
