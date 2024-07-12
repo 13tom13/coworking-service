@@ -5,10 +5,11 @@ database:
   password: password
   default:
     schema: service
-  test:
-    databaseName: coworking-service-test
-    username: test
-    password: test
+test:
+  databaseName: coworking-service-test
+  username: test
+  password: test
+  container: postgres:latest
 
 liquibase:
   schema: service

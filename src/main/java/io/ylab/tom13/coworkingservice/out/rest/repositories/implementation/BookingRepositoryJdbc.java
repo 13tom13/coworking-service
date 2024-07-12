@@ -114,7 +114,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 }
 
 
-                deleteTimeSlots(connection,bookingId);
+                deleteTimeSlots(connection, bookingId);
 
                 insertTimeSlots(connection, bookingId, updatedBooking);
 

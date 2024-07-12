@@ -14,14 +14,18 @@ import java.sql.SQLException;
 @Component
 public class DatabaseConnection {
 
-    @Value("${database.url}")
     private String dbUrl;
-
-    @Value("${database.username}")
     private String dbUsername;
-
-    @Value("${database.password}")
     private String dbPassword;
+
+    public DatabaseConnection(
+            @Value("${database.url}") String dbUrl,
+            @Value("${database.username}") String dbUsername,
+            @Value("${database.password}") String dbPassword) {
+        this.dbUrl = dbUrl;
+        this.dbUsername = dbUsername;
+        this.dbPassword = dbPassword;
+    }
 
     @PostConstruct
     private void loadDriver() {

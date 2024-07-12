@@ -3,6 +3,7 @@ package io.ylab.tom13.coworkingservice.out.config;
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletRegistration;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
@@ -21,6 +22,7 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext container) {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+        AnnotationConfigApplicationContext configApplicationContext = new AnnotationConfigApplicationContext();
         context.scan(COWORKINGSERVICE);
         context.register(ApplicationConfig.class);
         container.addListener(new ContextLoaderListener(context));

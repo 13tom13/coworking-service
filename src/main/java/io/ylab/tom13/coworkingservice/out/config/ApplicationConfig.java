@@ -6,7 +6,6 @@ import org.springframework.context.annotation.*;
 
 @Configuration
 @EnableAspectJAutoProxy
-@ComponentScan(basePackages = "io.ylab.tom13.coworkingservice")
 @PropertySource(value = "classpath:application.yml", factory = YamlPropertySourceFactory.class)
 public class ApplicationConfig {
 
