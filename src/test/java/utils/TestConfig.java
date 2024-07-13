@@ -1,6 +1,6 @@
 package utils;
 
-import io.ylab.tom13.coworkingservice.out.config.YamlPropertySourceFactory;
+import io.ylab.tom13.coworkingservice.out.utils.YamlPropertySourceFactory;
 import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

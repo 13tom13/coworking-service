@@ -57,7 +57,7 @@ public class BookingControllerSpring implements BookingController {
         try {
             String responseSuccess = "Бронирование отменено";
             bookingService.cancelBooking(bookingId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).header("Content-Type", "text/plain; charset=UTF-8").body("Бронирование отменено");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).header("Content-Type", "text/plain; charset=UTF-8").body(responseSuccess);
         } catch (BookingNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (RepositoryException e) {

@@ -12,6 +12,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Фильтр аутентификации на основе JWT.
+ */
 @Component("jwtAuthenticationFilter")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -29,11 +32,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
+    /**
+     * Конструктор для создания экземпляра фильтра с указанием зависимости от JwtUtil.
+     *
+     * @param jwtUtil утилита для работы с JWT
+     */
     @Autowired
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Метод фильтрации HTTP запроса для проверки авторизации по JWT токену.
+     *
+     * @param request     HTTP запрос
+     * @param response    HTTP ответ
+     * @param filterChain цепочка фильтров
+     * @throws ServletException если произошла ошибка в сервлете
+     * @throws IOException      если произошла ошибка ввода-вывода
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -62,6 +79,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Определяет, следует ли пропустить фильтрацию для указанного HTTP запроса.
+     *
+     * @param request HTTP запрос
+     * @return true если фильтрация не требуется, false в противном случае
+     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();

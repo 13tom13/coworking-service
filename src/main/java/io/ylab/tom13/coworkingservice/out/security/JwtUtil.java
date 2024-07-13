@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.Map;
 
 
+/**
+ * Утилита для работы с JWT (JSON Web Token).
+ */
 @Component
 public class JwtUtil {
 
@@ -25,6 +28,13 @@ public class JwtUtil {
     private static final String ID = "id";
     private static final String ROLE = "role";
 
+    /**
+     * Инициализация утилиты для работы с JWT.
+     * Проверяет, установлен ли секрет для JWT.
+     * Инициализирует SECRET_KEY на основе заданного секрета.
+     *
+     * @throws IllegalArgumentException если секрет JWT не задан
+     */
     @PostConstruct
     public void init() {
         if (secret == null || secret.isEmpty()) {
@@ -33,6 +43,13 @@ public class JwtUtil {
         SECRET_KEY = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
+    /**
+     * Генерирует JWT на основе указанного идентификатора и роли.
+     *
+     * @param id   идентификатор пользователя
+     * @param role роль пользователя
+     * @return сгенерированный JWT
+     */
     public String generateJwt(long id, String role) {
         return Jwts.builder()
                 .setClaims(Map.of(ID, id, ROLE, role))
@@ -43,6 +60,12 @@ public class JwtUtil {
                 .compact();
     }
 
+    /**
+     * Проверяет валидность JWT токена.
+     *
+     * @param token JWT токен
+     * @return true, если токен валиден, иначе false
+     */
     public boolean validJwt(String token) {
         try {
             Jwts.parserBuilder()
@@ -56,6 +79,12 @@ public class JwtUtil {
         }
     }
 
+    /**
+     * Получает идентификатор пользователя из JWT токена.
+     *
+     * @param token JWT токен
+     * @return идентификатор пользователя
+     */
     public Long getIdFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)
@@ -65,6 +94,12 @@ public class JwtUtil {
         return Long.valueOf(claims.get(ID).toString());
     }
 
+    /**
+     * Получает роль пользователя из JWT токена.
+     *
+     * @param token JWT токен
+     * @return роль пользователя
+     */
     public String getRoleFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(SECRET_KEY)

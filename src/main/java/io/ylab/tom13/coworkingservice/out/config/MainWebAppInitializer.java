@@ -10,6 +10,9 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.DispatcherServlet;
 
+/**
+ * Инициализатор основного веб-приложения.
+ */
 @Component
 public class MainWebAppInitializer implements WebApplicationInitializer {
 
@@ -17,13 +20,14 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
     private static final String AUTHENTICATION_FILTER = "jwtAuthenticationFilter";
     private static final String ADMIN_FILTER = "adminJwtAuthenticationFilter";
     private static final String MODERATOR_FILTER = "moderatorJwtAuthenticationFilter";
+    private static final String ADMIN = "/admin/*";
+    private static final String COWORKING = "/coworking/*";
 
     @Override
     public void onStartup(ServletContext container) {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
         context.scan(COWORKINGSERVICE);
-        context.register(ApplicationConfig.class);
-        context.register(WebConfig.class);
+
         container.addListener(new ContextLoaderListener(context));
 
         ServletRegistration.Dynamic dispatcher = container.addServlet("mvc", new DispatcherServlet(context));
@@ -34,9 +38,9 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
         jwtFilter.addMappingForUrlPatterns(null, false, "/*");
 
         FilterRegistration.Dynamic adminFilter = container.addFilter(ADMIN_FILTER, new DelegatingFilterProxy(ADMIN_FILTER));
-        adminFilter.addMappingForUrlPatterns(null, false, "/admin/*");
+        adminFilter.addMappingForUrlPatterns(null, false, ADMIN);
 
         FilterRegistration.Dynamic coworkingFilter = container.addFilter(MODERATOR_FILTER, new DelegatingFilterProxy(MODERATOR_FILTER));
-        coworkingFilter.addMappingForUrlPatterns(null, false, "/coworking/*");
+        coworkingFilter.addMappingForUrlPatterns(null, false, COWORKING);
     }
 }

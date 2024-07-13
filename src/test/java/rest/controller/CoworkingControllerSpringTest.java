@@ -1,5 +1,6 @@
 package rest.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.ConferenceRoomDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.WorkplaceDTO;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@DisplayName("Тесты сервиса работы с коворкингами через Spring")
+@DisplayName("Тесты сервиса работы с коворкингами")
 class CoworkingControllerSpringTest extends MvcTest {
 
     @Mock
@@ -36,18 +37,20 @@ class CoworkingControllerSpringTest extends MvcTest {
     @InjectMocks
     private CoworkingControllerSpring coworkingController;
 
+    private WorkplaceDTO workplaceDTO;
+    private ConferenceRoomDTO conferenceRoomDTO;
+
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(coworkingController).build();
+        workplaceDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
+        conferenceRoomDTO = new ConferenceRoomDTO(2L, "Conference Room 1", "Description 2", true, 10);
     }
 
     @Test
     @DisplayName("Тест получения списка коворкингов")
     void getAllCoworking_success() throws Exception {
-        Map<String, CoworkingDTO> coworkings = Map.of(
-                "1", new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A"),
-                "2", new ConferenceRoomDTO(2L, "Conference Room 1", "Description 2", true, 10)
-        );
+        Map<String, CoworkingDTO> coworkings = Map.of("1", workplaceDTO, "2", conferenceRoomDTO);
         when(coworkingService.getAllCoworking()).thenReturn(coworkings);
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/coworking/all")
@@ -57,7 +60,8 @@ class CoworkingControllerSpringTest extends MvcTest {
         resultActions.andExpect(status().isOk());
 
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        Map<String, CoworkingDTO> responseMap = objectMapper.readValue(responseBody, Map.class);
+        Map<String, CoworkingDTO> responseMap = objectMapper.readValue(responseBody, new TypeReference<>() {
+        });
 
         assertThat(responseMap).isEqualTo(coworkings);
     }
@@ -65,10 +69,7 @@ class CoworkingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест получения списка доступных коворкингов")
     void getAllAvailableCoworkings_success() throws Exception {
-        Map<String, CoworkingDTO> availableCoworkings = Map.of(
-                "1", new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A"),
-                "2", new ConferenceRoomDTO(2L, "Conference Room 1", "Description 2", true, 10)
-        );
+        Map<String, CoworkingDTO> availableCoworkings = Map.of("1", workplaceDTO, "2", conferenceRoomDTO);
         when(coworkingService.getAllAvailableCoworkings()).thenReturn(availableCoworkings);
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/coworking/available")
@@ -78,7 +79,8 @@ class CoworkingControllerSpringTest extends MvcTest {
         resultActions.andExpect(status().isOk());
 
         String responseBody = resultActions.andReturn().getResponse().getContentAsString();
-        Map<String, CoworkingDTO> responseMap = objectMapper.readValue(responseBody, Map.class);
+        Map<String, CoworkingDTO> responseMap = objectMapper.readValue(responseBody, new TypeReference<>() {
+        });
 
         assertThat(responseMap).isEqualTo(availableCoworkings);
     }
@@ -86,7 +88,7 @@ class CoworkingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест создания коворкинга")
     void createCoworking_success() throws Exception {
-        CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
+        CoworkingDTO coworkingDTO = workplaceDTO;
         when(coworkingService.createCoworking(any(CoworkingDTO.class))).thenReturn(coworkingDTO);
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/coworking/create")
@@ -105,7 +107,7 @@ class CoworkingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест обновления коворкинга")
     void updateCoworking_success() throws Exception {
-        CoworkingDTO coworkingDTO = new WorkplaceDTO(1L, "Workplace 1", "Description 1", true, "Type A");
+        CoworkingDTO coworkingDTO = workplaceDTO;
         when(coworkingService.updateCoworking(any(CoworkingDTO.class))).thenReturn(coworkingDTO);
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.patch("/coworking/update")

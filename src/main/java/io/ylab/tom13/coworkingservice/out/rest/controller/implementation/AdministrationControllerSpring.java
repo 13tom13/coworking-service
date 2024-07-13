@@ -118,7 +118,7 @@ public class AdministrationControllerSpring implements AdministrationController 
             String responseSuccess = "Пароль пользователя успешно изменен";
             String hashPassword = hashPassword(passwordChangeDTO.newPassword());
             administrationService.editUserPasswordByAdministrator(passwordChangeDTO.email(), hashPassword);
-            return ResponseEntity.ok(responseSuccess);
+            return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "text/plain; charset=UTF-8").body(responseSuccess);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (RepositoryException e) {

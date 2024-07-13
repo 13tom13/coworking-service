@@ -10,6 +10,7 @@ import io.ylab.tom13.coworkingservice.out.rest.controller.UserEditController;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,7 +66,8 @@ public class UserEditControllerSpring implements UserEditController {
             PasswordChangeDTO hashPasswordDTO = new PasswordChangeDTO(passwordChangeDTO.email(), passwordChangeDTO.oldPassword(),
                     hashPassword(passwordChangeDTO.newPassword()));
             userEditService.editPassword(hashPasswordDTO);
-            return ResponseEntity.ok(success);
+            return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "text/plain; charset=UTF-8")
+                    .body(success);
         } catch (UnauthorizedException e) {
             return ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN).body(e.getMessage());
         } catch (RepositoryException e) {

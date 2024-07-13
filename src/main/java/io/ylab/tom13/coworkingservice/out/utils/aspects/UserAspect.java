@@ -16,6 +16,8 @@ import java.time.LocalDateTime;
 
 /**
  * Абстрактный аспект, предоставляющий функциональность для логирования действий пользователей в базу данных.
+ * Реализации этого аспекта могут использоваться для записи действий пользователей в специальные лог-таблицы,
+ * сгенерированные на основе идентификатора пользователя.
  */
 @Component
 public abstract class UserAspect {
@@ -25,12 +27,24 @@ public abstract class UserAspect {
     private final DatabaseConnection databaseConnection;
     protected final JwtUtil jwtUtil;
 
+    /**
+     * Конструктор, инъектирующий зависимости для работы с базой данных и JWT утилитой.
+     *
+     * @param databaseConnection соединение с базой данных
+     * @param jwtUtil             утилита для работы с JWT
+     */
     @Autowired
     public UserAspect(DatabaseConnection databaseConnection, JwtUtil jwtUtil) {
         this.databaseConnection = databaseConnection;
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Логирует действие пользователя в базу данных и в журнал логирования.
+     *
+     * @param joinPoint        точка присоединения для получения информации о вызываемом методе
+     * @param actionDescription описание действия пользователя
+     */
     protected void logAction(JoinPoint joinPoint, String actionDescription) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
@@ -94,7 +108,7 @@ public abstract class UserAspect {
     }
 
     /**
-     * Метод для создания таблицы, если она не существует.
+     * Создает таблицу в базе данных, если она не существует.
      *
      * @param tableName    имя таблицы
      * @param sequenceName имя последовательности
@@ -108,7 +122,6 @@ public abstract class UserAspect {
                     try (Statement statement = connection.createStatement()) {
                         statement.execute(createSchemaSql);
                     } catch (SQLException ignored) {
-
                     }
 
                     String createTableSql = String.format("""
@@ -131,7 +144,7 @@ public abstract class UserAspect {
     }
 
     /**
-     * Метод для создания последовательности, если она не существует.
+     * Создает последовательность в базе данных, если она не существует.
      *
      * @param sequenceName имя последовательности
      */
