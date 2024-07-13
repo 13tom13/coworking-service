@@ -1,5 +1,11 @@
 package io.ylab.tom13.coworkingservice.out.rest.controller.implementation;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.ylab.tom13.coworkingservice.out.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
@@ -23,6 +29,7 @@ import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassw
  */
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "Administration Controller", description = "API для управления пользователями и администраторами")
 public class AdministrationControllerSpring implements AdministrationController {
 
     private final AdministrationService administrationService;
@@ -39,6 +46,9 @@ public class AdministrationControllerSpring implements AdministrationController 
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Получить всех пользователей", description = "Возвращает список всех пользователей")
+    @ApiResponse(responseCode = "200", description = "Список пользователей получен",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO.class)))
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
         List<UserDTO> allUsers = administrationService.getAllUsers();
@@ -49,6 +59,12 @@ public class AdministrationControllerSpring implements AdministrationController 
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Получить пользователя по email", description = "Возвращает пользователя по email")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь найден",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+    })
     @GetMapping("/user")
     public ResponseEntity<?> getUserByEmail(@RequestParam(name = "email") String email) {
         try {
@@ -63,6 +79,14 @@ public class AdministrationControllerSpring implements AdministrationController 
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Редактировать пользователя", description = "Редактирует данные пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь отредактирован",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
+            @ApiResponse(responseCode = "409", description = "Пользователь уже существует"),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+    })
     @PatchMapping("/user/edit")
     public ResponseEntity<?> editUserByAdministrator(@RequestBody UserDTO userDTO) {
         try {
@@ -81,6 +105,13 @@ public class AdministrationControllerSpring implements AdministrationController 
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Изменить пароль пользователя", description = "Изменяет пароль пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пароль пользователя изменен"),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
+            @ApiResponse(responseCode = "409", description = "Пользователь уже существует"),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+    })
     @PatchMapping("/user/edit/password")
     public ResponseEntity<?> editUserPasswordByAdministrator(@RequestBody PasswordChangeDTO passwordChangeDTO) {
         try {
@@ -101,6 +132,13 @@ public class AdministrationControllerSpring implements AdministrationController 
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Регистрация пользователя", description = "Регистрирует нового пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь зарегистрирован",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO.class))),
+            @ApiResponse(responseCode = "409", description = "Пользователь уже существует"),
+            @ApiResponse(responseCode = "500", description = "Ошибка сервера")
+    })
     @PostMapping("/user/registration")
     public ResponseEntity<?> registrationUser(@RequestBody RegistrationDTO registrationDTO) {
         try {
@@ -113,4 +151,3 @@ public class AdministrationControllerSpring implements AdministrationController 
         }
     }
 }
-

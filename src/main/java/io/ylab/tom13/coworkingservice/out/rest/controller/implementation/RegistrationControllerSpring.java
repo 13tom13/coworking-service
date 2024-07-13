@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
+
 /**
  * Реализация интерфейса {@link RegistrationController}.
  * Обрабатывает запросы на создание нового пользователя и возвращает соответствующие результаты.
@@ -37,7 +39,10 @@ public class RegistrationControllerSpring implements RegistrationController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody final RegistrationDTO registrationDTO) {
         try {
-            UserDTO user = registrationService.createUser(registrationDTO);
+            String hashPassword = hashPassword(registrationDTO.password());
+            RegistrationDTO hashedPassword = new RegistrationDTO(registrationDTO.firstName(),registrationDTO.lastName(),
+                    registrationDTO.email(),hashPassword,registrationDTO.role());
+            UserDTO user = registrationService.createUser(hashedPassword);
             return ResponseEntity.status(HttpServletResponse.SC_CREATED).body(user);
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());

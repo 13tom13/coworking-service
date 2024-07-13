@@ -2,10 +2,11 @@ package io.ylab.tom13.coworkingservice.out.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@EnableAspectJAutoProxy
 @PropertySource(value = "classpath:application.yml", factory = YamlPropertySourceFactory.class)
 public class ApplicationConfig {
 
@@ -15,4 +16,5 @@ public class ApplicationConfig {
     public static ObjectMapper getObjectMapper() {
         return objectMapper;
     }
+
 }

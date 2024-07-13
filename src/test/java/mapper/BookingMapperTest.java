@@ -3,7 +3,7 @@ package mapper;
 import io.ylab.tom13.coworkingservice.out.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.entity.model.Booking;
-import io.ylab.tom13.coworkingservice.out.util.mapper.BookingMapper;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.BookingMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,8 +39,6 @@ public class BookingMapperTest {
     @DisplayName("Тест маппинга объекта BookingDTO из объекта Booking")
     void shouldMapBookingToBookingDTO() {
         BookingDTO bookingDTO = bookingMapper.toBookingDTO(booking);
-        System.out.println(bookingDTO);
-
         assertThat(bookingDTO).isNotNull();
         assertThat(bookingDTO.id()).isEqualTo(BOOKING_ID);
         assertThat(bookingDTO.userId()).isEqualTo(USER_ID);
@@ -54,7 +52,6 @@ public class BookingMapperTest {
     @DisplayName("Тест маппинга объекта Booking из объекта BookingDTO")
     void shouldMapBookingDTOToBooking() {
         Booking booking = bookingMapper.toBooking(bookingDTO);
-
         assertThat(booking).isNotNull();
         assertThat(booking.id()).isEqualTo(BOOKING_ID);
         assertThat(booking.userId()).isEqualTo(USER_ID);
@@ -70,7 +67,6 @@ public class BookingMapperTest {
         long id = 5L;
 
         Booking booking = bookingMapper.toBooking(bookingDTO, id);
-
         assertThat(booking).isNotNull();
         assertThat(booking.id()).isEqualTo(id);
         assertThat(booking.userId()).isEqualTo(USER_ID);

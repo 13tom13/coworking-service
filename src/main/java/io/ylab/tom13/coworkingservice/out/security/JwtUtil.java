@@ -21,7 +21,7 @@ public class JwtUtil {
     private SecretKey SECRET_KEY;
 
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 10;
-    private static final String SECRET_IS_NOT_SET = "JWT secret is not set";
+    private static final String SECRET_IS_NOT_SET = "JWT секрет не задан";
     private static final String ID = "id";
     private static final String ROLE = "role";
 

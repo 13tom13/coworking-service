@@ -8,7 +8,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundExce
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.BookingServiceImpl;
-import io.ylab.tom13.coworkingservice.out.util.mapper.BookingMapper;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.BookingMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

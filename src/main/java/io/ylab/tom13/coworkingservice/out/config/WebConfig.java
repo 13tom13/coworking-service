@@ -1,6 +1,8 @@
 package io.ylab.tom13.coworkingservice.out.config;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -11,7 +13,10 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass = true)
+@ComponentScan(basePackages = {"io.ylab.tom13.coworkingservice"})
 public class WebConfig implements WebMvcConfigurer {
+
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -19,6 +24,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .indentOutput(true);
         converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
     }
-
-
 }

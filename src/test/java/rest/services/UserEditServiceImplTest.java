@@ -10,7 +10,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundExce
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.UserEditServiceImpl;
-import io.ylab.tom13.coworkingservice.out.util.mapper.UserMapper;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -13,7 +13,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.CoworkingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.CoworkingServiceImpl;
-import io.ylab.tom13.coworkingservice.out.util.mapper.CoworkingMapper;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.CoworkingMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

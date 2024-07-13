@@ -22,7 +22,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/booking")
 public class BookingControllerSpring implements BookingController {
-
     private final BookingService bookingService;
 
     /**
@@ -58,7 +57,7 @@ public class BookingControllerSpring implements BookingController {
         try {
             String responseSuccess = "Бронирование отменено";
             bookingService.cancelBooking(bookingId);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(responseSuccess);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).header("Content-Type", "text/plain; charset=UTF-8").body("Бронирование отменено");
         } catch (BookingNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (RepositoryException e) {
@@ -119,7 +118,7 @@ public class BookingControllerSpring implements BookingController {
      */
     @Override
     @GetMapping("/availableslots")
-    public ResponseEntity<?> getAvailableSlots(@RequestParam(name = "coworkingId") long coworkingId,@RequestParam(name = "date") LocalDate date) {
+    public ResponseEntity<?> getAvailableSlots(@RequestParam(name = "coworkingId") long coworkingId, @RequestParam(name = "date") LocalDate date) {
         try {
             List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
             return ResponseEntity.ok(availableSlots);

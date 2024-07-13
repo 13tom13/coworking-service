@@ -9,7 +9,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.CoworkingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.CoworkingService;
-import io.ylab.tom13.coworkingservice.out.util.mapper.CoworkingMapper;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.CoworkingMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
