@@ -1,5 +1,10 @@
 package io.ylab.tom13.coworkingservice.out.rest.controller.implementation;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.ylab.tom13.coworkingservice.out.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictException;
@@ -21,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/booking")
+@Tag(name = "Контроллер бронирования", description = "Обрабатывает запросы, связанные с бронированием в системе.")
 public class BookingControllerSpring implements BookingController {
     private final BookingService bookingService;
 
@@ -36,8 +42,14 @@ public class BookingControllerSpring implements BookingController {
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Создание бронирования", description = "Создает новое бронирование и возвращает его данные.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Бронирование создано"),
+            @ApiResponse(responseCode = "409", description = "Конфликт бронирования"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @PostMapping("/create")
-    public ResponseEntity<?> createBooking(@RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<?> createBooking(@Parameter(description = "Данные для создания бронирования", required = true) @RequestBody BookingDTO bookingDTO) {
         try {
             BookingDTO booking = bookingService.createBooking(bookingDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(booking);
@@ -52,8 +64,14 @@ public class BookingControllerSpring implements BookingController {
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Отмена бронирования", description = "Отменяет бронирование по ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Бронирование отменено"),
+            @ApiResponse(responseCode = "404", description = "Бронирование не найдено"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @DeleteMapping("/cancel")
-    public ResponseEntity<?> cancelBooking(@RequestParam(name = "bookingId") long bookingId) {
+    public ResponseEntity<?> cancelBooking(@Parameter(description = "ID бронирования для отмены", required = true) @RequestParam(name = "bookingId") long bookingId) {
         try {
             String responseSuccess = "Бронирование отменено";
             bookingService.cancelBooking(bookingId);
@@ -69,8 +87,14 @@ public class BookingControllerSpring implements BookingController {
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Получение бронирований пользователя", description = "Возвращает список бронирований пользователя по ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная операция"),
+            @ApiResponse(responseCode = "404", description = "Бронирования не найдены"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @GetMapping("/user")
-    public ResponseEntity<?> getBookingsByUser(@RequestParam(name = "userId") long userId) {
+    public ResponseEntity<?> getBookingsByUser(@Parameter(description = "ID пользователя для получения бронирований", required = true) @RequestParam(name = "userId") long userId) {
         try {
             List<BookingDTO> bookingsByUser = bookingService.getBookingsByUser(userId);
             return ResponseEntity.ok(bookingsByUser);
@@ -85,8 +109,14 @@ public class BookingControllerSpring implements BookingController {
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Получение бронирований пользователя по дате", description = "Возвращает список бронирований пользователя по ID и дате.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная операция"),
+            @ApiResponse(responseCode = "404", description = "Бронирования не найдены"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @GetMapping("/user/date")
-    public ResponseEntity<?> getBookingsByUserAndDate(@RequestParam(name = "userId") long userId, @RequestParam(name = "date") LocalDate date) {
+    public ResponseEntity<?> getBookingsByUserAndDate(@Parameter(description = "ID пользователя для получения бронирований", required = true) @RequestParam(name = "userId") long userId, @Parameter(description = "Дата для получения бронирований", required = true) @RequestParam(name = "date") LocalDate date) {
         try {
             List<BookingDTO> bookingsByUserAndDate = bookingService.getBookingsByUserAndDate(userId, date);
             return ResponseEntity.ok(bookingsByUserAndDate);
@@ -101,8 +131,14 @@ public class BookingControllerSpring implements BookingController {
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Получение бронирований пользователя по коворкингу", description = "Возвращает список бронирований пользователя по ID и ID коворкинга.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная операция"),
+            @ApiResponse(responseCode = "404", description = "Бронирования не найдены"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @GetMapping("/user/coworking")
-    public ResponseEntity<?> getBookingsByUserAndCoworking(@RequestParam(name = "userId") long userId, @RequestParam(name = "coworkingId") long coworkingId) {
+    public ResponseEntity<?> getBookingsByUserAndCoworking(@Parameter(description = "ID пользователя для получения бронирований", required = true) @RequestParam(name = "userId") long userId, @Parameter(description = "ID коворкинга для получения бронирований", required = true) @RequestParam(name = "coworkingId") long coworkingId) {
         try {
             List<BookingDTO> bookingsByUserAndCoworking = bookingService.getBookingsByUserAndCoworking(userId, coworkingId);
             return ResponseEntity.ok(bookingsByUserAndCoworking);
@@ -117,8 +153,13 @@ public class BookingControllerSpring implements BookingController {
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Получение доступных временных слотов", description = "Возвращает список доступных временных слотов для указанного коворкинга и даты.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная операция"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @GetMapping("/availableslots")
-    public ResponseEntity<?> getAvailableSlots(@RequestParam(name = "coworkingId") long coworkingId, @RequestParam(name = "date") LocalDate date) {
+    public ResponseEntity<?> getAvailableSlots(@Parameter(description = "ID коворкинга для получения временных слотов", required = true) @RequestParam(name = "coworkingId") long coworkingId, @Parameter(description = "Дата для получения временных слотов", required = true) @RequestParam(name = "date") LocalDate date) {
         try {
             List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
             return ResponseEntity.ok(availableSlots);
@@ -131,8 +172,14 @@ public class BookingControllerSpring implements BookingController {
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Получение бронирования по ID", description = "Возвращает данные бронирования по ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная операция"),
+            @ApiResponse(responseCode = "404", description = "Бронирование не найдено"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @GetMapping
-    public ResponseEntity<?> getBookingById(@RequestParam(name = "bookingId") long bookingId) {
+    public ResponseEntity<?> getBookingById(@Parameter(description = "ID бронирования для получения", required = true) @RequestParam(name = "bookingId") long bookingId) {
         try {
             BookingDTO bookingById = bookingService.getBookingById(bookingId);
             return ResponseEntity.ok(bookingById);
@@ -147,8 +194,15 @@ public class BookingControllerSpring implements BookingController {
      * {@inheritDoc}
      */
     @Override
+    @Operation(summary = "Обновление бронирования", description = "Обновляет данные существующего бронирования.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная операция"),
+            @ApiResponse(responseCode = "404", description = "Бронирование не найдено"),
+            @ApiResponse(responseCode = "409", description = "Конфликт бронирования"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @PatchMapping("/update")
-    public ResponseEntity<?> updateBooking(@RequestBody BookingDTO booking) {
+    public ResponseEntity<?> updateBooking(@Parameter(description = "Данные для обновления бронирования", required = true) @RequestBody BookingDTO booking) {
         try {
             BookingDTO updatedBooking = bookingService.updateBooking(booking);
             return ResponseEntity.ok(updatedBooking);
@@ -161,4 +215,3 @@ public class BookingControllerSpring implements BookingController {
         }
     }
 }
-

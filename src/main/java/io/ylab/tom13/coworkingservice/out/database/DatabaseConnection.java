@@ -2,7 +2,7 @@ package io.ylab.tom13.coworkingservice.out.database;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
