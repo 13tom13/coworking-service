@@ -37,7 +37,7 @@ class BookingControllerSpringTest extends MvcTest {
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(bookingController).build();
-        bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), List.of(TimeSlot.MORNING));
+        bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now().plusDays(1L), List.of(TimeSlot.MORNING));
     }
 
     @Test

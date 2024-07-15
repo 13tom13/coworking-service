@@ -13,6 +13,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.rest.controller.BookingController;
 import io.ylab.tom13.coworkingservice.out.rest.services.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -116,7 +117,10 @@ public class BookingControllerSpring implements BookingController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     @GetMapping("/user/date")
-    public ResponseEntity<?> getBookingsByUserAndDate(@Parameter(description = "ID пользователя для получения бронирований", required = true) @RequestParam(name = "userId") long userId, @Parameter(description = "Дата для получения бронирований", required = true) @RequestParam(name = "date") LocalDate date) {
+    public ResponseEntity<?> getBookingsByUserAndDate(@Parameter(description = "ID пользователя для получения бронирований", required = true)
+                                                          @RequestParam(name = "userId") long userId,
+                                                      @Parameter(description = "Дата для получения бронирований", required = true)
+                                                      @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         try {
             List<BookingDTO> bookingsByUserAndDate = bookingService.getBookingsByUserAndDate(userId, date);
             return ResponseEntity.ok(bookingsByUserAndDate);
@@ -138,7 +142,10 @@ public class BookingControllerSpring implements BookingController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     @GetMapping("/user/coworking")
-    public ResponseEntity<?> getBookingsByUserAndCoworking(@Parameter(description = "ID пользователя для получения бронирований", required = true) @RequestParam(name = "userId") long userId, @Parameter(description = "ID коворкинга для получения бронирований", required = true) @RequestParam(name = "coworkingId") long coworkingId) {
+    public ResponseEntity<?> getBookingsByUserAndCoworking(@Parameter(description = "ID пользователя для получения бронирований", required = true)
+                                                               @RequestParam(name = "userId") long userId,
+                                                           @Parameter(description = "ID коворкинга для получения бронирований", required = true)
+                                                           @RequestParam(name = "coworkingId") long coworkingId) {
         try {
             List<BookingDTO> bookingsByUserAndCoworking = bookingService.getBookingsByUserAndCoworking(userId, coworkingId);
             return ResponseEntity.ok(bookingsByUserAndCoworking);
@@ -159,7 +166,10 @@ public class BookingControllerSpring implements BookingController {
             @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
     })
     @GetMapping("/availableslots")
-    public ResponseEntity<?> getAvailableSlots(@Parameter(description = "ID коворкинга для получения временных слотов", required = true) @RequestParam(name = "coworkingId") long coworkingId, @Parameter(description = "Дата для получения временных слотов", required = true) @RequestParam(name = "date") LocalDate date) {
+    public ResponseEntity<?> getAvailableSlots(@Parameter(description = "ID коворкинга для получения временных слотов", required = true)
+                                                   @RequestParam(name = "coworkingId") long coworkingId,
+                                               @Parameter(description = "Дата для получения временных слотов", required = true)
+                                               @RequestParam(name = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         try {
             List<TimeSlot> availableSlots = bookingService.getAvailableSlots(coworkingId, date);
             return ResponseEntity.ok(availableSlots);
