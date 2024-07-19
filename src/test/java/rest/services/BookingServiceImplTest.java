@@ -9,6 +9,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.BookingServiceImpl;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.BookingMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@RequiredArgsConstructor
 @DisplayName("Тесты сервиса работы с бронированиями")
 class BookingServiceImplTest {
 
@@ -39,6 +41,8 @@ class BookingServiceImplTest {
 
     @InjectMocks
     private BookingServiceImpl bookingService;
+
+    private final BookingMapper bookingMapper;
 
     BookingDTO bookingDTO;
     Booking booking;
@@ -49,7 +53,7 @@ class BookingServiceImplTest {
         bookingRepositoryField.setAccessible(true);
         bookingRepositoryField.set(bookingService, bookingRepository);
         bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now(), Arrays.asList(TimeSlot.MORNING, TimeSlot.AFTERNOON));
-        booking = BookingMapper.INSTANCE.toBooking(bookingDTO);
+        booking = bookingMapper.toBooking(bookingDTO);
     }
 
     @Test

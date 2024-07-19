@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import utils.MvcTest;
 
 import java.lang.reflect.Field;
 import java.util.Optional;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Тесты сервиса администратора")
-class AdministrationServiceImplTest {
+class AdministrationServiceImplTest extends MvcTest {
 
     @Mock
     private UserRepository userRepository;

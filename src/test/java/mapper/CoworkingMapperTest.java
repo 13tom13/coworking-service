@@ -5,16 +5,18 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.WorkplaceDTO;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.ConferenceRoom;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Workplace;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.CoworkingMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RequiredArgsConstructor
 @DisplayName("Тест маппинга наследников класса Coworking")
 public class CoworkingMapperTest {
 
-    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
+    private final CoworkingMapper coworkingMapper;
 
     private ConferenceRoom conferenceRoom;
     private ConferenceRoomDTO conferenceRoomDTO;

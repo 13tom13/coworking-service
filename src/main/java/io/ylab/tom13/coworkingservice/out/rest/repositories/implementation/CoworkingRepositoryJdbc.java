@@ -8,7 +8,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingConflict
 import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.CoworkingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -21,16 +21,12 @@ import java.util.Optional;
  * CRUD операции с пользователями с использованием JDBC.
  */
 @Repository
+@RequiredArgsConstructor
 public class CoworkingRepositoryJdbc implements CoworkingRepository {
 
     public static final String UNIQUE_VIOLATION = "23505";
 
     private final DatabaseConnection databaseConnection;
-
-    @Autowired
-    public CoworkingRepositoryJdbc(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
-    }
 
     /**
      * {@inheritDoc}

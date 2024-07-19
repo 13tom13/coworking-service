@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.rest.controller.implementation;
+package io.ylab.tom13.coworkingservice.out.rest.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -7,42 +7,34 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.ylab.tom13.coworkingservice.out.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.out.rest.controller.RegistrationController;
 import io.ylab.tom13.coworkingservice.out.rest.services.RegistrationService;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
-
 
 /**
- * Реализация интерфейса {@link RegistrationController}.
+ * Контроллер для регистрации нового пользователя.
  * Обрабатывает запросы на создание нового пользователя и возвращает соответствующие результаты.
  */
 @RestController
 @RequestMapping("/registration")
+@RequiredArgsConstructor
 @Tag(name = "Контроллер регистрации", description = "Обрабатывает запросы на создание нового пользователя.")
-public class RegistrationControllerSpring implements RegistrationController {
+public class RegistrationControllerSpring {
 
     private final RegistrationService registrationService;
 
-    @Autowired
-    public RegistrationControllerSpring(RegistrationService registrationService) {
-        this.registrationService = registrationService;
-    }
-
     /**
-     * {@inheritDoc}
+     * Метод для создания нового пользователя на основе предоставленных данных регистрации.
+     *
+     * @param registrationDTO данные регистрации нового пользователя
+     * @return объект ResponseEntity, содержащий результат операции создания пользователя
      */
-    @Override
     @Operation(summary = "Создание нового пользователя", description = "Создает нового пользователя и возвращает его данные.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Пользователь успешно создан"),
@@ -51,21 +43,7 @@ public class RegistrationControllerSpring implements RegistrationController {
     })
     @PostMapping
     public ResponseEntity<?> createUser(@Parameter(description = "Данные для регистрации пользователя", required = true) @RequestBody final RegistrationDTO registrationDTO) {
-        try {
-            String hashPassword = hashPassword(registrationDTO.password());
-            RegistrationDTO hashedPassword = new RegistrationDTO(
-                    registrationDTO.firstName(),
-                    registrationDTO.lastName(),
-                    registrationDTO.email(),
-                    hashPassword,
-                    registrationDTO.role()
-            );
-            UserDTO user = registrationService.createUser(hashedPassword);
-            return ResponseEntity.status(HttpServletResponse.SC_CREATED).body(user);
-        } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (RepositoryException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
+        UserDTO user = registrationService.createUser(registrationDTO);
+        return ResponseEntity.status(HttpServletResponse.SC_CREATED).body(user);
     }
 }

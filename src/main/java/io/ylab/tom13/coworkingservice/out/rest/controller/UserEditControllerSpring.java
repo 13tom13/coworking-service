@@ -1,4 +1,4 @@
-package io.ylab.tom13.coworkingservice.out.rest.controller.implementation;
+package io.ylab.tom13.coworkingservice.out.rest.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,11 +10,9 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
-import io.ylab.tom13.coworkingservice.out.rest.controller.UserEditController;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -22,31 +20,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
-
 /**
- * Реализация интерфейса {@link UserEditController}.
+ * Контроллер редактирования пользователя.
  * Обрабатывает запросы на редактирование пользователя.
  */
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
 @Tag(name = "Контроллер редактирования пользователей", description = "Обрабатывает запросы на редактирование пользователя.")
-public class UserEditControllerSpring implements UserEditController {
+public class UserEditControllerSpring {
 
     private final UserEditService userEditService;
 
     /**
-     * Конструктор для инициализации контроллера редактирования пользователей.
+     * Редактирует информацию о пользователе на основе предоставленного объекта UserDTO.
+     *
+     * @param userDTO DTO с информацией о пользователе для редактирования.
+     * @return ResponseEntity с обновленным объектом UserDTO или сообщением об ошибке.
      */
-    @Autowired
-    public UserEditControllerSpring(UserEditService userEditService) {
-        this.userEditService = userEditService;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Operation(summary = "Редактирование пользователя", description = "Редактирует данные существующего пользователя.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пользователь успешно отредактирован"),
@@ -71,9 +62,11 @@ public class UserEditControllerSpring implements UserEditController {
     }
 
     /**
-     * {@inheritDoc}
+     * Изменяет пароль пользователя на основе предоставленного объекта PasswordChangeDTO.
+     *
+     * @param passwordChangeDTO DTO с новым паролем и идентификатором пользователя.
+     * @return ResponseEntity с сообщением об успешном изменении пароля или сообщением об ошибке.
      */
-    @Override
     @Operation(summary = "Изменение пароля пользователя", description = "Изменяет пароль существующего пользователя.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пароль успешно изменен"),
@@ -86,22 +79,9 @@ public class UserEditControllerSpring implements UserEditController {
     public ResponseEntity<?> editPassword(
             @Parameter(description = "Данные для изменения пароля пользователя", required = true)
             @RequestBody PasswordChangeDTO passwordChangeDTO) {
-        try {
-            String success = "Пароль успешно изменен";
-            PasswordChangeDTO hashPasswordDTO = new PasswordChangeDTO(
-                    passwordChangeDTO.email(), passwordChangeDTO.oldPassword(),
-                    hashPassword(passwordChangeDTO.newPassword()));
-            userEditService.editPassword(hashPasswordDTO);
-            return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "text/plain; charset=UTF-8")
-                    .body(success);
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN).body(e.getMessage());
-        } catch (RepositoryException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body(e.getMessage());
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(e.getMessage());
-        } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_CONFLICT).body(e.getMessage());
-        }
+        String success = "Пароль успешно изменен";
+        userEditService.editPassword(passwordChangeDTO);
+        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "text/plain; charset=UTF-8")
+                .body(success);
     }
 }

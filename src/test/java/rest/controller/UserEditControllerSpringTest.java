@@ -5,7 +5,7 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
-import io.ylab.tom13.coworkingservice.out.rest.controller.implementation.UserEditControllerSpring;
+import io.ylab.tom13.coworkingservice.out.rest.controller.UserEditControllerSpring;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -9,41 +9,35 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExist
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.RegistrationService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+
+import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
 
 /**
  * Реализация интерфейса {@link RegistrationService}.
  * Сервиса регистрации пользователей.
  */
 @Service
+@RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final UserRepository userRepository;
-
-    public final UserMapper userMapper = UserMapper.INSTANCE;
-
-    /**
-     * Конструктор для инициализации сервиса регистрации с использованием репозитория пользователей.
-     */
-    @Autowired
-    public RegistrationServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserMapper userMapper;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public UserDTO createUser(RegistrationDTO registrationDTO) throws UserAlreadyExistsException, RepositoryException {
+    public UserDTO createUser(RegistrationDTO registrationDTO) {
         String email = registrationDTO.email();
         if (userRepository.findByEmail(email).isPresent()) {
             throw new UserAlreadyExistsException(email);
         }
-
-        User newUser = new User(0, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(), registrationDTO.password(), Role.USER);
+        String hashPassword = hashPassword(registrationDTO.password());
+        User newUser = new User(0, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(), hashPassword, Role.USER);
         Optional<User> userFromRep = userRepository.createUser(newUser);
         if (userFromRep.isEmpty()) {
             throw new RepositoryException("Не удалось создать пользователя");

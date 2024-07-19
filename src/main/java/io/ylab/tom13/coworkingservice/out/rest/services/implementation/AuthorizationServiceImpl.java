@@ -7,7 +7,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedExcept
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.AuthorizationService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,32 +19,25 @@ import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.verifyPas
  * Сервиса авторизации пользователей.
  */
 @Service
+@RequiredArgsConstructor
 public class AuthorizationServiceImpl implements AuthorizationService {
 
 
     private final UserRepository userRepository;
-
-    /**
-     * Конструктор для инициализации сервиса авторизации с использованием репозитория пользователей.
-     */
-    @Autowired
-    public AuthorizationServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserMapper userMapper;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public UserDTO login(AuthorizationDTO authorizationDTO) throws UnauthorizedException {
+    public UserDTO login(AuthorizationDTO authorizationDTO) {
         String email = authorizationDTO.email();
         String passwordFromDTO = authorizationDTO.password();
-
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (authenticateUser(passwordFromDTO, user.password())) {
-                return UserMapper.INSTANCE.toUserDTO(user);
+                return userMapper.toUserDTO(user);
             } else {
                 throw new UnauthorizedException("Неверный email или пароль");
             }

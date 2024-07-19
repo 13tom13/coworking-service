@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.ConferenceRoomDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.WorkplaceDTO;
-import io.ylab.tom13.coworkingservice.out.rest.controller.implementation.CoworkingControllerSpring;
+import io.ylab.tom13.coworkingservice.out.rest.controller.CoworkingControllerSpring;
 import io.ylab.tom13.coworkingservice.out.rest.services.CoworkingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

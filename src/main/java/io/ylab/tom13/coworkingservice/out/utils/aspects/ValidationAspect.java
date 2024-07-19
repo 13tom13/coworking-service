@@ -1,14 +1,12 @@
 package io.ylab.tom13.coworkingservice.out.utils.aspects;
 
-import io.ylab.tom13.coworkingservice.out.rest.controller.BookingController;
 import jakarta.validation.*;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -18,10 +16,11 @@ import java.util.Set;
  */
 @Aspect
 @Component
+@Slf4j
 public class ValidationAspect {
 
     private final Validator validator;
-    private static final Logger logger = LoggerFactory.getLogger(BookingController.class);
+
     /**
      * Инициализирует аспект и получает экземпляр валидатора.
      */

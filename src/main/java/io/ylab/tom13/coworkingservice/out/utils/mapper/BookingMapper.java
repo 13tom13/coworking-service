@@ -4,18 +4,12 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.out.entity.model.Booking;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 /**
  * Маппер для преобразования между объектами Booking и BookingDTO.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BookingMapper {
-
-    /**
-     * Получение экземпляра маппера BookingMapper.
-     */
-    BookingMapper INSTANCE = Mappers.getMapper(BookingMapper.class);
 
     /**
      * Преобразует объект Booking в BookingDTO.

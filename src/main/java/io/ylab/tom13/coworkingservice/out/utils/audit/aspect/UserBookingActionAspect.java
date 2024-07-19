@@ -1,12 +1,15 @@
-package io.ylab.tom13.coworkingservice.out.utils.aspects;
+package io.ylab.tom13.coworkingservice.out.utils.audit.aspect;
 
-import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
 import io.ylab.tom13.coworkingservice.out.security.JwtUtil;
+import io.ylab.tom13.coworkingservice.out.utils.audit.service.UserAuditService;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * Аспект для логирования действий пользователя в контроллерах бронирования.
@@ -14,22 +17,17 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-public class UserBookingActionAspect extends UserAspect {
+@Slf4j
+public class UserBookingActionAspect extends UserAuditAspect {
 
-    /**
-     * Конструктор, инъектирующий зависимости для работы с базой данных и JWT утилитой.
-     *
-     * @param databaseConnection соединение с базой данных
-     * @param jwtUtil            утилита для работы с JWT
-     */
-    public UserBookingActionAspect(DatabaseConnection databaseConnection, JwtUtil jwtUtil) {
-        super(databaseConnection, jwtUtil);
+    public UserBookingActionAspect(UserAuditService userAuditService, JwtUtil jwtUtil) {
+        super(userAuditService, jwtUtil);
     }
 
     /**
      * Точка присоединения для логирования действий пользователя в контроллерах бронирования.
      */
-    @Pointcut("execution(* io.ylab.tom13.coworkingservice.out.rest.controller.BookingController+.*(..))")
+    @Pointcut("execution(* io.ylab.tom13.coworkingservice.out.rest.controller.BookingControllerSpring+.*(..))")
     public void bookingUserPointcut() {
     }
 
@@ -42,7 +40,11 @@ public class UserBookingActionAspect extends UserAspect {
     @AfterReturning(pointcut = "bookingUserPointcut()", returning = "result")
     public void logUserBookingAction(JoinPoint joinPoint, Object result) {
         String methodName = joinPoint.getSignature().getName();
-        logAction(joinPoint, determineAction(methodName));
+        Optional<Long> userIdOpt = getUserIdFromRequest();
+        userIdOpt.ifPresentOrElse(
+                userId -> userAuditService.logActionByID(userId, determineAction(methodName)),
+                () -> log.warn(TOKEN_WARNING)
+        );
     }
 
     /**
@@ -51,7 +53,8 @@ public class UserBookingActionAspect extends UserAspect {
      * @param methodName имя метода контроллера бронирования
      * @return описание действия пользователя
      */
-    private String determineAction(String methodName) {
+    @Override
+    protected String determineAction(String methodName) {
         return switch (methodName) {
             case "createBooking" -> "создал бронирование";
             case "updateBooking" -> "изменил бронирование";

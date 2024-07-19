@@ -4,7 +4,7 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundException;
-import io.ylab.tom13.coworkingservice.out.rest.controller.implementation.BookingControllerSpring;
+import io.ylab.tom13.coworkingservice.out.rest.controller.BookingControllerSpring;
 import io.ylab.tom13.coworkingservice.out.rest.services.BookingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

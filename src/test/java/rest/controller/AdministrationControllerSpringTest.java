@@ -7,7 +7,7 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
-import io.ylab.tom13.coworkingservice.out.rest.controller.implementation.AdministrationControllerSpring;
+import io.ylab.tom13.coworkingservice.out.rest.controller.AdministrationControllerSpring;
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

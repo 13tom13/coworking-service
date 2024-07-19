@@ -7,7 +7,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -22,16 +22,12 @@ import java.util.Optional;
  * CRUD операции с пользователями с использованием JDBC.
  */
 @Repository
+@RequiredArgsConstructor
 public class UserRepositoryJdbc implements UserRepository {
 
     private static final String UNIQUE_VIOLATION = "23505";
 
     private final DatabaseConnection databaseConnection;
-
-    @Autowired
-    public UserRepositoryJdbc(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
-    }
 
     /**
      * {@inheritDoc}

@@ -6,7 +6,7 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +18,7 @@ import java.sql.SQLException;
  * Класс для выполнения миграций базы данных с помощью Liquibase.
  */
 @Component
+@RequiredArgsConstructor
 public class LiquibaseConnector {
     @Value("${liquibase.changelog}")
     private String changelogFilePath;
@@ -25,11 +26,6 @@ public class LiquibaseConnector {
     private String schema;
 
     private final DatabaseConnection databaseConnection;
-
-    @Autowired
-    public LiquibaseConnector(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
-    }
 
     /**
      * Запускает миграции базы данных с использованием конфигурации Liquibase.

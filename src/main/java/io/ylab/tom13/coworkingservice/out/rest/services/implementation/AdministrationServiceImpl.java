@@ -9,7 +9,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundExce
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,19 +23,12 @@ import java.util.stream.Collectors;
  * Сервис администрирования пользователей.
  */
 @Service
+@RequiredArgsConstructor
 public class AdministrationServiceImpl implements AdministrationService {
 
     private final UserRepository userRepository;
 
-    /**
-     * Конструктор для инициализации сервиса администрирования пользователей.
-     */
-    @Autowired
-    public AdministrationServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final UserMapper userMapper;
 
     /**
      * {@inheritDoc}
@@ -44,7 +37,7 @@ public class AdministrationServiceImpl implements AdministrationService {
     public List<UserDTO> getAllUsers() {
         Collection<User> allUsers = userRepository.getAllUsers();
         return allUsers.stream()
-                .map(UserMapper.INSTANCE::toUserDTO)
+                .map(userMapper::toUserDTO)
                 .collect(Collectors.toList());
     }
 
@@ -102,6 +95,6 @@ public class AdministrationServiceImpl implements AdministrationService {
         if (registeredUser.isEmpty()) {
             throw new RepositoryException("Не удалось создать пользователя");
         }
-        return UserMapper.INSTANCE.toUserDTO(registeredUser.get());
+        return userMapper.toUserDTO(registeredUser.get());
     }
 }

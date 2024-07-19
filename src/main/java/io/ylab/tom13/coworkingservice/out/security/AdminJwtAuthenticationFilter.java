@@ -1,10 +1,10 @@
 package io.ylab.tom13.coworkingservice.out.security;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,6 +14,7 @@ import java.io.IOException;
 /**
  * Фильтр аутентификации для администратора на основе JWT.
  */
+@RequiredArgsConstructor
 @Component("adminJwtAuthenticationFilter")
 public class AdminJwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -25,16 +26,6 @@ public class AdminJwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String ADMIN = "/admin";
 
     private final JwtUtil jwtUtil;
-
-    /**
-     * Конструктор для создания экземпляра фильтра с указанием зависимости от JwtUtil.
-     *
-     * @param jwtUtil утилита для работы с JWT
-     */
-    @Autowired
-    public AdminJwtAuthenticationFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
 
     /**
      * Метод фильтрации HTTP запроса для проверки авторизации администратора по JWT токену.

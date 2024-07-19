@@ -7,6 +7,7 @@ import io.ylab.tom13.coworkingservice.out.entity.model.User;
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.AuthorizationServiceImpl;
+import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ public class AuthorizationServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private UserMapper userMapper;
 
     @InjectMocks
     private AuthorizationServiceImpl authorizationService;

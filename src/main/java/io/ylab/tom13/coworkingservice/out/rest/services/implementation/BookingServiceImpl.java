@@ -9,7 +9,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.BookingService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.BookingMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,19 +20,12 @@ import java.util.*;
  * Сервиса для управления операциями бронирования.
  */
 @Service
+@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
 
-    /**
-     * Конструктор для инициализации сервиса бронирования.
-     */
-    @Autowired
-    public BookingServiceImpl(BookingRepository bookingRepository) {
-        this.bookingRepository = bookingRepository;
-    }
-
-    private final BookingMapper bookingMapper = BookingMapper.INSTANCE;
+    private final BookingMapper bookingMapper;
 
     /**
      * {@inheritDoc}

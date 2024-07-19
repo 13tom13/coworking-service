@@ -4,18 +4,12 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.entity.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 /**
  * Маппер для преобразования между объектами User и UserDTO.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
-
-    /**
-     * Получение экземпляра маппера UserMapper.
-     */
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     /**
      * Преобразует объект User в UserDTO.

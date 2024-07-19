@@ -1,10 +1,10 @@
 package io.ylab.tom13.coworkingservice.out.security;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * Фильтр аутентификации на основе JWT.
  */
+@RequiredArgsConstructor
 @Component("jwtAuthenticationFilter")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -32,16 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     );
 
     private final JwtUtil jwtUtil;
-
-    /**
-     * Конструктор для создания экземпляра фильтра с указанием зависимости от JwtUtil.
-     *
-     * @param jwtUtil утилита для работы с JWT
-     */
-    @Autowired
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
 
     /**
      * Метод фильтрации HTTP запроса для проверки авторизации по JWT токену.

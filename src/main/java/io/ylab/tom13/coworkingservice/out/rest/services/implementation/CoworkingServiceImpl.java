@@ -10,7 +10,7 @@ import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.CoworkingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.CoworkingMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -21,21 +21,12 @@ import java.util.*;
  * Сервиса управления коворкингами.
  */
 @Service
+@RequiredArgsConstructor
 public class CoworkingServiceImpl implements CoworkingService {
 
     private final CoworkingRepository coworkingRepository;
     private final BookingRepository bookingRepository;
-    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
-
-    /**
-     * Конструктор по умолчанию.
-     * Инициализирует репозитории для работы с данными коворкингов и бронирований.
-     */
-    @Autowired
-    public CoworkingServiceImpl(CoworkingRepository coworkingRepository, BookingRepository bookingRepository) {
-        this.coworkingRepository = coworkingRepository;
-        this.bookingRepository = bookingRepository;
-    }
+    private final CoworkingMapper coworkingMapper;
 
     /**
      * {@inheritDoc}

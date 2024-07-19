@@ -14,6 +14,7 @@ import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.CoworkingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.CoworkingServiceImpl;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.CoworkingMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Тесты сервиса работы с коворкингами")
+@RequiredArgsConstructor
 class CoworkingServiceImplTest {
 
     @Mock
@@ -45,7 +47,7 @@ class CoworkingServiceImplTest {
 
     private CoworkingDTO coworkingDTO;
 
-    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
+    private final CoworkingMapper coworkingMapper;
 
     @BeforeEach
     void setUp() throws IllegalAccessException, NoSuchFieldException {
@@ -91,7 +93,7 @@ class CoworkingServiceImplTest {
     void testUpdateConferenceRoom() throws CoworkingUpdatingExceptions, CoworkingConflictException, CoworkingNotFoundException, RepositoryException {
         coworkingDTO = new ConferenceRoomDTO(3L, "Conference Room", "Description", true, 10);
 
-        ConferenceRoom conferenceRoom = CoworkingMapper.INSTANCE.toConferenceRoom((ConferenceRoomDTO) coworkingDTO);
+        ConferenceRoom conferenceRoom = coworkingMapper.toConferenceRoom((ConferenceRoomDTO) coworkingDTO);
 
         doReturn(Optional.ofNullable(conferenceRoom)).when(coworkingRepository).updateCoworking(any(ConferenceRoom.class));
 

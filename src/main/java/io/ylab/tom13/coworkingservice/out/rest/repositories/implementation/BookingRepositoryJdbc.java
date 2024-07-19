@@ -7,7 +7,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictExce
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
@@ -20,14 +20,10 @@ import java.util.*;
  * Репозиторий бронирований с использованием JDBC.
  */
 @Repository
+@RequiredArgsConstructor
 public class BookingRepositoryJdbc implements BookingRepository {
 
     private final DatabaseConnection databaseConnection;
-
-    @Autowired
-    public BookingRepositoryJdbc(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
-    }
 
     /**
      * {@inheritDoc}

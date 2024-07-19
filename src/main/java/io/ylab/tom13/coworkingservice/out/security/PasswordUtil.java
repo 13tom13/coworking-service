@@ -15,6 +15,8 @@ public class PasswordUtil {
     private static final int ITERATIONS = 65536;
     private static final int KEY_LENGTH = 256;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
+    private static final String HASH_EXCEPTION_MESSAGE = "Ошибка при шифровании пароля";
+    private static final String VERIFY_EXCEPTION_MESSAGE = "Ошибка при верификации пароля: ";
 
     /**
      * Хеширует пароль с использованием случайной соли.
@@ -33,7 +35,7 @@ public class PasswordUtil {
             Base64.Encoder encoder = Base64.getEncoder();
             return encoder.encodeToString(salt) + ":" + encoder.encodeToString(hash);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            throw new RuntimeException("Ошибка при шифровании пароля", e);
+            throw new RuntimeException(HASH_EXCEPTION_MESSAGE, e);
         }
     }
 
@@ -48,7 +50,6 @@ public class PasswordUtil {
         try {
             String[] parts = storedPassword.split(":");
             if (parts.length != 2) {
-                System.err.println("Неверный формат сохраненного пароля");
                 return false;
             }
             byte[] salt = Base64.getDecoder().decode(parts[0]);
@@ -57,7 +58,7 @@ public class PasswordUtil {
             byte[] hashToVerify = hashPassword(password.toCharArray(), salt);
             return constantTimeEquals(hash, hashToVerify);
         } catch (Exception e) {
-            System.err.println("Ошибка при верификации пароля: " + e.getMessage());
+            System.err.println(VERIFY_EXCEPTION_MESSAGE + e.getMessage());
             return false;
         }
     }
