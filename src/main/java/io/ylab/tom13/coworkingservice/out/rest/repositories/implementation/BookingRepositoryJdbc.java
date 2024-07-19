@@ -1,11 +1,14 @@
 package io.ylab.tom13.coworkingservice.out.rest.repositories.implementation;
 
+import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.entity.model.Booking;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.sql.*;
@@ -16,25 +19,25 @@ import java.util.*;
  * Реализация интерфейса {@link BookingRepository}.
  * Репозиторий бронирований с использованием JDBC.
  */
+@Repository
+@RequiredArgsConstructor
 public class BookingRepositoryJdbc implements BookingRepository {
 
-    private final Connection connection;
-
-    public BookingRepositoryJdbc(Connection connection) {
-        this.connection = connection;
-    }
+    private final DatabaseConnection databaseConnection;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public Optional<Booking> createBooking(Booking newBooking) throws BookingConflictException, RepositoryException {
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             checkBookingOverlap(newBooking);
+
             String insertBookingSQL = """
                     INSERT INTO main.bookings (user_id, coworking_id, date) VALUES (?, ?, ?)
                     """;
+
             try (PreparedStatement bookingStatement = connection.prepareStatement(insertBookingSQL, Statement.RETURN_GENERATED_KEYS)) {
                 bookingStatement.setLong(1, newBooking.userId());
                 bookingStatement.setLong(2, newBooking.coworkingId());
@@ -45,16 +48,22 @@ public class BookingRepositoryJdbc implements BookingRepository {
                     connection.rollback();
                     throw new RepositoryException("Создание бронирования не удалось, нет затронутых строк.");
                 }
+
                 try (ResultSet generatedKeys = bookingStatement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         long bookingId = generatedKeys.getLong(1);
-                        insertTimeSlots(bookingId, newBooking);
 
-                        connection.commit();
-                        return Optional.of(new Booking(bookingId, newBooking.userId(), newBooking.coworkingId(), newBooking.date(), newBooking.timeSlots()));
+                        try {
+                            insertTimeSlots(connection, bookingId, newBooking);
+                            connection.commit();
+                            return Optional.of(new Booking(bookingId, newBooking.userId(), newBooking.coworkingId(), newBooking.date(), newBooking.timeSlots()));
+                        } catch (SQLException e) {
+                            connection.rollback();
+                            throw new RepositoryException("Ошибка при вставке временных слотов: " + e.getMessage());
+                        }
                     } else {
                         connection.rollback();
-                        throw new RepositoryException("Создание пользователя не удалось, ID не был получен.");
+                        throw new RepositoryException("Создание бронирования не удалось, ID не был получен.");
                     }
                 }
             } catch (SQLException e) {
@@ -73,7 +82,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
      */
     @Override
     public Optional<Booking> updateBooking(Booking updatedBooking) throws BookingNotFoundException, BookingConflictException, RepositoryException {
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             long bookingId = updatedBooking.id();
 
@@ -101,9 +110,9 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 }
 
 
-                deleteTimeSlots(bookingId);
+                deleteTimeSlots(connection, bookingId);
 
-                insertTimeSlots(bookingId, updatedBooking);
+                insertTimeSlots(connection, bookingId, updatedBooking);
 
                 checkBookingOverlap(updatedBooking);
 
@@ -128,14 +137,14 @@ public class BookingRepositoryJdbc implements BookingRepository {
      */
     @Override
     public void deleteBooking(long bookingId) throws BookingNotFoundException, RepositoryException {
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
 
             if (getBookingById(bookingId).isEmpty()) {
                 throw new BookingNotFoundException("Бронирование с указанным ID не найдено");
             }
 
-            deleteTimeSlots(bookingId);
+            deleteTimeSlots(connection, bookingId);
 
             String deleteBookingSQL = """
                     DELETE FROM main.bookings
@@ -174,7 +183,8 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 WHERE b.user_id = ?
                 """;
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, userId);
 
             Collection<Booking> userBookings = statementToBookings(statement);
@@ -202,7 +212,8 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 WHERE b.user_id = ? AND b.date = ?
                 """;
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, userId);
             statement.setDate(2, Date.valueOf(date));
 
@@ -230,7 +241,8 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 WHERE b.user_id = ? AND b.coworking_id = ?
                 """;
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, userId);
             statement.setLong(2, coworkingId);
 
@@ -259,7 +271,8 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 WHERE b.coworking_id = ? AND b.date = ?
                 """;
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, coworkingId);
             statement.setDate(2, Date.valueOf(date));
 
@@ -282,7 +295,8 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 WHERE b.id = ?
                 """;
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, bookingId);
 
             Collection<Booking> bookings = statementToBookings(statement);
@@ -303,7 +317,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
      */
     @Override
     public void deleteAllCoworkingBookings(long coworkingId) throws RepositoryException {
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
 
             String selectBookingIdsSQL = """
@@ -320,7 +334,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
                 }
 
                 for (Long bookingId : bookingIds) {
-                    deleteTimeSlots(bookingId);
+                    deleteTimeSlots(connection, bookingId);
                 }
 
                 String deleteBookingsSQL = """
@@ -361,7 +375,8 @@ public class BookingRepositoryJdbc implements BookingRepository {
         String placeholders = String.join(",", Collections.nCopies(updatedBooking.timeSlots().size(), "?"));
         query += placeholders + ")";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setLong(1, updatedBooking.coworkingId());
             stmt.setDate(2, Date.valueOf(updatedBooking.date()));
 
@@ -437,7 +452,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
      * @param bookingId - ID бронирования
      * @param booking   - объект бронирования содержащий временные слоты
      */
-    private void insertTimeSlots(long bookingId, Booking booking) throws SQLException {
+    private void insertTimeSlots(Connection connection, long bookingId, Booking booking) throws SQLException {
         String insertTimeSlotSQL = """
                 INSERT INTO relations.booking_time_slots (booking_id, time_slot_id) VALUES (?, ?)
                 """;
@@ -456,7 +471,7 @@ public class BookingRepositoryJdbc implements BookingRepository {
      *
      * @param bookingId - ID бронирования
      */
-    private void deleteTimeSlots(long bookingId) throws SQLException {
+    private void deleteTimeSlots(Connection connection, long bookingId) throws SQLException {
         String deleteTimeSlotsSQL = """
                 DELETE FROM relations.booking_time_slots
                 WHERE booking_id = ?

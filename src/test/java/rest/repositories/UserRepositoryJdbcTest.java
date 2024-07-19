@@ -1,6 +1,5 @@
 package rest.repositories;
 
-import utils.TestcontainersConnector;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
 import io.ylab.tom13.coworkingservice.out.entity.model.User;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
@@ -11,12 +10,15 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import utils.TestcontainersConnector;
 
 import java.util.Optional;
 
 @DisplayName("Тесты репозитория пользователей")
 class UserRepositoryJdbcTest extends TestcontainersConnector {
 
+    @Autowired
     private UserRepositoryJdbc userRepository;
 
     private User user;
@@ -24,7 +26,6 @@ class UserRepositoryJdbcTest extends TestcontainersConnector {
 
     @BeforeEach
     void setUp() {
-        userRepository = new UserRepositoryJdbc(getTestConnection());
         user = new User(1L, "John", "Doe", "john.new@example.com", "password", Role.USER);
     }
 

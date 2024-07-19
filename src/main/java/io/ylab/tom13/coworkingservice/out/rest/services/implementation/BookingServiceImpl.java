@@ -7,36 +7,25 @@ import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictExce
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
-import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.BookingRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.rest.services.BookingService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.BookingMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-
-import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.getConnection;
 
 /**
  * Реализация интерфейса {@link BookingService}.
  * Сервиса для управления операциями бронирования.
  */
+@Service
+@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
 
-    /**
-     * Конструктор для инициализации сервиса бронирования.
-     */
-    public BookingServiceImpl() {
-        try {
-            this.bookingRepository = new BookingRepositoryJdbc(getConnection());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private final BookingMapper bookingMapper = BookingMapper.INSTANCE;
+    private final BookingMapper bookingMapper;
 
     /**
      * {@inheritDoc}

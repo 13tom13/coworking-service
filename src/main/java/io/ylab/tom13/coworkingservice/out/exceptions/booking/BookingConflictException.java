@@ -5,7 +5,7 @@ package io.ylab.tom13.coworkingservice.out.exceptions.booking;
  * Это исключение используется для указания, что новое бронирование
  * конфликтует с уже существующими бронированиями.
  */
-public class BookingConflictException extends Exception {
+public class BookingConflictException extends RuntimeException {
 
     /**
      * Конструктор для исключения с указанием сообщения.

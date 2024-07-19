@@ -1,0 +1,19 @@
+database:
+  driver: org.postgresql.Driver
+  url: jdbc:postgresql://localhost:5432/coworking-service
+  username: user
+  password: password
+  default:
+    schema: service
+test:
+  databaseName: coworking-service-test
+  username: test
+  password: test
+  container: postgres:latest
+
+liquibase:
+  schema: service
+  changelog: db/changelog/changelog.xml
+
+jwt:
+  secret: twfT9yMPeBuSWBxkCXykXjPE93FUpcg3Kll4uNaejYk=

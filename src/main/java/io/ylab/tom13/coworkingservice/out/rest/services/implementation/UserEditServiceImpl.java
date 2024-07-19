@@ -8,35 +8,26 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExist
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.Optional;
 
-import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.getConnection;
-import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.verifyPassword;
+import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
+import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.verifyPassword;
 
 /**
  * Реализация интерфейса {@link UserEditService}.
  * Сервиса для редактирования пользовательских данных.
  */
+@Service
+@RequiredArgsConstructor
 public class UserEditServiceImpl implements UserEditService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper = UserMapper.INSTANCE;
-
-    /**
-     * Конструктор для инициализации сервиса редактирования пользователей.
-     */
-    public UserEditServiceImpl() {
-        try {
-            userRepository = new UserRepositoryJdbc(getConnection());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private final UserMapper userMapper;
 
     /**
      * {@inheritDoc}
@@ -67,15 +58,12 @@ public class UserEditServiceImpl implements UserEditService {
      * {@inheritDoc}
      */
     @Override
-    public void editPassword(PasswordChangeDTO passwordChangeDTO) throws UnauthorizedException, RepositoryException, UserNotFoundException, UserAlreadyExistsException {
-
+    public void editPassword(PasswordChangeDTO passwordChangeDTO) {
         String email = passwordChangeDTO.email();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("с email " + email));
-
-        checkPassword(passwordChangeDTO.oldPassword(), user.password());
-
-        String newPassword = passwordChangeDTO.newPassword();
-        User updatedUser = userMapper.toUserWithPassword(user, newPassword);
+        String hashPassword = hashPassword(passwordChangeDTO.newPassword());
+        checkPassword(hashPassword, user.password());
+        User updatedUser = userMapper.toUserWithPassword(user, hashPassword);
         userRepository.updateUser(updatedUser);
     }
 

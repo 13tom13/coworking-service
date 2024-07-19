@@ -4,7 +4,7 @@ package io.ylab.tom13.coworkingservice.out.exceptions.coworking;
  * Исключение, выбрасываемое при ошибке обновления коворкинга.
  * Это исключение используется для указания, что произошла ошибка при попытке изменить коворкинг.
  */
-public class CoworkingUpdatingExceptions extends Exception {
+public class CoworkingUpdatingExceptions extends RuntimeException {
 
     /**
      * Конструктор для исключения с указанием сообщения.

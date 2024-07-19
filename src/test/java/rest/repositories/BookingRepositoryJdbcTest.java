@@ -1,6 +1,5 @@
 package rest.repositories;
 
-import utils.TestcontainersConnector;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
 import io.ylab.tom13.coworkingservice.out.entity.model.Booking;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictException;
@@ -11,6 +10,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import utils.TestcontainersConnector;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,12 +20,13 @@ import java.util.Optional;
 @DisplayName("Тесты репозитория бронирований")
 class BookingRepositoryJdbcTest extends TestcontainersConnector {
 
+    @Autowired
     private BookingRepositoryJdbc bookingRepository;
+
     private Booking booking;
 
     @BeforeEach
     void setUp() {
-        bookingRepository = new BookingRepositoryJdbc(getTestConnection());
         long coworkingId = 1L;
         long userId = 1L;
         booking = new Booking(0L, userId, coworkingId, LocalDate.now(), List.of(TimeSlot.MORNING));

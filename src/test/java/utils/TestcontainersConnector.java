@@ -1,69 +1,56 @@
 package utils;
 
+import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
+import liquibase.Contexts;
+import liquibase.LabelExpression;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import static io.ylab.tom13.coworkingservice.out.config.ApplicationConfig.*;
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {TestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @DisplayName("Создание соединения с тестовой БД")
 public abstract class TestcontainersConnector {
 
-    private final static String TEST_CHANGELOG = getLiquibaseChangelog();
-    private final static String TEST_DATABASE = getTestDatabaseName();
-    private final static String TEST_USER = getTestDatabaseUsername();
-    private final static String TEST_PASSWORD = getTestDatabasePassword();
-
-    private Connection connection;
-
-    protected Connection getTestConnection() {
-        return connection;
-    }
+    @Value("${liquibase.changelog}")
+    private String TEST_CHANGELOG;
 
     @Container
-    public PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest")
-            .withDatabaseName(TEST_DATABASE)
-            .withUsername(TEST_USER)
-            .withPassword(TEST_PASSWORD);
+    protected static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest");
 
+    @Autowired
+    protected DatabaseConnection databaseConnection;
 
     @BeforeEach
-    void setUp() throws SQLException, LiquibaseException {
-        postgresContainer.start();
-        connection = DriverManager.getConnection(postgresContainer.getJdbcUrl(),
-                postgresContainer.getUsername(),
-                postgresContainer.getPassword());
-
-        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-
-        Liquibase liquibase = new Liquibase(TEST_CHANGELOG, new ClassLoaderResourceAccessor(), database);
-        liquibase.update();
+    void beforeEach() throws SQLException, LiquibaseException {
+        runMigration();
     }
 
-
-    @AfterEach
-    void tearDown() throws SQLException {
-        if (connection != null) {
-            connection.close();
-        }
-        if (postgresContainer != null) {
-            postgresContainer.stop();
-        }
+    private void runMigration() throws SQLException, LiquibaseException {
+        Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
+                new JdbcConnection(databaseConnection.getConnection()));
+        Liquibase liquibase = new Liquibase(TEST_CHANGELOG, new ClassLoaderResourceAccessor(), database);
+        liquibase.update(new Contexts(), new LabelExpression());
     }
 }

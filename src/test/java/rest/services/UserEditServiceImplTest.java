@@ -11,6 +11,7 @@ import io.ylab.tom13.coworkingservice.out.exceptions.security.UnauthorizedExcept
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.implementation.UserEditServiceImpl;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,13 +23,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
-import static io.ylab.tom13.coworkingservice.out.utils.security.PasswordUtil.hashPassword;
+import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Тесты сервиса редактирования пользователя")
+@RequiredArgsConstructor
 class UserEditServiceImplTest {
 
     @Mock
@@ -36,6 +38,8 @@ class UserEditServiceImplTest {
 
     @InjectMocks
     private UserEditServiceImpl userEditService;
+
+    private final UserMapper userMapper;
 
     private User user;
     private UserDTO userDTO;
@@ -46,7 +50,7 @@ class UserEditServiceImplTest {
         password = "password";
         String hashedPassword = hashPassword("password");
         user = new User(1L, "John", "Doe", "john.new@example.com", hashedPassword, Role.USER);
-        userDTO = UserMapper.INSTANCE.toUserDTO(user);
+        userDTO = userMapper.toUserDTO(user);
         Field UserEditServiceField = UserEditServiceImpl.class.getDeclaredField("userRepository");
         UserEditServiceField.setAccessible(true);
         UserEditServiceField.set(userEditService, userRepository);

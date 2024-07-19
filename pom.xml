@@ -7,16 +7,16 @@
     <groupId>io.ylab.tom13</groupId>
     <artifactId>coworking-service</artifactId>
     <packaging>war</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
     <properties>
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <main.class.path>io.ylab.tom13.coworkingservice.Main</main.class.path>
         <lombok.version>1.18.30</lombok.version>
         <mapstruct.version>1.6.0.Beta2</mapstruct.version>
         <snakeyaml.version>2.2</snakeyaml.version>
-        <aspectj.version>1.9.8</aspectj.version>
+        <jackson.version>2.17.0</jackson.version>
+        <spring-framework.version>6.1.6</spring-framework.version>
         <!--plugins versions-->
         <jar.pugin.version>3.3.0</jar.pugin.version>
         <compiler.pugin.version>3.11.0</compiler.pugin.version>
@@ -32,8 +32,63 @@
         <assertj.version>3.26.0</assertj.version>
         <testcontainers.version>1.19.7</testcontainers.version>
     </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring-framework.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>5.3.37</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.22.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.11.5</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -47,22 +102,12 @@
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.1.0-M2</version>
+            <version>6.0.0</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>8.0.1.Final</version>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.el</groupId>
@@ -70,19 +115,39 @@
             <version>6.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjtools</artifactId>
-            <version>${aspectj.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.2.22</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
@@ -146,6 +211,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>1.5.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <version>${testcontainers.version}</version>
@@ -166,58 +237,6 @@
     </dependencies>
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.14.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjrt</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjtools</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                </dependencies>
-                <configuration>
-                    <complianceLevel>16</complianceLevel>
-                    <source>16</source>
-                    <target>16</target>
-                    <showWeaveInfo>true</showWeaveInfo>
-                    <verbose>true</verbose>
-                    <Xlint>ignore</Xlint>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <forceAjcCompile>true</forceAjcCompile>
-                    <sources/>
-                    <weaveDirectories>
-                        <weaveDirectory>${project.build.directory}/classes</weaveDirectory>
-                    </weaveDirectories>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>process-test-classes</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                        <configuration>
-                            <weaveDirectories>
-                                <weaveDirectory>${project.build.directory}/test-classes</weaveDirectory>
-                            </weaveDirectories>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -246,22 +265,21 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>${jar.pugin.version}</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>${main.class.path}</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <includes>
+                        <include>**/swagger-ui.html</include>
+                        <include>**/webjars/**</include>
+                    </includes>
                 </configuration>
             </plugin>
             <plugin>
@@ -279,14 +297,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>${main.class.path}</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

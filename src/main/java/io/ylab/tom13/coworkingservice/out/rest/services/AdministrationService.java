@@ -47,13 +47,14 @@ public interface AdministrationService {
      * @throws UserNotFoundException если пользователь не найден.
      * @throws RepositoryException   если произошла ошибка репозитория при сохранении данных.
      */
-    void editUserPasswordByAdministrator(long userId, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException;
+    void editUserPasswordByAdministrator(String email, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException;
 
     /**
      * Регистрация нового пользователя администратором.
      *
      * @param registrationDTO DTO с данными для регистрации нового пользователя.
+     * @return
      * @throws RepositoryException если произошла ошибка репозитория при сохранении данных.
      */
-    void registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException;
+    UserDTO registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException;
 }

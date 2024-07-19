@@ -7,38 +7,28 @@ import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryExcept
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
-import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.UserRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.UserMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.getConnection;
 
 /**
  * Реализация интерфейса {@link AdministrationService}.
  * Сервис администрирования пользователей.
  */
+@Service
+@RequiredArgsConstructor
 public class AdministrationServiceImpl implements AdministrationService {
 
     private final UserRepository userRepository;
 
-    /**
-     * Конструктор для инициализации сервиса администрирования пользователей.
-     */
-    public AdministrationServiceImpl() {
-        try {
-            userRepository = new UserRepositoryJdbc(getConnection());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final UserMapper userMapper;
 
     /**
      * {@inheritDoc}
@@ -47,7 +37,7 @@ public class AdministrationServiceImpl implements AdministrationService {
     public List<UserDTO> getAllUsers() {
         Collection<User> allUsers = userRepository.getAllUsers();
         return allUsers.stream()
-                .map(UserMapper.INSTANCE::toUserDTO)
+                .map(userMapper::toUserDTO)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +59,7 @@ public class AdministrationServiceImpl implements AdministrationService {
         long id = userDTO.id();
         Optional<User> byId = userRepository.findById(id);
         User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID " + id));
-        User userChanged = userMapper.toUserWithPassword(userDTO,userFromRep.password());
+        User userChanged = userMapper.toUserWithPassword(userDTO, userFromRep.password());
         Optional<User> updatedUser = userRepository.updateUser(userChanged);
         if (updatedUser.isPresent()) {
             return userMapper.toUserDTO(userChanged);
@@ -82,23 +72,29 @@ public class AdministrationServiceImpl implements AdministrationService {
      * {@inheritDoc}
      */
     @Override
-    public void editUserPasswordByAdministrator(long userId, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException {
-        Optional<User> byId = userRepository.findById(userId);
-        User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID  " + userId));
+    public void editUserPasswordByAdministrator(String email, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException {
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        User userFromRep = byEmail.orElseThrow(() -> new UserNotFoundException("с email  " + email));
 
-        User userChanged = userMapper.toUserWithPassword(userFromRep,newHashPassword);
+        User userChanged = userMapper.toUserWithPassword(userFromRep, newHashPassword);
         if (userRepository.updateUser(userChanged).isEmpty()) {
-            throw new RepositoryException("Не удалось обновить пароль с ID " + userId);
+            throw new RepositoryException("Не удалось обновить пароль с email " + email);
         }
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @return
      */
     @Override
-    public void registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException {
+    public UserDTO registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException {
         User newUser = new User(0, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(),
                 registrationDTO.password(), registrationDTO.role());
-        userRepository.createUser(newUser);
+        Optional<User> registeredUser = userRepository.createUser(newUser);
+        if (registeredUser.isEmpty()) {
+            throw new RepositoryException("Не удалось создать пользователя");
+        }
+        return userMapper.toUserDTO(registeredUser.get());
     }
 }

@@ -1,6 +1,5 @@
 package rest.repositories;
 
-import utils.TestcontainersConnector;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.ConferenceRoom;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Coworking;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Workplace;
@@ -12,20 +11,25 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import utils.TestcontainersConnector;
 
 import java.util.Optional;
 
 @DisplayName("Тесты репозитория коворкингов")
 class CoworkingRepositoryJdbcTest extends TestcontainersConnector {
 
+    @Autowired
     private CoworkingRepositoryJdbc coworkingRepository;
+
     private Coworking coworking;
+
 
     @BeforeEach
     void setUp() {
-        coworkingRepository = new CoworkingRepositoryJdbc(getTestConnection());
         coworking = new Workplace(0L, "Open Space", "Comfortable workplace", true, "Shared");
     }
+
 
     @Test
     @DisplayName("Тест создание коворкинга")

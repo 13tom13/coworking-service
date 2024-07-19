@@ -1,11 +1,13 @@
 package io.ylab.tom13.coworkingservice.out.utils.aspects;
 
 import jakarta.validation.*;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
+import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
@@ -13,6 +15,8 @@ import java.util.Set;
  * Аспект для выполнения валидации объектов DTO в сервисах.
  */
 @Aspect
+@Component
+@Slf4j
 public class ValidationAspect {
 
     private final Validator validator;
@@ -74,9 +78,9 @@ public class ValidationAspect {
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (ConstraintViolation<Object> violation : violations) {
-                sb.append(violation.getMessage()).append("\n");
+                sb.append(violation.getMessage());
             }
-            throw new ValidationException("Validation failed:\n" + sb);
+            throw new ValidationException("Validation failed: " + sb);
         }
     }
 }

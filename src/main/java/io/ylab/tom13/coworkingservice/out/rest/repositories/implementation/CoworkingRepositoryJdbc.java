@@ -1,5 +1,6 @@
 package io.ylab.tom13.coworkingservice.out.rest.repositories.implementation;
 
+import io.ylab.tom13.coworkingservice.out.database.DatabaseConnection;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.ConferenceRoom;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Coworking;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Workplace;
@@ -7,6 +8,8 @@ import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingConflict
 import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.CoworkingRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,14 +20,13 @@ import java.util.Optional;
  * Реализация интерфейса {@link CoworkingRepository}.
  * CRUD операции с пользователями с использованием JDBC.
  */
+@Repository
+@RequiredArgsConstructor
 public class CoworkingRepositoryJdbc implements CoworkingRepository {
 
     public static final String UNIQUE_VIOLATION = "23505";
-    private final Connection connection;
 
-    public CoworkingRepositoryJdbc(Connection connection) {
-        this.connection = connection;
-    }
+    private final DatabaseConnection databaseConnection;
 
     /**
      * {@inheritDoc}
@@ -35,7 +37,8 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 SELECT *
                 FROM main.coworkings
                 """;
-        try (PreparedStatement statement = connection.prepareStatement(sql);
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
             Collection<Coworking> coworkings = new ArrayList<>();
             while (resultSet.next()) {
@@ -57,7 +60,8 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 FROM main.coworkings
                 WHERE id = ?
                 """;
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (Connection connection = databaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, coworkingId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -79,7 +83,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 INSERT INTO main.coworkings (name, description, available, type, workplace_type, conference_room_capacity)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 coworkingToStatement(coworking, statement);
@@ -135,7 +139,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
                 DELETE FROM main.coworkings
                 WHERE id = ?
                 """;
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setLong(1, coworkingId);
@@ -163,13 +167,13 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
     public Optional<Coworking> updateCoworking(Coworking coworking) throws CoworkingConflictException, CoworkingNotFoundException, RepositoryException {
         String getCurrentNameSql = "SELECT name FROM main.coworkings WHERE id = ?";
         String sql = """
-            UPDATE main.coworkings
-            SET name = ?, description = ?, available = ?, type = ?, workplace_type = ?, conference_room_capacity = ?
-            WHERE id = ?
-            """;
+                UPDATE main.coworkings
+                SET name = ?, description = ?, available = ?, type = ?, workplace_type = ?, conference_room_capacity = ?
+                WHERE id = ?
+                """;
         long coworkingId = coworking.getId();
 
-        try {
+        try (Connection connection = databaseConnection.getConnection()) {
             connection.setAutoCommit(false);
 
             String currentName;
@@ -199,7 +203,7 @@ public class CoworkingRepositoryJdbc implements CoworkingRepository {
             }
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                coworkingToStatement(coworking,statement);
+                coworkingToStatement(coworking, statement);
                 statement.setLong(7, coworkingId);
 
                 int affectedRows = statement.executeUpdate();

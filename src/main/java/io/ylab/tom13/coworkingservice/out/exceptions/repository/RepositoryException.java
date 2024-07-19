@@ -4,7 +4,7 @@ package io.ylab.tom13.coworkingservice.out.exceptions.repository;
  * Исключение, выбрасываемое при ошибке работы с репозиторием.
  * Это исключение используется для указания, что произошла ошибка при выполнении операций с репозиторием данных.
  */
-public class RepositoryException extends Exception {
+public class RepositoryException extends RuntimeException {
 
     /**
      * Конструктор для исключения с указанием сообщения.

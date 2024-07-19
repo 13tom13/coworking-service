@@ -10,7 +10,7 @@
 			"name": "auth",
 			"item": [
 				{
-					"name": "authorization",
+					"name": "login",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -31,7 +31,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/coworking-service/authorization",
+							"raw": "http://localhost:8080/coworking-service/login",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -39,7 +39,7 @@
 							"port": "8080",
 							"path": [
 								"coworking-service",
-								"authorization"
+								"login"
 							]
 						}
 					},
@@ -66,7 +66,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8080/coworking-service/authorization",
+									"raw": "http://localhost:8080/coworking-service/login",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -74,7 +74,7 @@
 									"port": "8080",
 									"path": [
 										"coworking-service",
-										"authorization"
+										"login"
 									]
 								}
 							},
@@ -105,7 +105,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8080/coworking-service/authorization",
+									"raw": "http://localhost:8080/coworking-service/login",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -113,7 +113,7 @@
 									"port": "8080",
 									"path": [
 										"coworking-service",
-										"authorization"
+										"login"
 									]
 								}
 							},
@@ -156,6 +156,16 @@
 				{
 					"name": "logout",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Mywicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjA4Nzc0NzAsImV4cCI6MTcyMDkxMzQ3MCwic3ViIjoiMyJ9.X3A_vETUUEqAyrXjiIFLKLpee0Z1iSnnbXIre5ravyc",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -172,42 +182,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "http://localhost:8080/coworking-service/authorization",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin@mail.ru\",\r\n    \"password\": \"admin\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/coworking-service/authorization",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"coworking-service",
-								"authorization"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"description": "Requests for user authorization and registration"
@@ -218,11 +192,21 @@
 				{
 					"name": "edit user",
 					"request": {
-						"method": "POST",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Mywicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjA4NzYyMDIsImV4cCI6MTcyMDkxMjIwMiwic3ViIjoiMyJ9.6tYLfeUuKCRCr_CfnXXGLR1xs-rMKhvHeQNRpDekz3E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": \"5\",\r\n  \"firstName\": \"Иван\",\r\n  \"lastName\": \"Петров\",\r\n  \"email\": \"dp@mail.ru\",\r\n  \"role\": \"USER\"\r\n}",
+							"raw": "{\r\n  \"id\": \"3\",\r\n  \"firstName\": \"Иван\",\r\n  \"lastName\": \"Иванов\",\r\n  \"email\": \"test@mail.ru\",\r\n  \"role\": \"USER\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -248,11 +232,21 @@
 				{
 					"name": "edit password",
 					"request": {
-						"method": "POST",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Mywicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjA4NzYyMDIsImV4cCI6MTcyMDkxMjIwMiwic3ViIjoiMyJ9.6tYLfeUuKCRCr_CfnXXGLR1xs-rMKhvHeQNRpDekz3E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"email\": \"test@mail.ru\",\r\n  \"oldPassword\": \"test\",\r\n  \"newPassword\": \"pass\"\r\n}",
+							"raw": "{\r\n  \"email\": \"test@mail.ru\",\r\n  \"oldPassword\": \"pass\",\r\n  \"newPassword\": \"test\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -285,11 +279,21 @@
 				{
 					"name": "create booking",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsImlkIjozLCJpYXQiOjE3MjA4NzI5MjMsImV4cCI6MTcyMDkwODkyMywic3ViIjoiMyJ9.LHqxfolo9kujbem7EJU2OHpGnRNdsSvgi8N8d52TsT4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": 0,\r\n  \"userId\": 3,\r\n  \"coworkingId\": 6,\r\n  \"date\": \"2024-07-15\",\r\n  \"timeSlots\": [\"MORNING\", \"AFTERNOON\"]\r\n}\r\n",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"userId\": 3,\r\n  \"date\": \"2024-07-15\",\r\n  \"timeSlots\": [\"MORNING\", \"AFTERNOON\"]\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -315,10 +319,20 @@
 				{
 					"name": "cancel booking",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Mywicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjA2NTE3MDMsImV4cCI6MTcyMDY4NzcwMywic3ViIjoiMyJ9.FC7BAOGlAdr38K-cTQhvF32sx3344EHf_aL1L9gNgLs",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/coworking-service/booking/cancel?bookingId=4",
+							"raw": "http://localhost:8080/coworking-service/booking/cancel?bookingId=5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -332,7 +346,7 @@
 							"query": [
 								{
 									"key": "bookingId",
-									"value": "4"
+									"value": "5"
 								}
 							]
 						}
@@ -342,6 +356,16 @@
 				{
 					"name": "get booking by user",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsImlkIjozLCJpYXQiOjE3MjA4Nzg1MjIsImV4cCI6MTcyMDkxNDUyMiwic3ViIjoiMyJ9.uz-e20nJYok6wX6j6HbNDoW_pvTjWjNg88_A7H7l6z4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -369,10 +393,20 @@
 				{
 					"name": "get booking by user and date",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsImlkIjozLCJpYXQiOjE3MjA4Nzg1MjIsImV4cCI6MTcyMDkxNDUyMiwic3ViIjoiMyJ9.uz-e20nJYok6wX6j6HbNDoW_pvTjWjNg88_A7H7l6z4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/coworking-service/booking/user/date?userId=3&date=2024-07-08",
+							"raw": "http://localhost:8080/coworking-service/booking/user/date?userId=3&date=2024-07-14",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -391,7 +425,7 @@
 								},
 								{
 									"key": "date",
-									"value": "2024-07-08"
+									"value": "2024-07-14"
 								}
 							]
 						}
@@ -401,6 +435,16 @@
 				{
 					"name": "get booking by user and coworking",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsImlkIjozLCJpYXQiOjE3MjA4Nzg1MjIsImV4cCI6MTcyMDkxNDUyMiwic3ViIjoiMyJ9.uz-e20nJYok6wX6j6HbNDoW_pvTjWjNg88_A7H7l6z4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -433,6 +477,16 @@
 				{
 					"name": "get booking by id",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiVVNFUiIsImlkIjozLCJpYXQiOjE3MjA2NDg3MDUsImV4cCI6MTcyMDY4NDcwNSwic3ViIjoiMyJ9.61k_Dv3VzfhEfgpy43SGpOmZFyEzWqabSsaf6OW0lps",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -459,11 +513,21 @@
 				{
 					"name": "update booking",
 					"request": {
-						"method": "POST",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Mywicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjA2NTE3MDMsImV4cCI6MTcyMDY4NzcwMywic3ViIjoiMyJ9.FC7BAOGlAdr38K-cTQhvF32sx3344EHf_aL1L9gNgLs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": 6,\r\n  \"userId\": 3,\r\n  \"coworkingId\": 5,\r\n  \"date\": \"2024-07-15\",\r\n  \"timeSlots\": [\"MORNING\", \"AFTERNOON\"]\r\n}",
+							"raw": "{\r\n  \"id\": 5,\r\n  \"userId\": 3,\r\n  \"coworkingId\": 6,\r\n  \"date\": \"2024-07-17\",\r\n  \"timeSlots\": [\"MORNING\", \"AFTERNOON\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -489,10 +553,20 @@
 				{
 					"name": "get available slots for booking",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Mywicm9sZSI6IlVTRVIiLCJpYXQiOjE3MjA2NTIyNjgsImV4cCI6MTcyMDY4ODI2OCwic3ViIjoiMyJ9.V3vA33sFkc2qzUBKYmzGvcMeRrT-amJUbHDbMjwaPB4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/coworking-service/booking/availableslots?coworkingId=3&date=2024-07-10",
+							"raw": "http://localhost:8080/coworking-service/booking/availableslots?coworkingId=3&date=2024-07-17",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -510,7 +584,7 @@
 								},
 								{
 									"key": "date",
-									"value": "2024-07-10"
+									"value": "2024-07-17"
 								}
 							]
 						}
@@ -526,6 +600,16 @@
 				{
 					"name": "get all coworkings",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Ik1PREVSQVRPUiIsImlhdCI6MTcyMDc3NDI0NSwiZXhwIjoxNzIwODEwMjQ1LCJzdWIiOiIyIn0.M1aYMWarUtbrLHd0ynd37xNMCsxQxjnH9ceUXGrIjig",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -547,6 +631,16 @@
 				{
 					"name": "get all available coworkings",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Ik1PREVSQVRPUiIsImlhdCI6MTcyMDc3NDI0NSwiZXhwIjoxNzIwODEwMjQ1LCJzdWIiOiIyIn0.M1aYMWarUtbrLHd0ynd37xNMCsxQxjnH9ceUXGrIjig",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -568,6 +662,16 @@
 				{
 					"name": "create coworking",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Ik1PREVSQVRPUiIsImlhdCI6MTcyMDc3NDI0NSwiZXhwIjoxNzIwODEwMjQ1LCJzdWIiOiIyIn0.M1aYMWarUtbrLHd0ynd37xNMCsxQxjnH9ceUXGrIjig",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -665,11 +769,21 @@
 				{
 					"name": "update coworking",
 					"request": {
-						"method": "POST",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Ik1PREVSQVRPUiIsImlhdCI6MTcyMDc3NDI0NSwiZXhwIjoxNzIwODEwMjQ1LCJzdWIiOiIyIn0.M1aYMWarUtbrLHd0ynd37xNMCsxQxjnH9ceUXGrIjig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"type\": \"workplace\",\r\n  \"id\": 9,\r\n  \"name\": \"test 4\",\r\n  \"description\": \"Удобное рабочее место\",\r\n  \"available\": true,\r\n  \"workplaceType\": \"Тип рабочего места\"\r\n}",
+							"raw": "{\r\n  \"type\": \"workplace\",\r\n  \"id\": 7,\r\n  \"name\": \"test 4\",\r\n  \"description\": \"Удобное рабочее место\",\r\n  \"available\": true,\r\n  \"workplaceType\": \"Тип рабочего места\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -695,10 +809,20 @@
 				{
 					"name": "delete coworking",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6Miwicm9sZSI6Ik1PREVSQVRPUiIsImlhdCI6MTcyMDc3NDI0NSwiZXhwIjoxNzIwODEwMjQ1LCJzdWIiOiIyIn0.M1aYMWarUtbrLHd0ynd37xNMCsxQxjnH9ceUXGrIjig",
+									"type": "string"
+								}
+							]
+						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/coworking-service/coworking/delete?coworkingId=9",
+							"raw": "http://localhost:8080/coworking-service/coworking/delete?coworkingId=7",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -712,7 +836,7 @@
 							"query": [
 								{
 									"key": "coworkingId",
-									"value": "9"
+									"value": "7"
 								}
 							]
 						}
@@ -748,6 +872,16 @@
 				{
 					"name": "get user by email",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6IkFETUlOSVNUUkFUT1IiLCJpYXQiOjE3MjA4ODIyMzUsImV4cCI6MTcyMDkxODIzNSwic3ViIjoiMSJ9.oWlsH9fvC_TqS4chcBD4IEkEW-uZfrJOL_Hd2vapUu4",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -775,11 +909,21 @@
 				{
 					"name": "edit user admin",
 					"request": {
-						"method": "POST",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU5JU1RSQVRPUiIsImlkIjoxLCJpYXQiOjE3MjA3Nzc4NzcsImV4cCI6MTcyMDgxMzg3Nywic3ViIjoiMSJ9.Af9ynIQkul9iJS4zqvGfjR9LZX3z14Gx5vPx05u3jvU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": 3,\r\n    \"firstName\": \"Дмитрий\",\r\n    \"lastName\": \"Иванов\",\r\n    \"email\": \"test2@mail.ru\",\r\n    \"role\": \"MODERATOR\"\r\n}",
+							"raw": "{\r\n    \"id\": 3,\r\n    \"firstName\": \"Иван\",\r\n    \"lastName\": \"Ивановн\",\r\n    \"email\": \"test2@mail.ru\",\r\n    \"role\": \"MODERATOR\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -806,11 +950,21 @@
 				{
 					"name": "edit user password admin",
 					"request": {
-						"method": "POST",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU5JU1RSQVRPUiIsImlkIjoxLCJpYXQiOjE3MjA3Nzc4NzcsImV4cCI6MTcyMDgxMzg3Nywic3ViIjoiMSJ9.Af9ynIQkul9iJS4zqvGfjR9LZX3z14Gx5vPx05u3jvU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n  \"email\": \"test@mail.ru\",\r\n  \"oldPassword\": \"admin\",\r\n  \"newPassword\": \"pass\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -818,7 +972,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/coworking-service/admin/user/edit/password?userId=3&newPassword=kaban",
+							"raw": "http://localhost:8080/coworking-service/admin/user/edit/password",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -830,16 +984,6 @@
 								"user",
 								"edit",
 								"password"
-							],
-							"query": [
-								{
-									"key": "userId",
-									"value": "3"
-								},
-								{
-									"key": "newPassword",
-									"value": "kaban"
-								}
 							]
 						}
 					},
@@ -848,11 +992,21 @@
 				{
 					"name": "registration user admin",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU5JU1RSQVRPUiIsImlkIjoxLCJpYXQiOjE3MjA3Nzc4NzcsImV4cCI6MTcyMDgxMzg3Nywic3ViIjoiMSJ9.Af9ynIQkul9iJS4zqvGfjR9LZX3z14Gx5vPx05u3jvU",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"firstName\": \"Иван\",\r\n  \"lastName\": \"Петров\",\r\n  \"email\": \"pet@mail.ru\",\r\n  \"password\": \"test\",\r\n  \"role\": \"MODERATOR\"\r\n}",
+							"raw": "{\r\n  \"firstName\": \"Иван\",\r\n  \"lastName\": \"Иванов\",\r\n  \"email\": \"test@gmail.ru\",\r\n  \"password\": \"test\",\r\n  \"role\": \"MODERATOR\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -8,42 +8,25 @@ import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingUpdating
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.CoworkingRepository;
-import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.BookingRepositoryJdbc;
-import io.ylab.tom13.coworkingservice.out.rest.repositories.implementation.CoworkingRepositoryJdbc;
 import io.ylab.tom13.coworkingservice.out.rest.services.CoworkingService;
 import io.ylab.tom13.coworkingservice.out.utils.mapper.CoworkingMapper;
-import io.ylab.tom13.coworkingservice.out.utils.security.SecurityHTTPController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
-
-import static io.ylab.tom13.coworkingservice.out.database.DatabaseConnection.getConnection;
 
 
 /**
  * Реализация интерфейса {@link CoworkingService}.
  * Сервиса управления коворкингами.
  */
-public class CoworkingServiceImpl extends SecurityHTTPController implements CoworkingService {
+@Service
+@RequiredArgsConstructor
+public class CoworkingServiceImpl implements CoworkingService {
 
     private final CoworkingRepository coworkingRepository;
     private final BookingRepository bookingRepository;
-    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
-
-    /**
-     * Конструктор по умолчанию.
-     * Инициализирует репозитории для работы с данными коворкингов и бронирований.
-     */
-    public CoworkingServiceImpl() {
-        try {
-            Connection connection = getConnection();
-            coworkingRepository = new CoworkingRepositoryJdbc(connection);
-            bookingRepository = new BookingRepositoryJdbc(connection);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private final CoworkingMapper coworkingMapper;
 
     /**
      * {@inheritDoc}
