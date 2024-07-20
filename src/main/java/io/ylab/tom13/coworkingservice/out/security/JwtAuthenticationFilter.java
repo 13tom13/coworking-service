@@ -16,7 +16,6 @@ import java.util.List;
  * Фильтр аутентификации на основе JWT.
  */
 @RequiredArgsConstructor
-@Component("jwtAuthenticationFilter")
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String UNAUTHORIZED = "Пользователь не авторизован";

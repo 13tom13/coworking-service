@@ -1,5 +1,9 @@
 package io.ylab.tom13.coworkingservice.out.config;
 
+import io.ylab.tom13.coworkingservice.out.security.*;
+import org.springdoc.core.GroupedOpenApi;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -36,17 +40,41 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addViewController("/")
                 .setViewName("forward:/index.html");
     }
-
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("swagger-ui.html")
-//                .addResourceLocations("classpath:/META-INF/resources/");
-//        registry.addResourceHandler("/webjars/**")
-//                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+//
+//    @Bean
+//    public FilterRegistrationBean<JwtAuthenticationFilter> jwtAuthenticationFilter() {
+//        FilterRegistrationBean<JwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new JwtAuthenticationFilter(jwtUtil()));
+//        registrationBean.addUrlPatterns("/*");
+//        return registrationBean;
 //    }
 //
 //    @Bean
-//    public LocalValidatorFactoryBean validator() {
-//        return new LocalValidatorFactoryBean();
+//    public FilterRegistrationBean<AdminJwtAuthenticationFilter> adminJwtAuthenticationFilter() {
+//        FilterRegistrationBean<AdminJwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new AdminJwtAuthenticationFilter(jwtUtil()));
+//        registrationBean.addUrlPatterns("/admin/*");
+//        return registrationBean;
 //    }
+//
+//    @Bean
+//    public FilterRegistrationBean<ModeratorJwtAuthenticationFilter> moderatorJwtAuthenticationFilter() {
+//        FilterRegistrationBean<ModeratorJwtAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new ModeratorJwtAuthenticationFilter(jwtUtil()));
+//        registrationBean.addUrlPatterns("/coworking/*");
+//        return registrationBean;
+//    }
+//
+//    @Bean
+//    public JwtUtil jwtUtil() {
+//        return new JwtUtil();
+//    }
+
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("public")
+                .pathsToMatch("/**")
+                .build();
+    }
 }

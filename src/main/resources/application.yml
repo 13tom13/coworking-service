@@ -1,19 +1,26 @@
-database:
-  driver: org.postgresql.Driver
-  url: jdbc:postgresql://localhost:5432/coworking-service
-  username: user
-  password: password
-  default:
-    schema: service
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/coworking-service
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/changelog.xml
+    default-schema: service
+#  default:
+#    schema: service
 test:
   databaseName: coworking-service-test
   username: test
   password: test
   container: postgres:latest
 
-liquibase:
-  schema: service
-  changelog: db/changelog/changelog.xml
+
 
 jwt:
   secret: twfT9yMPeBuSWBxkCXykXjPE93FUpcg3Kll4uNaejYk=

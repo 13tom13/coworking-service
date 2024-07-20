@@ -1,6 +1,8 @@
 package io.ylab.tom13.coworkingservice.out.database;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
 
@@ -14,17 +16,11 @@ import java.sql.SQLException;
 @Component
 public class DatabaseConnection {
 
-    private String dbUrl;
-    private String dbUsername;
-    private String dbPassword;
+    private final JdbcTemplate jdbcTemplate;
 
-    public DatabaseConnection(
-            @Value("${database.url}") String dbUrl,
-            @Value("${database.username}") String dbUsername,
-            @Value("${database.password}") String dbPassword) {
-        this.dbUrl = dbUrl;
-        this.dbUsername = dbUsername;
-        this.dbPassword = dbPassword;
+    @Autowired
+    public DatabaseConnection(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @PostConstruct
@@ -36,13 +32,7 @@ public class DatabaseConnection {
         }
     }
 
-    /**
-     * Получить соединение с базой данных.
-     *
-     * @return объект Connection для подключения к базе данных
-     * @throws SQLException если не удается подключиться к базе данных
-     */
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
+        return jdbcTemplate.getDataSource().getConnection();
     }
 }
