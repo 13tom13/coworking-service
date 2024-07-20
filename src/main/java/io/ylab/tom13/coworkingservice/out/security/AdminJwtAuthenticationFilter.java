@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.io.IOException;
  * Фильтр аутентификации для администратора на основе JWT.
  */
 @RequiredArgsConstructor
-@Component("adminJwtAuthenticationFilter")
 public class AdminJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String ADMINISTRATOR = "ADMINISTRATOR";

@@ -68,7 +68,7 @@ public class JwtUtil {
      */
     public boolean validJwt(String token) {
         try {
-            Jwts.parserBuilder()
+            Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(token)
@@ -86,7 +86,7 @@ public class JwtUtil {
      * @return идентификатор пользователя
      */
     public Long getIdFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
+        Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
@@ -101,7 +101,7 @@ public class JwtUtil {
      * @return роль пользователя
      */
     public String getRoleFromToken(String token) {
-        Claims claims = Jwts.parserBuilder()
+        Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
