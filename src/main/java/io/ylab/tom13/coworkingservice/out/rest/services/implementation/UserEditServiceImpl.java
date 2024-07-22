@@ -27,7 +27,8 @@ import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.verifyPas
 public class UserEditServiceImpl implements UserEditService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     /**
      * {@inheritDoc}

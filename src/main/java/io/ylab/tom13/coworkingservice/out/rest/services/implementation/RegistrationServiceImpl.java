@@ -25,7 +25,8 @@ import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassw
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     /**
      * {@inheritDoc}

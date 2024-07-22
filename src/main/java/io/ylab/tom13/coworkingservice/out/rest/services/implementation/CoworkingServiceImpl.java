@@ -26,7 +26,8 @@ public class CoworkingServiceImpl implements CoworkingService {
 
     private final CoworkingRepository coworkingRepository;
     private final BookingRepository bookingRepository;
-    private final CoworkingMapper coworkingMapper;
+
+    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
 
     /**
      * {@inheritDoc}

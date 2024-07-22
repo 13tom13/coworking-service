@@ -25,7 +25,7 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
 
-    private final BookingMapper bookingMapper;
+    private final BookingMapper bookingMapper = BookingMapper.INSTANCE;
 
     /**
      * {@inheritDoc}

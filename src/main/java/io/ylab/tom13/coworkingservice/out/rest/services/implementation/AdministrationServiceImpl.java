@@ -28,7 +28,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private final UserRepository userRepository;
 
-    private final UserMapper userMapper;
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     /**
      * {@inheritDoc}
