@@ -19,6 +19,9 @@ import java.util.Set;
 @Slf4j
 public class ValidationAspect {
 
+    private static final String DTO = "DTO";
+    private static final String VALIDATION_FAILED = "Validation failed: ";
+
     private final Validator validator;
 
     /**
@@ -27,7 +30,7 @@ public class ValidationAspect {
     public ValidationAspect() {
         ValidatorFactory factory = Validation.byDefaultProvider()
                 .configure()
-                .messageInterpolator(new ParameterMessageInterpolator())
+//                .messageInterpolator(new ParameterMessageInterpolator())
                 .buildValidatorFactory();
         validator = factory.getValidator();
     }
@@ -64,7 +67,7 @@ public class ValidationAspect {
      * @return true, если класс является DTO, иначе false
      */
     private boolean isDTO(Class<?> clazz) {
-        return clazz.getSimpleName().endsWith("DTO");
+        return clazz.getSimpleName().endsWith(DTO);
     }
 
     /**
@@ -79,8 +82,9 @@ public class ValidationAspect {
             StringBuilder sb = new StringBuilder();
             for (ConstraintViolation<Object> violation : violations) {
                 sb.append(violation.getMessage());
+                sb.append(". ");
             }
-            throw new ValidationException("Validation failed: " + sb);
+            throw new ValidationException(VALIDATION_FAILED + sb);
         }
     }
 }
