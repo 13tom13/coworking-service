@@ -16,7 +16,6 @@ public interface BookingMapper {
      * Получение экземпляра маппера BookingMapper.
      */
     BookingMapper INSTANCE = Mappers.getMapper(BookingMapper.class);
-
     /**
      * Преобразует объект Booking в BookingDTO.
      *

@@ -16,7 +16,6 @@ public interface UserMapper {
      * Получение экземпляра маппера UserMapper.
      */
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
-
     /**
      * Преобразует объект User в UserDTO.
      *

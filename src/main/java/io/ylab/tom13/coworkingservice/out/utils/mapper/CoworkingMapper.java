@@ -21,7 +21,6 @@ public interface CoworkingMapper {
      * Экземпляр маппера CoworkingMapper для использования в преобразованиях.
      */
     CoworkingMapper INSTANCE = Mappers.getMapper(CoworkingMapper.class);
-
     /**
      * Преобразует объект ConferenceRoom в ConferenceRoomDTO.
      *
