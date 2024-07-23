@@ -39,7 +39,7 @@ class UserEditServiceImplTest {
     @InjectMocks
     private UserEditServiceImpl userEditService;
 
-    private final UserMapper userMapper;
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     private User user;
     private UserDTO userDTO;
@@ -78,9 +78,7 @@ class UserEditServiceImplTest {
     @DisplayName("Успешное изменение пароля")
     void testEditPasswordSuccess() throws UnauthorizedException, RepositoryException, UserNotFoundException, UserAlreadyExistsException {
         when(userRepository.findByEmail(user.email())).thenReturn(Optional.ofNullable(user));
-
         PasswordChangeDTO passwordChangeDTO = new PasswordChangeDTO(user.email(), password, "newPassword");
-
         userEditService.editPassword(passwordChangeDTO);
 
     }

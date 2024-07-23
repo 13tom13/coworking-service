@@ -63,9 +63,8 @@ public class BookingControllerSpring {
     })
     @DeleteMapping("/cancel")
     public ResponseEntity<?> cancelBooking(@Parameter(description = "ID бронирования для отмены", required = true) @RequestParam(name = "bookingId") long bookingId) throws BookingNotFoundException, RepositoryException {
-        String responseSuccess = "Бронирование отменено";
         bookingService.cancelBooking(bookingId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).header("Content-Type", "text/plain; charset=UTF-8").body(responseSuccess);
+        return ResponseEntity.noContent().build();
     }
 
 

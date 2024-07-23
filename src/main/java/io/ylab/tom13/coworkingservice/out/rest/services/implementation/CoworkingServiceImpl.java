@@ -2,8 +2,6 @@ package io.ylab.tom13.coworkingservice.out.rest.services.implementation;
 
 import io.ylab.tom13.coworkingservice.out.entity.dto.coworking.CoworkingDTO;
 import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Coworking;
-import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingConflictException;
-import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingNotFoundException;
 import io.ylab.tom13.coworkingservice.out.exceptions.coworking.CoworkingUpdatingExceptions;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.BookingRepository;
@@ -26,13 +24,14 @@ public class CoworkingServiceImpl implements CoworkingService {
 
     private final CoworkingRepository coworkingRepository;
     private final BookingRepository bookingRepository;
-    private final CoworkingMapper coworkingMapper;
+
+    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Map<String, CoworkingDTO> getAllCoworking() throws RepositoryException {
+    public Map<String, CoworkingDTO> getAllCoworking() {
         Collection<Coworking> allCoworking = coworkingRepository.getAllCoworking();
         return getCoworkingByNameHashMap(allCoworking);
     }
@@ -41,7 +40,7 @@ public class CoworkingServiceImpl implements CoworkingService {
      * {@inheritDoc}
      */
     @Override
-    public Map<String, CoworkingDTO> getAllAvailableCoworkings() throws RepositoryException {
+    public Map<String, CoworkingDTO> getAllAvailableCoworkings() {
         Collection<Coworking> allCoworking = coworkingRepository.getAllCoworking();
         List<Coworking> availableCoworking = allCoworking.stream().filter(Coworking::isAvailable).toList();
         return getCoworkingByNameHashMap(availableCoworking);
@@ -51,7 +50,7 @@ public class CoworkingServiceImpl implements CoworkingService {
      * {@inheritDoc}
      */
     @Override
-    public CoworkingDTO createCoworking(CoworkingDTO coworkingDTO) throws CoworkingConflictException, RepositoryException {
+    public CoworkingDTO createCoworking(CoworkingDTO coworkingDTO) {
         Coworking coworking = coworkingMapper.toCoworking(coworkingDTO);
         Optional<Coworking> coworkingFromRepository = coworkingRepository.createCoworking(coworking);
         if (coworkingFromRepository.isPresent()) {
@@ -65,7 +64,7 @@ public class CoworkingServiceImpl implements CoworkingService {
      * {@inheritDoc}
      */
     @Override
-    public CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) throws CoworkingUpdatingExceptions, CoworkingNotFoundException, CoworkingConflictException, RepositoryException {
+    public CoworkingDTO updateCoworking(CoworkingDTO coworkingDTO) {
         Coworking coworking = coworkingMapper.toCoworking(coworkingDTO);
         Optional<Coworking> coworkingFromRepository = coworkingRepository.updateCoworking(coworking);
         if (coworkingFromRepository.isPresent()) {
@@ -79,7 +78,7 @@ public class CoworkingServiceImpl implements CoworkingService {
      * {@inheritDoc}
      */
     @Override
-    public void deleteCoworking(long coworkingId) throws CoworkingNotFoundException, RepositoryException {
+    public void deleteCoworking(long coworkingId) {
         bookingRepository.deleteAllCoworkingBookings(coworkingId);
         coworkingRepository.deleteCoworking(coworkingId);
     }

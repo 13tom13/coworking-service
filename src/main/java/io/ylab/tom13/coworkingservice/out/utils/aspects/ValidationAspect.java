@@ -79,6 +79,7 @@ public class ValidationAspect {
             StringBuilder sb = new StringBuilder();
             for (ConstraintViolation<Object> violation : violations) {
                 sb.append(violation.getMessage());
+                sb.append(". ");
             }
             throw new ValidationException("Validation failed: " + sb);
         }

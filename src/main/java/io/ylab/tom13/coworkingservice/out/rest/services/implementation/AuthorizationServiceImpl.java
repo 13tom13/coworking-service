@@ -24,7 +24,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     /**
      * {@inheritDoc}

@@ -9,12 +9,18 @@ import io.ylab.tom13.coworkingservice.out.entity.model.coworking.Workplace;
 import io.ylab.tom13.coworkingservice.out.exceptions.mapper.CoworkingMappingException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 /**
  * Маппер для преобразования объектов Coworking и его наследников в соответствующие DTO и наоборот.
  */
-@Mapper(componentModel = "spring")
+@Mapper
 public interface CoworkingMapper {
+
+    /**
+     * Экземпляр маппера CoworkingMapper для использования в преобразованиях.
+     */
+    CoworkingMapper INSTANCE = Mappers.getMapper(CoworkingMapper.class);
 
     /**
      * Преобразует объект ConferenceRoom в ConferenceRoomDTO.

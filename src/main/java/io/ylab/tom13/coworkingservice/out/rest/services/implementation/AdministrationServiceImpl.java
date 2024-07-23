@@ -4,7 +4,6 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.entity.model.User;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.repositories.UserRepository;
 import io.ylab.tom13.coworkingservice.out.rest.services.AdministrationService;
@@ -17,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
+
 
 /**
  * Реализация интерфейса {@link AdministrationService}.
@@ -28,7 +29,7 @@ public class AdministrationServiceImpl implements AdministrationService {
 
     private final UserRepository userRepository;
 
-    private final UserMapper userMapper;
+    private final UserMapper userMapper = UserMapper.INSTANCE;
 
     /**
      * {@inheritDoc}
@@ -45,7 +46,7 @@ public class AdministrationServiceImpl implements AdministrationService {
      * {@inheritDoc}
      */
     @Override
-    public UserDTO getUserByEmail(String email) throws UserNotFoundException {
+    public UserDTO getUserByEmail(String email) {
         Optional<User> byEmail = userRepository.findByEmail(email);
         User user = byEmail.orElseThrow(() -> new UserNotFoundException("с email " + email));
         return userMapper.toUserDTO(user);
@@ -55,7 +56,7 @@ public class AdministrationServiceImpl implements AdministrationService {
      * {@inheritDoc}
      */
     @Override
-    public UserDTO editUserByAdministrator(UserDTO userDTO) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException {
+    public UserDTO editUserByAdministrator(UserDTO userDTO) {
         long id = userDTO.id();
         Optional<User> byId = userRepository.findById(id);
         User userFromRep = byId.orElseThrow(() -> new UserNotFoundException("с ID " + id));
@@ -72,11 +73,11 @@ public class AdministrationServiceImpl implements AdministrationService {
      * {@inheritDoc}
      */
     @Override
-    public void editUserPasswordByAdministrator(String email, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException {
+    public void editUserPasswordByAdministrator(String email, String newPassword) {
         Optional<User> byEmail = userRepository.findByEmail(email);
         User userFromRep = byEmail.orElseThrow(() -> new UserNotFoundException("с email  " + email));
-
-        User userChanged = userMapper.toUserWithPassword(userFromRep, newHashPassword);
+        String hashPassword = hashPassword(newPassword);
+        User userChanged = userMapper.toUserWithPassword(userFromRep, hashPassword);
         if (userRepository.updateUser(userChanged).isEmpty()) {
             throw new RepositoryException("Не удалось обновить пароль с email " + email);
         }
@@ -88,7 +89,7 @@ public class AdministrationServiceImpl implements AdministrationService {
      * @return
      */
     @Override
-    public UserDTO registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException {
+    public UserDTO registrationUser(RegistrationDTO registrationDTO) {
         User newUser = new User(0, registrationDTO.firstName(), registrationDTO.lastName(), registrationDTO.email(),
                 registrationDTO.password(), registrationDTO.role());
         Optional<User> registeredUser = userRepository.createUser(newUser);

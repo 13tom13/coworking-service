@@ -25,13 +25,13 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
 
-    private final BookingMapper bookingMapper;
+    private final BookingMapper bookingMapper = BookingMapper.INSTANCE;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public BookingDTO createBooking(BookingDTO bookingDTO) throws BookingConflictException, RepositoryException {
+    public BookingDTO createBooking(BookingDTO bookingDTO) {
         if (bookingDTO.date().isBefore(LocalDate.now())) {
             throw new BookingConflictException("Время бронирования не может быть в прошлом");
         }
@@ -48,7 +48,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public void cancelBooking(long bookingId) throws BookingNotFoundException, RepositoryException {
+    public void cancelBooking(long bookingId) {
         bookingRepository.deleteBooking(bookingId);
     }
 
@@ -56,7 +56,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public List<BookingDTO> getBookingsByUser(long userId) throws BookingNotFoundException, RepositoryException {
+    public List<BookingDTO> getBookingsByUser(long userId) {
         Collection<Booking> bookingsByUser = bookingRepository.getBookingsByUser(userId);
         return bookingsByUser.stream().map(bookingMapper::toBookingDTO).toList();
     }
@@ -65,7 +65,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) throws BookingNotFoundException, RepositoryException {
+    public List<BookingDTO> getBookingsByUserAndDate(long userId, LocalDate date) {
         Collection<Booking> bookingsByUserAndDate = bookingRepository.getBookingsByUserAndDate(userId, date);
         return bookingsByUserAndDate.stream().map(bookingMapper::toBookingDTO).toList();
     }
@@ -74,7 +74,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) throws BookingNotFoundException, RepositoryException {
+    public List<BookingDTO> getBookingsByUserAndCoworking(long userId, long coworkingId) {
         Collection<Booking> bookingsByUserAndCoworking = bookingRepository.getBookingsByUserAndCoworking(userId, coworkingId);
         return bookingsByUserAndCoworking.stream().map(bookingMapper::toBookingDTO).toList();
     }
@@ -83,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) throws RepositoryException {
+    public List<TimeSlot> getAvailableSlots(long coworkingId, LocalDate date) {
         List<Booking> bookings = new ArrayList<>(bookingRepository.getBookingsByCoworkingAndDate(coworkingId, date));
         List<TimeSlot> availableSlots = new ArrayList<>(Arrays.asList(TimeSlot.values()));
         if (bookings.isEmpty()) {
@@ -101,7 +101,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public BookingDTO getBookingById(long bookingId) throws BookingNotFoundException, RepositoryException {
+    public BookingDTO getBookingById(long bookingId) {
         Optional<Booking> bookingById = bookingRepository.getBookingById(bookingId);
         if (bookingById.isEmpty()) {
             throw new BookingNotFoundException("Бронирование с таким id не найдено");
@@ -113,7 +113,7 @@ public class BookingServiceImpl implements BookingService {
      * {@inheritDoc}
      */
     @Override
-    public BookingDTO updateBooking(BookingDTO booking) throws BookingNotFoundException, BookingConflictException, RepositoryException {
+    public BookingDTO updateBooking(BookingDTO booking) {
         if (booking.date().isBefore(LocalDate.now())) {
             throw new BookingConflictException("Время бронирования не может быть в прошлом");
         }

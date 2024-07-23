@@ -42,18 +42,18 @@ public interface AdministrationService {
     /**
      * Изменение пароля пользователя администратором.
      *
-     * @param userId          ID пользователя для изменения пароля.
-     * @param newHashPassword новый хешированный пароль пользователя.
+     * @param email          email пользователя для изменения пароля.
+     * @param newPassword новый пароль пользователя.
      * @throws UserNotFoundException если пользователь не найден.
      * @throws RepositoryException   если произошла ошибка репозитория при сохранении данных.
      */
-    void editUserPasswordByAdministrator(String email, String newHashPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException;
+    void editUserPasswordByAdministrator(String email, String newPassword) throws UserNotFoundException, RepositoryException, UserAlreadyExistsException;
 
     /**
      * Регистрация нового пользователя администратором.
      *
      * @param registrationDTO DTO с данными для регистрации нового пользователя.
-     * @return
+     * @return DTO с данными зарегистрированного пользователя.
      * @throws RepositoryException если произошла ошибка репозитория при сохранении данных.
      */
     UserDTO registrationUser(RegistrationDTO registrationDTO) throws RepositoryException, UserAlreadyExistsException;
