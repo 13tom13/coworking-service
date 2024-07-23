@@ -47,7 +47,7 @@ class CoworkingServiceImplTest {
 
     private CoworkingDTO coworkingDTO;
 
-    private final CoworkingMapper coworkingMapper;
+    private final CoworkingMapper coworkingMapper = CoworkingMapper.INSTANCE;
 
     @BeforeEach
     void setUp() throws IllegalAccessException, NoSuchFieldException {

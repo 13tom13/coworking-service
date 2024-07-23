@@ -34,7 +34,7 @@ public class UserEditServiceImpl implements UserEditService {
      * {@inheritDoc}
      */
     @Override
-    public UserDTO editUser(UserDTO userDTO) throws RepositoryException, UserNotFoundException, UserAlreadyExistsException {
+    public UserDTO editUser(UserDTO userDTO){
 
         User existingUser = userRepository.findById(userDTO.id()).orElseThrow(() -> new UserNotFoundException("с ID " + userDTO.id()));
 
@@ -62,9 +62,9 @@ public class UserEditServiceImpl implements UserEditService {
     public void editPassword(PasswordChangeDTO passwordChangeDTO) {
         String email = passwordChangeDTO.email();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("с email " + email));
-        String hashPassword = hashPassword(passwordChangeDTO.newPassword());
-        checkPassword(hashPassword, user.password());
-        User updatedUser = userMapper.toUserWithPassword(user, hashPassword);
+        String newPassword = hashPassword(passwordChangeDTO.newPassword());
+        checkPassword(passwordChangeDTO.oldPassword(), user.password());
+        User updatedUser = userMapper.toUserWithPassword(user, newPassword);
         userRepository.updateUser(updatedUser);
     }
 
@@ -75,7 +75,7 @@ public class UserEditServiceImpl implements UserEditService {
      * @param passwordFromRep пароль пользователя из репозитория.
      * @throws UnauthorizedException если старый пароль не совпадает с паролем пользователя.
      */
-    private void checkPassword(String passwordFromDTO, String passwordFromRep) throws UnauthorizedException {
+    private void checkPassword(String passwordFromDTO, String passwordFromRep) {
         if (!verifyPassword(passwordFromDTO, passwordFromRep)) {
             throw new UnauthorizedException("Старый пароль не совпадает");
         }

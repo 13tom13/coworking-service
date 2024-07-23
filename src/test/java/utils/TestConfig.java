@@ -21,7 +21,7 @@ public class TestConfig {
     @Value("${test.password}")
     private String TEST_PASSWORD;
     @Value("${test.container}")
-    private String POSTGRES_CONTAINER;
+    private String TEST_CONTAINER;
 
     @Bean
     public DatabaseConnection databaseConnection(PostgreSQLContainer<?> postgresContainer) {
@@ -33,7 +33,7 @@ public class TestConfig {
 
     @Bean
     public PostgreSQLContainer<?> containerInit() {
-        return new PostgreSQLContainer<>(POSTGRES_CONTAINER)
+        return new PostgreSQLContainer<>(TEST_CONTAINER)
                 .withDatabaseName(TEST_DATABASE)
                 .withUsername(TEST_USER)
                 .withPassword(TEST_PASSWORD);

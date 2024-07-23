@@ -2,6 +2,7 @@ package rest.controller;
 
 import io.ylab.tom13.coworkingservice.out.entity.dto.BookingDTO;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.TimeSlot;
+import io.ylab.tom13.coworkingservice.out.exceptions.GlobalExceptionHandler;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingConflictException;
 import io.ylab.tom13.coworkingservice.out.exceptions.booking.BookingNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.controller.BookingControllerSpring;
@@ -26,6 +27,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayName("Тесты сервиса бронирований")
 class BookingControllerSpringTest extends MvcTest {
 
+    private static final String BOOKING_CREATE = "/booking/create";
+    private static final String BOOKING_CANCEL = "/booking/cancel";
+    private static final String BOOKING_USER = "/booking/user";
+    private static final String BOOKING_USER_DATE = "/booking/user/date";
+    private static final String BOOKING_USER_COWORKING = "/booking/user/coworking";
+    private static final String BOOKING_AVAILABLESLOTS = "/booking/availableslots";
+    private static final String BOOKING = "/booking";
+    private static final String BOOKING_UPDATE = "/booking/update";
+
+    private static final String USER_ID = "userId";
+    private static final String BOOKING_ID = "bookingId";
+    private static final String COWORKING_ID = "coworkingId";
+    private static final String DATE = "date";
+
     @Mock
     private BookingService bookingService;
 
@@ -36,7 +51,9 @@ class BookingControllerSpringTest extends MvcTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(bookingController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(bookingController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         bookingDTO = new BookingDTO(1L, 1L, 1L, LocalDate.now().plusDays(1L), List.of(TimeSlot.MORNING));
     }
 
@@ -45,7 +62,7 @@ class BookingControllerSpringTest extends MvcTest {
     void createBooking_success() throws Exception {
         when(bookingService.createBooking(any(BookingDTO.class))).thenReturn(bookingDTO);
 
-        mockMvc.perform(post("/booking/create")
+        mockMvc.perform(post(BOOKING_CREATE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookingDTO)))
                 .andExpect(status().isCreated())
@@ -55,13 +72,14 @@ class BookingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест ошибки при бронировании")
     void createBooking_conflict() throws Exception {
-        when(bookingService.createBooking(any(BookingDTO.class))).thenThrow(new BookingConflictException("Conflict"));
+        String conflict = "Conflict";
+        when(bookingService.createBooking(any(BookingDTO.class))).thenThrow(new BookingConflictException(conflict));
 
-        mockMvc.perform(post("/booking/create")
+        mockMvc.perform(post(BOOKING_CREATE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookingDTO)))
                 .andExpect(status().isConflict())
-                .andExpect(content().string("Conflict"));
+                .andExpect(content().string(conflict));
     }
 
     @Test
@@ -69,23 +87,22 @@ class BookingControllerSpringTest extends MvcTest {
     void cancelBooking_success() throws Exception {
         doNothing().when(bookingService).cancelBooking(1L);
 
-        mockMvc.perform(delete("/booking/cancel")
-                        .param("bookingId", "1")
-                        .characterEncoding("UTF-8")
+        mockMvc.perform(delete(BOOKING_CANCEL)
+                        .param(BOOKING_ID, String.valueOf(bookingDTO.id()))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent())
-                .andExpect(content().string("Бронирование отменено"));
+                .andExpect(status().isNoContent());
     }
 
     @Test
     @DisplayName("Тест ошибки при отмене бронирования")
     void cancelBooking_notFound() throws Exception {
-        doThrow(new BookingNotFoundException("Not Found")).when(bookingService).cancelBooking(1L);
+        String message = "Not Found";
+        doThrow(new BookingNotFoundException(message)).when(bookingService).cancelBooking(bookingDTO.id());
 
-        mockMvc.perform(delete("/booking/cancel")
-                        .param("bookingId", "1"))
+        mockMvc.perform(delete(BOOKING_CANCEL)
+                        .param(BOOKING_ID, String.valueOf(bookingDTO.id())))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Not Found"));
+                .andExpect(content().string(message));
     }
 
     @Test
@@ -94,8 +111,8 @@ class BookingControllerSpringTest extends MvcTest {
         List<BookingDTO> bookings = List.of(bookingDTO);
         when(bookingService.getBookingsByUser(bookingDTO.userId())).thenReturn(bookings);
 
-        mockMvc.perform(get("/booking/user")
-                        .param("userId", String.valueOf(bookingDTO.userId())))
+        mockMvc.perform(get(BOOKING_USER)
+                        .param(USER_ID, String.valueOf(bookingDTO.userId())))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(bookings)));
     }
@@ -103,12 +120,13 @@ class BookingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест ненахождение бронирований по пользователю")
     void getBookingsByUser_notFound() throws Exception {
-        when(bookingService.getBookingsByUser(bookingDTO.userId())).thenThrow(new BookingNotFoundException("Not Found"));
+        String message = "Not Found";
+        when(bookingService.getBookingsByUser(bookingDTO.userId())).thenThrow(new BookingNotFoundException(message));
 
-        mockMvc.perform(get("/booking/user")
-                        .param("userId", String.valueOf(bookingDTO.userId())))
+        mockMvc.perform(get(BOOKING_USER)
+                        .param(USER_ID, String.valueOf(bookingDTO.userId())))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Not Found"));
+                .andExpect(content().string(message));
     }
 
     @Test
@@ -117,9 +135,9 @@ class BookingControllerSpringTest extends MvcTest {
         List<BookingDTO> bookings = List.of(bookingDTO);
         when(bookingService.getBookingsByUserAndDate(bookingDTO.userId(), bookingDTO.date())).thenReturn(bookings);
 
-        mockMvc.perform(get("/booking/user/date")
-                        .param("userId", String.valueOf(bookingDTO.userId()))
-                        .param("date", bookingDTO.date().toString()))
+        mockMvc.perform(get(BOOKING_USER_DATE)
+                        .param(USER_ID, String.valueOf(bookingDTO.userId()))
+                        .param(DATE, bookingDTO.date().toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(bookings)));
     }
@@ -127,24 +145,26 @@ class BookingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест ненахождение бронирований по пользователю и дате")
     void getBookingsByUserAndDate_notFound() throws Exception {
-        when(bookingService.getBookingsByUserAndDate(bookingDTO.userId(), bookingDTO.date())).thenThrow(new BookingNotFoundException("Not Found"));
+        String message = "Not Found";
+        when(bookingService.getBookingsByUserAndDate(bookingDTO.userId(), bookingDTO.date())).thenThrow(new BookingNotFoundException(message));
 
-        mockMvc.perform(get("/booking/user/date")
-                        .param("userId", String.valueOf(bookingDTO.userId()))
-                        .param("date", bookingDTO.date().toString()))
+        mockMvc.perform(get(BOOKING_USER_DATE)
+                        .param(USER_ID, String.valueOf(bookingDTO.userId()))
+                        .param(DATE, bookingDTO.date().toString()))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Not Found"));
+                .andExpect(content().string(message));
     }
 
     @Test
     @DisplayName("Тест получения списка бронирований по пользователю и коворкингу")
     void getBookingsByUserAndCoworking_success() throws Exception {
         List<BookingDTO> bookings = List.of(bookingDTO);
-        when(bookingService.getBookingsByUserAndCoworking(bookingDTO.userId(), bookingDTO.coworkingId())).thenReturn(bookings);
+        when(bookingService.getBookingsByUserAndCoworking(bookingDTO.userId(),
+                bookingDTO.coworkingId())).thenReturn(bookings);
 
-        mockMvc.perform(get("/booking/user/coworking")
-                        .param("userId", String.valueOf(bookingDTO.userId()))
-                        .param("coworkingId", String.valueOf(bookingDTO.coworkingId())))
+        mockMvc.perform(get(BOOKING_USER_COWORKING)
+                        .param(USER_ID, String.valueOf(bookingDTO.userId()))
+                        .param(COWORKING_ID, String.valueOf(bookingDTO.coworkingId())))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(bookings)));
     }
@@ -152,13 +172,15 @@ class BookingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест ненахождение бронирований по пользователю и коворкингу")
     void getBookingsByUserAndCoworking_notFound() throws Exception {
-        when(bookingService.getBookingsByUserAndCoworking(bookingDTO.userId(), bookingDTO.coworkingId())).thenThrow(new BookingNotFoundException("Not Found"));
+        String message = "Not Found";
+        when(bookingService.getBookingsByUserAndCoworking(bookingDTO.userId(),
+                bookingDTO.coworkingId())).thenThrow(new BookingNotFoundException(message));
 
-        mockMvc.perform(get("/booking/user/coworking")
-                        .param("userId", String.valueOf(bookingDTO.userId()))
-                        .param("coworkingId", String.valueOf(bookingDTO.coworkingId())))
+        mockMvc.perform(get(BOOKING_USER_COWORKING)
+                        .param(USER_ID, String.valueOf(bookingDTO.userId()))
+                        .param(COWORKING_ID, String.valueOf(bookingDTO.coworkingId())))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Not Found"));
+                .andExpect(content().string(message));
     }
 
     @Test
@@ -167,9 +189,9 @@ class BookingControllerSpringTest extends MvcTest {
         List<TimeSlot> slots = List.of(TimeSlot.MORNING, TimeSlot.AFTERNOON);
         when(bookingService.getAvailableSlots(bookingDTO.coworkingId(), bookingDTO.date())).thenReturn(slots);
 
-        mockMvc.perform(get("/booking/availableslots")
-                        .param("coworkingId", String.valueOf(bookingDTO.coworkingId()))
-                        .param("date", bookingDTO.date().toString()))
+        mockMvc.perform(get(BOOKING_AVAILABLESLOTS)
+                        .param(COWORKING_ID, String.valueOf(bookingDTO.coworkingId()))
+                        .param(DATE, bookingDTO.date().toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(slots)));
     }
@@ -179,8 +201,8 @@ class BookingControllerSpringTest extends MvcTest {
     void getBookingById_success() throws Exception {
         when(bookingService.getBookingById(bookingDTO.id())).thenReturn(bookingDTO);
 
-        mockMvc.perform(get("/booking")
-                        .param("bookingId", String.valueOf(bookingDTO.id())))
+        mockMvc.perform(get(BOOKING)
+                        .param(BOOKING_ID, String.valueOf(bookingDTO.id())))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(bookingDTO)));
     }
@@ -188,12 +210,13 @@ class BookingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест ненахождение бронирования по id")
     void getBookingById_notFound() throws Exception {
-        when(bookingService.getBookingById(bookingDTO.id())).thenThrow(new BookingNotFoundException("Not Found"));
+        String message = "Not Found";
+        when(bookingService.getBookingById(bookingDTO.id())).thenThrow(new BookingNotFoundException(message));
 
-        mockMvc.perform(get("/booking")
-                        .param("bookingId", String.valueOf(bookingDTO.id())))
+        mockMvc.perform(get(BOOKING)
+                        .param(BOOKING_ID, String.valueOf(bookingDTO.id())))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Not Found"));
+                .andExpect(content().string(message));
     }
 
     @Test
@@ -201,7 +224,7 @@ class BookingControllerSpringTest extends MvcTest {
     void updateBooking_success() throws Exception {
         when(bookingService.updateBooking(any(BookingDTO.class))).thenReturn(bookingDTO);
 
-        mockMvc.perform(patch("/booking/update")
+        mockMvc.perform(patch(BOOKING_UPDATE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookingDTO)))
                 .andExpect(status().isOk())
@@ -211,12 +234,13 @@ class BookingControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест ошибки при обновлении бронирования")
     void updateBooking_conflict() throws Exception {
-        when(bookingService.updateBooking(any(BookingDTO.class))).thenThrow(new BookingConflictException("Conflict"));
+        String message = "Conflict";
+        when(bookingService.updateBooking(any(BookingDTO.class))).thenThrow(new BookingConflictException(message));
 
-        mockMvc.perform(patch("/booking/update")
+        mockMvc.perform(patch(BOOKING_UPDATE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookingDTO)))
                 .andExpect(status().isConflict())
-                .andExpect(content().string("Conflict"));
+                .andExpect(content().string(message));
     }
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mapstruct.factory.Mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Тест маппинга наследников класса Coworking")
 public class CoworkingMapperTest {
 
-    private final CoworkingMapper coworkingMapper;
+    private final CoworkingMapper coworkingMapper = Mappers.getMapper(CoworkingMapper.class);
 
     private ConferenceRoom conferenceRoom;
     private ConferenceRoomDTO conferenceRoomDTO;

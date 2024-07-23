@@ -5,6 +5,7 @@ import io.ylab.tom13.coworkingservice.out.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.RegistrationDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
 import io.ylab.tom13.coworkingservice.out.entity.enumeration.Role;
+import io.ylab.tom13.coworkingservice.out.exceptions.GlobalExceptionHandler;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
 import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.controller.AdministrationControllerSpring;
@@ -15,15 +16,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import utils.MvcTest;
 
 import java.util.Collections;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("Тесты контроллера администрирования пользователя")
@@ -34,6 +37,7 @@ public class AdministrationControllerSpringTest extends MvcTest {
     private static final String ADMIN_USER_EDIT_URL = "/admin/user/edit";
     private static final String ADMIN_USER_EDIT_PASSWORD_URL = "/admin/user/edit/password";
     private static final String ADMIN_USER_REGISTRATION_URL = "/admin/user/registration";
+    private static final String EMAIL = "email";
 
     @Mock
     private AdministrationService administrationService;
@@ -48,7 +52,9 @@ public class AdministrationControllerSpringTest extends MvcTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(administrationController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(administrationController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         objectMapper = new ObjectMapper();
         userDTO = new UserDTO(1L, "John", "Doe", "john.doe@example.com", Role.USER);
         passwordChangeDTO = new PasswordChangeDTO("john.doe@example.com", "oldPassword", "newPassword");
@@ -58,147 +64,105 @@ public class AdministrationControllerSpringTest extends MvcTest {
     @Test
     @DisplayName("Тест получения всех пользователей")
     void testGetAllUsers() throws Exception {
-        when(administrationService.getAllUsers()).thenReturn(Collections.singletonList(userDTO));
+        List<UserDTO> usersCollections = Collections.singletonList(userDTO);
+        when(administrationService.getAllUsers()).thenReturn(usersCollections);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(ADMIN_USERS_URL))
+        mockMvc.perform(get(ADMIN_USERS_URL))
                 .andExpect(status().isOk())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-        UserDTO[] users = objectMapper.readValue(responseContent, UserDTO[].class);
-
-        assertThat(users).containsExactly(userDTO);
+                .andExpect(content().json(objectMapper.writeValueAsString(usersCollections)));
     }
 
     @Test
     @DisplayName("Тест получения пользователя по email")
     void testGetUserByEmail() throws Exception {
-        when(administrationService.getUserByEmail(anyString())).thenReturn(userDTO);
+        when(administrationService.getUserByEmail(userDTO.email())).thenReturn(userDTO);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(ADMIN_USER_URL)
-                        .param("email", "john.doe@example.com"))
+        mockMvc.perform(get(ADMIN_USER_URL)
+                        .param(EMAIL, userDTO.email()))
                 .andExpect(status().isOk())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-        UserDTO responseUser = objectMapper.readValue(responseContent, UserDTO.class);
-
-        assertThat(responseUser).isEqualTo(userDTO);
+                .andExpect(content().json(objectMapper.writeValueAsString(userDTO)));
     }
 
     @Test
     @DisplayName("Тест ошибки при получении пользователя по email")
     void testGetUserByEmailNotFound() throws Exception {
-        String errorMessage = "User not found";
-        when(administrationService.getUserByEmail(anyString())).thenThrow(new UserNotFoundException(errorMessage));
+        when(administrationService.getUserByEmail(anyString()))
+                .thenThrow(new UserNotFoundException(userDTO.email()));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(ADMIN_USER_URL)
-                        .param("email", "john.doe@example.com"))
+        mockMvc.perform(get(ADMIN_USER_URL)
+                        .param(EMAIL, userDTO.email()))
                 .andExpect(status().isNotFound())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-
-        assertThat(responseContent).contains(errorMessage);
+                .andExpect(content().string(containsString(userDTO.email())));
     }
 
     @Test
     @DisplayName("Тест успешного редактирования пользователя")
     void testEditUserByAdministratorSuccess() throws Exception {
-        when(administrationService.editUserByAdministrator(any(UserDTO.class))).thenReturn(userDTO);
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch(ADMIN_USER_EDIT_URL)
+        when(administrationService.editUserByAdministrator(userDTO)).thenReturn(userDTO);
+        mockMvc.perform(MockMvcRequestBuilders.patch(ADMIN_USER_EDIT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDTO)))
                 .andExpect(status().isOk())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-        UserDTO responseUser = objectMapper.readValue(responseContent, UserDTO.class);
-
-        assertThat(responseUser).isEqualTo(userDTO);
+                .andExpect(content().json(objectMapper.writeValueAsString(userDTO)));
     }
 
     @Test
     @DisplayName("Тест ошибки при редактировании пользователя")
     void testEditUserByAdministratorNotFound() throws Exception {
-        String errorMessage = "User not found";
-        when(administrationService.editUserByAdministrator(any(UserDTO.class))).thenThrow(new UserNotFoundException(errorMessage));
+        when(administrationService.editUserByAdministrator(any(UserDTO.class)))
+                .thenThrow(new UserNotFoundException(userDTO.email()));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch(ADMIN_USER_EDIT_URL)
+        mockMvc.perform(MockMvcRequestBuilders.patch(ADMIN_USER_EDIT_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDTO)))
                 .andExpect(status().isNotFound())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-
-        assertThat(responseContent).contains(errorMessage);
+                .andExpect(content().string(containsString(userDTO.email())));
     }
 
     @Test
     @DisplayName("Тест успешного изменения пароля пользователя")
     void testEditUserPasswordByAdministratorSuccess() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch(ADMIN_USER_EDIT_PASSWORD_URL)
+        mockMvc.perform(MockMvcRequestBuilders.patch(ADMIN_USER_EDIT_PASSWORD_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(passwordChangeDTO)))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-
-        assertThat(responseContent).isEqualTo("Пароль пользователя успешно изменен");
+                .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("Тест ошибки при изменении пароля пользователя")
     void testEditUserPasswordByAdministratorNotFound() throws Exception {
         String errorMessage = "User not found";
-        doThrow(new UserNotFoundException(errorMessage)).when(administrationService).editUserPasswordByAdministrator(anyString(), anyString());
-
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.patch(ADMIN_USER_EDIT_PASSWORD_URL)
+        doThrow(new UserNotFoundException(errorMessage)).when(administrationService)
+                .editUserPasswordByAdministrator(passwordChangeDTO.email(), passwordChangeDTO.newPassword());
+        mockMvc.perform(MockMvcRequestBuilders.patch(ADMIN_USER_EDIT_PASSWORD_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(passwordChangeDTO)))
                 .andExpect(status().isNotFound())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-
-        assertThat(responseContent).contains(errorMessage);
+                .andExpect(content().string(containsString(errorMessage)));
     }
 
     @Test
     @DisplayName("Тест успешной регистрации пользователя")
     void testRegistrationUserSuccess() throws Exception {
-        when(administrationService.registrationUser(any(RegistrationDTO.class))).thenReturn(userDTO);
+        when(administrationService.registrationUser(registrationDTO)).thenReturn(userDTO);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(ADMIN_USER_REGISTRATION_URL)
+        mockMvc.perform(MockMvcRequestBuilders.post(ADMIN_USER_REGISTRATION_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registrationDTO)))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-        UserDTO responseUser = objectMapper.readValue(responseContent, UserDTO.class);
-
-        assertThat(responseUser).isEqualTo(userDTO);
+                .andExpect(status().isCreated())
+                .andExpect(content().json(objectMapper.writeValueAsString(userDTO)));
     }
 
     @Test
     @DisplayName("Тест ошибки при регистрации пользователя")
     void testRegistrationUserConflict() throws Exception {
-        String errorMessage = "User already exists";
-        when(administrationService.registrationUser(any(RegistrationDTO.class))).thenThrow(new UserAlreadyExistsException(errorMessage));
+        when(administrationService.registrationUser(registrationDTO))
+                .thenThrow(new UserAlreadyExistsException(userDTO.email()));
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(ADMIN_USER_REGISTRATION_URL)
+        mockMvc.perform(MockMvcRequestBuilders.post(ADMIN_USER_REGISTRATION_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registrationDTO)))
                 .andExpect(status().isConflict())
-                .andReturn();
-
-        String responseContent = result.getResponse().getContentAsString();
-
-        assertThat(responseContent).contains(errorMessage);
+                .andExpect(content().string(containsString(userDTO.email())));
     }
 }
-

@@ -42,7 +42,7 @@ class BookingServiceImplTest {
     @InjectMocks
     private BookingServiceImpl bookingService;
 
-    private final BookingMapper bookingMapper;
+    private final BookingMapper bookingMapper = BookingMapper.INSTANCE;
 
     BookingDTO bookingDTO;
     Booking booking;

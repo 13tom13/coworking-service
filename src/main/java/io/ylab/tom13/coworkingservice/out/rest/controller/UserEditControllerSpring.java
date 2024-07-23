@@ -7,13 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.ylab.tom13.coworkingservice.out.entity.dto.PasswordChangeDTO;
 import io.ylab.tom13.coworkingservice.out.entity.dto.UserDTO;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.RepositoryException;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserAlreadyExistsException;
-import io.ylab.tom13.coworkingservice.out.exceptions.repository.UserNotFoundException;
 import io.ylab.tom13.coworkingservice.out.rest.services.UserEditService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,16 +44,8 @@ public class UserEditControllerSpring {
     public ResponseEntity<?> editUser(
             @Parameter(description = "Данные для редактирования пользователя", required = true)
             @RequestBody UserDTO userDTO) {
-        try {
-            UserDTO user = userEditService.editUser(userDTO);
-            return ResponseEntity.ok(user);
-        } catch (RepositoryException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body(e.getMessage());
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_NOT_FOUND).body(e.getMessage());
-        } catch (UserAlreadyExistsException e) {
-            return ResponseEntity.status(HttpServletResponse.SC_CONFLICT).body(e.getMessage());
-        }
+        UserDTO user = userEditService.editUser(userDTO);
+        return ResponseEntity.ok(user);
     }
 
     /**
@@ -79,9 +66,7 @@ public class UserEditControllerSpring {
     public ResponseEntity<?> editPassword(
             @Parameter(description = "Данные для изменения пароля пользователя", required = true)
             @RequestBody PasswordChangeDTO passwordChangeDTO) {
-        String success = "Пароль успешно изменен";
         userEditService.editPassword(passwordChangeDTO);
-        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "text/plain; charset=UTF-8")
-                .body(success);
+        return ResponseEntity.ok().build();
     }
 }

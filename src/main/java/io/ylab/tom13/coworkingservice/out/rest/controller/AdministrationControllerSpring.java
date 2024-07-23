@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static io.ylab.tom13.coworkingservice.out.security.PasswordUtil.hashPassword;
-
 /**
  * Контроллер администратора. Этот класс обеспечивает выполнение административных функций для управления пользователями в системе.
  */
@@ -97,10 +95,8 @@ public class AdministrationControllerSpring {
     })
     @PatchMapping("/user/edit/password")
     public ResponseEntity<?> editUserPasswordByAdministrator(@RequestBody PasswordChangeDTO passwordChangeDTO) {
-        String responseSuccess = "Пароль пользователя успешно изменен";
-        String hashPassword = hashPassword(passwordChangeDTO.newPassword());
-        administrationService.editUserPasswordByAdministrator(passwordChangeDTO.email(), hashPassword);
-        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "text/plain; charset=UTF-8").body(responseSuccess);
+        administrationService.editUserPasswordByAdministrator(passwordChangeDTO.email(), passwordChangeDTO.newPassword());
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -119,7 +115,7 @@ public class AdministrationControllerSpring {
     @PostMapping("/user/registration")
     public ResponseEntity<?> registrationUser(@RequestBody RegistrationDTO registrationDTO) {
         UserDTO registrationUser = administrationService.registrationUser(registrationDTO);
-        return ResponseEntity.ok(registrationUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registrationUser);
     }
 
 }
